@@ -1,0 +1,14 @@
+SURVEILLANCE LOG: ZAVERI BAZAAR CASH NETWORK
+CASE REF: C042 / EOW | DATE: 2025-10-05
+
+Location: Zaveri Bazaar Cash Drop Office (LOC008)
+Target: Amit Patel (P006, alias "Bablu")
+
+1. OBSERVATIONS:
+- At 16:30 hrs, vehicle MH-04-KB-3301 (Hyundai Creta) operated by Priya Nair (P004) arrived near Sheikh Memon Street.
+- Cash runner Amit Patel (P006, phone +91-98920-77665) collected two sealed duffel bags.
+- Amit Patel made a phone call (CDR-210) to Rahul Sharma (P001) confirming receipt of code 'Token-8891' representing INR 34,00,000.
+- Amit Patel then loaded the cash into white pickup truck GJ-05-BX-8820 (VH005) destined for Surat Diamond Bourse (LOC006).
+
+2. EVIDENCE:
+CCTV footage clips EVD-CCTV-099 and call record CDR-210.

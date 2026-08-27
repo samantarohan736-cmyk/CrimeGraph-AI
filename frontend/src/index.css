@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #FDFBF7;
+    color: #000000;
+  }
+  
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Custom Neo-Brutalist Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5EFEB;
+  border-left: 2.5px solid #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFE600;
+  border: 2.5px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* ==========================================================
+   AUTHENTIC COLORFUL NEO-BRUTALIST COLOR UTILITIES
+   ========================================================== */
+.bg-brutal-yellow { background-color: #FFE600 !important; }
+.bg-brutal-cyan { background-color: #00F0FF !important; }
+.bg-brutal-pink { background-color: #FF6B8B !important; }
+.bg-brutal-hotpink { background-color: #FF2A6D !important; }
+.bg-brutal-lime { background-color: #4EEDA4 !important; }
+.bg-brutal-purple { background-color: #D8B4FE !important; }
+.bg-brutal-orange { background-color: #FF9E64 !important; }
+.bg-brutal-blue { background-color: #7DD3FC !important; }
+.bg-brutal-white { background-color: #FFFFFF !important; }
+.bg-brutal-cream { background-color: #F5EFEB !important; }
+
+.text-brutal-dark { color: #000000 !important; }
+.text-brutal-pink { color: #FF2A6D !important; }
+.text-brutal-cyan { color: #0284C7 !important; }
+.text-brutal-orange { color: #EA580C !important; }
+.text-brutal-lime { color: #059669 !important; }
+.text-brutal-purple { color: #7C3AED !important; }
+.text-brutal-hotpink { color: #FF2A6D !important; }
+
+.border-brutal-black { border-color: #000000 !important; }
+
+/* ==========================================================
+   NEO-BRUTALIST CARDS — STRAIGHT CARDS + OFFSET BLACK SHADOW
+   
+   Using box-shadow instead of ::after pseudo-elements.
+   Asymmetric offsets (e.g. 6px/4px vs 4px/6px) give the 
+   visual impression of a "rotated" shadow without stacking
+   context bugs.
+   ========================================================== */
+
+/* Standard card — shadow goes bottom-right */
+.neo-box {
+  position: relative;
+  background-color: #FFFFFF;
+  border: 3px solid #000000;
+  border-radius: 12px;
+  box-shadow: 6px 4px 0px 0px #000000;
+}
+
+/* Solid banner card — shadow tilted opposite */
+.neo-box-solid {
+  position: relative;
+  background-color: #FFFFFF;
+  border: 3px solid #000000;
+  border-radius: 12px;
+  box-shadow: 4px 6px 0px 0px #000000;
+}
+
+/* Left-tilt shadow: more horizontal offset, less vertical */
+.neo-box-tilt-l {
+  position: relative;
+  background-color: #FFFFFF;
+  border: 3px solid #000000;
+  border-radius: 12px;
+  box-shadow: 7px 3px 0px 0px #000000;
+}
+
+/* Right-tilt shadow: less horizontal offset, more vertical */
+.neo-box-tilt-r {
+  position: relative;
+  background-color: #FFFFFF;
+  border: 3px solid #000000;
+  border-radius: 12px;
+  box-shadow: 3px 7px 0px 0px #000000;
+}
+
+/* Small shadow utility */
+.shadow-brutal {
+  box-shadow: 6px 4px 0px 0px #000000 !important;
+}
+
+.shadow-brutal-sm {
+  box-shadow: 3px 3px 0px 0px #000000 !important;
+}
+
+/* ==========================================================
+   NEO-BRUTALIST BUTTONS — STRAIGHT + OFFSET BLACK SHADOW
+   ========================================================== */
+.neo-btn {
+  position: relative;
+  border: 2.5px solid #000000;
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 4px 3px 0px 0px #000000;
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+.neo-btn:active {
+  box-shadow: 1px 1px 0px 0px #000000;
+  transform: translate(2px, 2px);
+}
+
+/* ==========================================================
+   NEO-BRUTALIST BADGES
+   ========================================================== */
+.neo-badge {
+  position: relative;
+  border: 2px solid #000000;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+/* ==========================================================
+   RETRO CREAM CYBER CANVAS BACKGROUND
+   ========================================================== */
+.neo-cyber-bg {
+  background-color: #FDFBF7;
+  background-image: 
+    radial-gradient(#CBD5E1 1.2px, transparent 1.2px),
+    linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px, 24px 24px;
+}
+
+/* Cytoscape container styling */
+#cy {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #FDFBF7;
+  background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}

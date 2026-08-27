@@ -1,0 +1,19 @@
+INTELLIGENCE REPORT: OPERATION GOLDEN HAWALA
+CASE REF: C042 | DATE: 2025-10-08
+SOURCE: Crime Branch Unit-3 & FIU
+
+SUBJECT: Surveillance Log and Financial Layering Analysis regarding Rahul Sharma (P001)
+
+1. EXECUTIVE SUMMARY:
+Physical and technical surveillance conducted between 2025-10-01 and 2025-10-06 confirms that subject Rahul Sharma (DOB 1984-06-15, alias "RS"), operating from Colaba Safehouse (LOC005) and driving black Mercedes-Benz (MH-01-CV-1082), serves as the central nodal broker in the illicit hawala money transfer network under investigation in Case C042.
+
+2. SUSPICIOUS MEETINGS & MOVEMENTS:
+- On 2025-10-02 at 14:30 hrs, Rahul Sharma was observed at BKC Diamond Tower (LOC002) entering the corporate office of BlueStar Marine Logistics LLP (ORG001). He held a 45-minute private session with company director Priya Nair (P004).
+- On 2025-10-03 at 23:14 hrs, technical intercept on burner SIM (+91-98200-99887 / PH002) logged 6 urgent calls to Dubai number +971-50-1234567 registered to kingpin Vikram Malhotra (P002), beneficial owner of Al-Noor Import Export FZE (ORG002).
+- On 2025-10-04, transaction TX-01082 for amount INR 75,00,000 was executed from an associated account to OTC broker David Miller (P005) for rapid conversion into cryptocurrency.
+
+3. CROSS-NETWORK BRIDGE LINKS:
+Surveillance indicates Rahul Sharma is not limited to financial layering; he also maintains active communication with port logistics handler Tariq Khan (P003) regarding clearance of maritime cargo under Case C019.
+
+4. ANALYTICAL RECOMMENDATION:
+Prioritize investigation into phone records for PH001 (+91-98200-11223) and vehicle movements for MH-01-CV-1082. All evidence must be validated before formal filing.

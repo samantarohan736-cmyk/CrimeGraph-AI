@@ -1,0 +1,15 @@
+DIGITAL FORENSICS INCIDENT REPORT
+CASE REF: C055 | DATE: 2026-01-18
+AGENCY: State Cyber Police Station
+
+SUBJECT: Tracing Darknet Extortion Proceeds & OTC Mixing Infrastructure
+
+1. INCIDENT OVERVIEW:
+Ransomware attacks affecting municipal healthcare systems yielded extortion ransoms deposited into cryptocurrency addresses. On-chain analysis indicates funds were channeled to OTC Liquidity Provider David Miller (P005 / UK-COMP-088192) operating CyberShield Digital Asset Consulting (ORG004).
+
+2. CRYPTO TRANSACTIONS & TRANSFERS:
+- Transaction TX-01085: 45,000 USDT transferred on 2026-01-10 at 03:22:15 hrs to wallet identified with developer Zubair Ahmed (P012).
+- Intercepted encrypted chats link David Miller (phone +44-7700-900123) to fund-washing requests originating from broker Rahul Sharma (P001) dating back to October 2025 (TX-01082).
+
+3. EVIDENCE LOG:
+Blockchain hash logs EVD-BLOCK-055, server IP captures EVD-IP-055, and UK Corporate filings EVD-CYBER-082.

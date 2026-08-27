@@ -1,0 +1,45 @@
+tx_id,sender_id,sender_name,receiver_id,receiver_name,amount,currency,channel,bank_reference,timestamp,category,flagged_status,anomaly_multiplier
+TX-1000,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,33905.0,INR,NEFT / Corporate Account,HDFC220682,2025-08-01 10:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1001,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,51708.0,INR,NEFT / Corporate Account,HDFC195200,2025-08-04 11:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1002,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,29197.0,INR,NEFT / Corporate Account,HDFC987663,2025-08-07 13:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1003,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,35555.0,INR,NEFT / Corporate Account,HDFC538471,2025-08-10 17:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1004,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,43961.0,INR,NEFT / Corporate Account,HDFC409673,2025-08-13 10:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1005,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,84136.0,INR,NEFT / Corporate Account,HDFC121568,2025-08-16 15:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1006,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,79658.0,INR,NEFT / Corporate Account,HDFC571107,2025-08-19 15:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1007,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,64932.0,INR,NEFT / Corporate Account,HDFC968451,2025-08-22 11:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1008,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,75310.0,INR,NEFT / Corporate Account,HDFC628786,2025-08-25 14:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1009,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,26358.0,INR,NEFT / Corporate Account,HDFC790996,2025-08-28 14:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1010,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,60011.0,INR,NEFT / Corporate Account,HDFC977411,2025-08-31 11:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1011,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,47145.0,INR,NEFT / Corporate Account,HDFC765303,2025-09-03 10:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1012,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,48346.0,INR,NEFT / Corporate Account,HDFC896785,2025-09-06 17:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1013,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,83117.0,INR,NEFT / Corporate Account,HDFC591233,2025-09-09 16:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1014,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,57593.0,INR,NEFT / Corporate Account,HDFC408112,2025-09-12 12:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1015,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,44535.0,INR,NEFT / Corporate Account,HDFC581601,2025-09-15 12:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1016,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,31724.0,INR,NEFT / Corporate Account,HDFC475458,2025-09-18 15:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1017,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,33209.0,INR,NEFT / Corporate Account,HDFC670999,2025-09-21 17:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1018,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,31513.0,INR,NEFT / Corporate Account,HDFC132726,2025-09-24 14:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1019,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,25209.0,INR,NEFT / Corporate Account,HDFC357397,2025-09-27 15:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1020,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,49080.0,INR,NEFT / Corporate Account,HDFC227383,2025-09-30 10:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1021,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,56971.0,INR,NEFT / Corporate Account,HDFC778386,2025-10-03 17:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1022,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,53927.0,INR,NEFT / Corporate Account,HDFC624427,2025-10-06 15:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1023,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,64966.0,INR,NEFT / Corporate Account,HDFC434639,2025-10-09 17:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1024,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,61577.0,INR,NEFT / Corporate Account,HDFC475662,2025-10-12 14:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1025,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,26081.0,INR,NEFT / Corporate Account,HDFC595522,2025-10-15 10:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1026,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,77044.0,INR,NEFT / Corporate Account,HDFC740987,2025-10-18 16:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1027,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,66405.0,INR,NEFT / Corporate Account,HDFC921283,2025-10-21 15:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1028,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,31941.0,INR,NEFT / Corporate Account,HDFC586733,2025-10-24 13:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1029,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,31061.0,INR,NEFT / Corporate Account,HDFC129283,2025-10-27 13:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1030,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,69490.0,INR,NEFT / Corporate Account,HDFC266314,2025-10-30 10:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1031,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,74436.0,INR,NEFT / Corporate Account,HDFC933528,2025-11-02 12:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1032,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,77718.0,INR,NEFT / Corporate Account,HDFC222485,2025-11-05 12:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1033,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,60390.0,INR,NEFT / Corporate Account,HDFC481274,2025-11-08 12:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1034,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,83643.0,INR,NEFT / Corporate Account,HDFC720978,2025-11-11 11:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1035,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,65682.0,INR,NEFT / Corporate Account,HDFC124738,2025-11-14 10:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1036,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,48404.0,INR,NEFT / Corporate Account,HDFC725608,2025-11-17 14:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1037,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,54460.0,INR,NEFT / Corporate Account,HDFC754482,2025-11-20 15:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1038,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,36832.0,INR,NEFT / Corporate Account,HDFC118695,2025-11-23 16:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-1039,P004,Priya Nair (BlueStar Logistics),P001,Rahul Sharma,52088.0,INR,NEFT / Corporate Account,HDFC503198,2025-11-26 16:00:00,Consulting Fee / Routine,Normal,1.0x
+TX-01082,P001,Rahul Sharma (Cover Account),P005,David Miller (CryptoShield OTC),7500000.0,INR,RTGS Layered Transfer,ICICI-RTGS-9901824,2025-10-04 14:15:30,Hawala Layering / OTC Crypto Buy,CRITICAL ANOMALY: 7.4x Above Historical Median,7.4x
+TX-01083,P002,Vikram Malhotra (Al-Noor Import Export),P009,Rashid Al-Falasi (Dubai Bullion),1250000.0,AED,SWIFT Wire (Invoice Under-reporting),ENBD-WIRE-004491,2025-10-06 11:30:00,Bullion Settlement,HIGH ANOMALY: Cross-Border Trade Discrepancy,5.2x
+TX-01084,P006,Amit Patel (Cash Pool),P001,Rahul Sharma,3400000.0,INR,Physical Hawala Cash Drop (Token Receipt #8891),HAWALA-TOKEN-8891,2025-10-04 17:45:00,Physical Cash Drop,HIGH ANOMALY: Large Cash Consolidation,6.8x
+TX-01085,P005,David Miller,P012,Zubair Ahmed,45000.0,USDT,TRC-20 Blockchain Wallet Transfer,TXID-0x7a8f9c2d1e0b3456,2026-01-10 03:22:15,Crypto Darknet Bounty,HIGH ANOMALY: Off-Hours Darknet Liquidity Transfer,4.1x

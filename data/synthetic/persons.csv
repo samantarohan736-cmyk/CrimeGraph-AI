@@ -1,0 +1,13 @@
+person_id,name,aliases,dob,nationality,role,primary_location,risk_level,avatar_url
+P001,Rahul Sharma,"RS, Rahul S., Rocky",1984-06-15,Indian,Syndicate Coordinator & Broker,Mumbai,High,
+P002,Vikram Malhotra,"VM, Boss, Victor",1978-11-03,Indian,Hawala Kingpin & Financier,Dubai / Mumbai,Critical,
+P003,Tariq Khan,"TK, Tiger",1982-03-22,Indian,Port Logistics & Cargo Handler,Navi Mumbai,High,
+P004,Priya Nair,"Priya N., Accountant",1989-09-14,Indian,Shell Company Director & Auditor,Mumbai (BKC),Medium,
+P005,David Miller,"Dave, CryptoDave",1986-01-29,British,Darknet OTC Broker & Crypto Mixer,Goa / London,High,
+P006,Amit Patel,"Bablu, AP",1992-07-08,Indian,Cash Courier & Burner Phone Distributor,Surat / Mumbai,Medium,
+P007,Sanjay Roy,Customs Sanjay,1980-04-19,Indian,Customs Clearance Agent,Nhava Sheva,High,
+P008,Neha Kapoor,Neha K.,1991-12-05,Indian,Forex Desk Operator,Mumbai,Low,
+P009,Rashid Al-Falasi,Rashid Gold,1975-08-30,Emirati,Precious Metals Trader,Dubai (Deira),High,
+P010,Karan Verma,"KV, Transporter",1985-05-18,Indian,Heavy Fleet Transporter,Thane,Medium,
+P011,Sunil Mehta,Mehta Ji,1972-02-11,Indian,Real Estate Front Investor,Pune,Low,
+P012,Zubair Ahmed,"Zee, CyberZee",1995-10-25,Indian,Malware Developer & SIM Swapper,Bengaluru,High,

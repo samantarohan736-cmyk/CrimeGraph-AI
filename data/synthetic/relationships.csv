@@ -1,0 +1,46 @@
+rel_id,source_id,target_id,relationship_type,confidence,evidence_id,date,notes
+REL001,P001,PH001,USES_PHONE,0.98,EVD-CDR-001,2025-01-10,Primary postpaid mobile subscriber
+REL002,P001,PH002,USES_PHONE,0.89,EVD-SURV-102,2025-09-15,Observed using burner SIM during covert meeting
+REL003,P002,PH003,USES_PHONE,0.99,EVD-INTEL-044,2024-06-01,Direct Dubai roaming line
+REL004,P003,PH004,USES_PHONE,0.95,EVD-CDR-004,2024-11-20,Registered corporate logistics SIM
+REL005,P004,PH006,USES_PHONE,0.96,EVD-CDR-006,2024-08-12,Office landline & mobile account
+REL006,P005,PH007,USES_PHONE,0.94,EVD-CYBER-019,2025-03-01,UK encrypted telecom roaming profile
+REL007,P006,PH008,USES_PHONE,0.92,EVD-CDR-008,2025-02-14,Gujarat circle SIM card
+REL008,P007,PH009,USES_PHONE,0.95,EVD-CDR-009,2024-04-05,Nhava Sheva official line
+REL009,P009,PH010,USES_PHONE,0.97,EVD-INTEL-088,2024-01-18,Dubai Gold Souk business contact
+REL010,P001,VH001,OWNS_VEHICLE,0.99,EVD-RTO-001,2023-05-10,Registered owner in Vahan Database
+REL011,P010,VH002,OWNS_VEHICLE,0.98,EVD-RTO-002,2022-09-14,Commercial fleet registration
+REL012,P003,VH003,OWNS_VEHICLE,0.95,EVD-RTO-003,2024-02-01,Registered to Tariq Khan
+REL013,P004,VH004,OWNS_VEHICLE,0.94,EVD-RTO-004,2023-11-20,Personal registered vehicle
+REL014,P006,VH005,OWNS_VEHICLE,0.91,EVD-RTO-005,2024-07-19,Used for regional cash transport
+REL015,P001,ORG001,WORKS_FOR,0.92,EVD-MCA-001,2022-04-01,Designated Senior Broker / Commercial Consultant
+REL016,P002,ORG002,WORKS_FOR,0.98,EVD-CORP-012,2020-01-15,Beneficial Owner & Managing Director (RAK Freezone)
+REL017,P002,ORG003,WORKS_FOR,0.95,EVD-CORP-013,2021-08-10,Silent Partner / Capital Investor
+REL018,P004,ORG001,WORKS_FOR,0.99,EVD-MCA-002,2021-03-12,Authorized Signatory and Statutory Director
+REL019,P004,ORG003,WORKS_FOR,0.94,EVD-MCA-003,2022-10-05,Bookkeeping auditor and compliance filings
+REL020,P005,ORG004,WORKS_FOR,0.97,EVD-CYBER-082,2023-02-14,Founder & Principal OTC Liquidity Provider
+REL021,P010,ORG005,WORKS_FOR,0.99,EVD-MCA-005,2019-06-01,Managing Director and majority shareholder
+REL022,P001,LOC002,VISITED,0.95,EVD-CCTV-011,2025-10-02,CCTV capture entering BKC Tower with briefcase
+REL023,P001,LOC003,VISITED,0.92,EVD-TOWER-041,2025-10-05,Cell tower geolocation ping at Panvel Warehouse
+REL024,P001,LOC005,VISITED,0.97,EVD-SURV-102,2025-10-08,Surveillance team spotted subject entering Colaba Safehouse
+REL025,P003,LOC001,VISITED,0.99,EVD-ACCESS-019,2025-10-28,Port gate access card swipe at JNPT Terminal 3
+REL026,P003,LOC003,VISITED,0.94,EVD-TOLL-088,2025-10-29,Fastag toll record entering Panvel hub
+REL027,P006,LOC008,VISITED,0.96,EVD-CCTV-099,2025-10-04,Zaveri Bazaar CCTV cash collection
+REL028,P002,LOC004,VISITED,0.95,EVD-IMMIG-012,2025-09-20,Dubai Gold Souk bullion clearing office
+REL029,P001,C042,ASSOCIATED_WITH_CASE,0.95,EVD-FIR-042,2025-10-12,Identified in FIR as central hawala coordinator and transaction node
+REL030,P002,C042,ASSOCIATED_WITH_CASE,0.98,EVD-INTEL-042,2025-10-12,Identified as overseas beneficiary and hawala kingpin
+REL031,P004,C042,ASSOCIATED_WITH_CASE,0.91,EVD-BANK-042,2025-10-14,Signatory on illicit shell bank accounts
+REL032,P001,C019,ASSOCIATED_WITH_CASE,0.88,EVD-INTEL-019,2025-11-05,Bridge link coordinating payment settlement for contraband shipments
+REL033,P003,C019,ASSOCIATED_WITH_CASE,0.97,EVD-SEIZE-019,2025-11-04,Intercepted container logistics facilitator at Nhava Sheva
+REL034,P007,C019,ASSOCIATED_WITH_CASE,0.93,EVD-DOC-019,2025-11-06,Signed forged bill of lading and manifest clearances
+REL035,P005,C055,ASSOCIATED_WITH_CASE,0.96,EVD-BLOCK-055,2026-01-15,Wallet address tied to ransom payout mixing node
+REL036,P012,C055,ASSOCIATED_WITH_CASE,0.94,EVD-IP-055,2026-01-16,C2 server infrastructure administrator
+REL037,P001,P002,CALLED,0.99,CDR-182,2025-10-03,High frequency VoIP & International calls prior to cash drop
+REL038,P001,P003,CALLED,0.95,CDR-194,2025-10-27,Frequent calls before container dispatch from JNPT
+REL039,P001,P004,ASSOCIATED_WITH,0.96,EVD-DOC-088,2025-09-01,Co-signatory and daily administrative contact for shell company funds
+REL040,P001,P005,TRANSFERRED_TO,0.91,TX-01082,2025-10-04,"Off-market OTC conversion of INR 75,00,000 into USDT liquidity"
+REL041,P001,P006,CALLED,0.94,CDR-210,2025-10-04,Dispatched courier for cash aggregation in Zaveri Bazaar
+REL042,P003,P007,CALLED,0.98,CDR-302,2025-10-28,Urgent communications during customs container scanning window
+REL043,P003,P010,ASSOCIATED_WITH,0.95,EVD-WAYBILL-044,2025-10-29,Contracted heavy transport trailers for inland transit
+REL044,P002,P009,TRANSFERRED_TO,0.97,TX-01099,2025-10-06,Direct bullion procurement wire in Dubai Gold Souk
+REL045,P005,P012,TRANSFERRED_TO,0.93,TX-01140,2026-01-10,USDT payout disbursement for exploit kit deployment

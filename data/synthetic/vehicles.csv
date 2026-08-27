@@ -1,0 +1,7 @@
+vehicle_id,plate_number,make,model,color,registered_owner,vehicle_type
+VH001,MH-01-CV-1082,Mercedes-Benz,E-Class,Obsidian Black,Rahul Sharma,Luxury Sedan
+VH002,MH-46-AZ-4412,Tata,Prima 4028.S,Commercial Yellow,Karan Verma (KV Fleet),Heavy Cargo Truck
+VH003,MH-02-ER-9910,Toyota,Fortuner,Pearl White,Tariq Khan,SUV
+VH004,MH-04-KB-3301,Hyundai,Creta,Silver,Priya Nair,Compact SUV
+VH005,GJ-05-BX-8820,Mahindra,Bolero Maxi Truck,White,Amit Patel,Cash Van / Pickup
+VH006,MH-06-WT-5509,Yamaha,FZS-FI,Matte Black,Unregistered Runner,Motorcycle
