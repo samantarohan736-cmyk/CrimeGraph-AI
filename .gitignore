@@ -35,9 +35,9 @@ htmlcov/
 .tox/
 
 
-.DS_Store
+*.db
+*.sqlite3
 
-# Windows
 Thumbs.db
 
 
