@@ -1,9 +1,0 @@
-location_id,name,address,latitude,longitude,location_type
-LOC001,JNPT Port Container Terminal 3,"Nhava Sheva, Navi Mumbai, Maharashtra 400707",18.9498,72.9515,Maritime Port / Cargo Depot
-LOC002,BKC Diamond & Financial Tower,"G-Block, Bandra Kurla Complex, Mumbai 400051",19.0662,72.8687,Commercial Financial Center
-LOC003,Panvel Logistics Hub & Warehouse 14,"Old Mumbai-Pune Highway, Panvel 410206",18.9902,73.1168,Transit Warehouse / Safehouse
-LOC004,Dubai Gold Souk & Bullion Center,"Al Dhagaya, Deira, Dubai, UAE",25.2711,55.2974,Precious Metals Exchange
-LOC005,Colaba Apartment 4B (Safehouse),"Pasta Lane, Colaba, Mumbai 400005",18.9154,72.8258,Covert Residence / Meeting Node
-LOC006,Surat Diamond Bourse Suite 502,"Khajod, Surat, Gujarat 395007",21.1215,72.7885,Jewellery / Cash Exchange
-LOC007,Anjuna Beach Villa Node,"North Anjuna, Bardez, Goa 403509",15.5733,73.7411,Crypto / Darknet Retreat
-LOC008,Zaveri Bazaar Cash Drop Office,"Sheikh Memon St, Kalbadevi, Mumbai 400002",18.9500,72.8310,Hawala Counter / Bullion Trading

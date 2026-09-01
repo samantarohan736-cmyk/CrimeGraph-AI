@@ -1,6 +1,0 @@
-org_id,name,registration_no,jurisdiction,org_type,flagged_status
-ORG001,BlueStar Marine Logistics LLP,LLPIN-AAH-9012,India,Freight Forwarding & Shipping,High Risk Shell
-ORG002,Al-Noor Import Export FZE,RAKEZ-2018-0914,UAE (RAK Freezone),International Trading,Foreign Hawala Conduit
-ORG003,Apex Forex & Remittance Services,MH-FX-4410,India,Money Service Business,Non-Compliant FX Desk
-ORG004,CyberShield Digital Asset Consulting,UK-COMP-088192,United Kingdom,Cryptocurrency Consulting,Mixing Service Front
-ORG005,KV Freightlines Pvt Ltd,MH-TRANS-2201,India,Interstate Transport Fleet,Logistics Carrier

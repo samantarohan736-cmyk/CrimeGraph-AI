@@ -1,9 +1,0 @@
-metric,value,description
-total_nodes,45,Total multi-modal graph entities
-total_edges,78,Total explicit and inferred relationship links
-total_cases,3,Active criminal case investigations
-total_persons,12,Entities classified as persons
-network_density,0.082,Graph connectivity density ratio
-average_degree,3.46,Mean degree per entity node
-detected_communities,3,Louvain algorithm modularity partitions
-bridge_entities,P001 (Rahul Sharma),Key articulation point bridging Hawala (C042) and Contraband (C019)
