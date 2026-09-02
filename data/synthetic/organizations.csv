@@ -1,6 +1,51 @@
-org_id,name,registration_no,jurisdiction,org_type,flagged_status
-ORG001,BlueStar Marine Logistics LLP,LLPIN-AAH-9012,India,Freight Forwarding & Shipping,High Risk Shell
-ORG002,Al-Noor Import Export FZE,RAKEZ-2018-0914,UAE (RAK Freezone),International Trading,Foreign Hawala Conduit
-ORG003,Apex Forex & Remittance Services,MH-FX-4410,India,Money Service Business,Non-Compliant FX Desk
-ORG004,CyberShield Digital Asset Consulting,UK-COMP-088192,United Kingdom,Cryptocurrency Consulting,Mixing Service Front
-ORG005,KV Freightlines Pvt Ltd,MH-TRANS-2201,India,Interstate Transport Fleet,Logistics Carrier
+org_id,name,registration_number,jurisdiction,type,status
+O001,Organization 1,REG20210001,Bihar,Agency,Active
+O002,Organization 2,REG20220002,Bihar,Agency,Inactive
+O003,Organization 3,REG20230003,Bihar,Business,Inactive
+O004,Organization 4,REG20240004,Odisha,NGO,Inactive
+O005,Organization 5,REG20250005,West Bengal,Agency,Inactive
+O006,Organization 6,REG20260006,Odisha,Agency,Inactive
+O007,Organization 7,REG20270007,Bihar,Agency,Inactive
+O008,Organization 8,REG20280008,West Bengal,Company,Inactive
+O009,Organization 9,REG20290009,Jharkhand,Company,Inactive
+O010,Organization 10,REG20300010,West Bengal,NGO,Inactive
+O011,Organization 11,REG20310011,Bihar,Agency,Active
+O012,Organization 12,REG20320012,West Bengal,NGO,Inactive
+O013,Organization 13,REG20330013,West Bengal,Agency,Inactive
+O014,Organization 14,REG20340014,West Bengal,Association,Active
+O015,Organization 15,REG20350015,Bihar,Business,Inactive
+O016,Organization 16,REG20360016,Jharkhand,Business,Inactive
+O017,Organization 17,REG20370017,Jharkhand,Association,Active
+O018,Organization 18,REG20380018,West Bengal,Agency,Inactive
+O019,Organization 19,REG20390019,Jharkhand,Company,Inactive
+O020,Organization 20,REG20400020,Odisha,Agency,Active
+O021,Organization 21,REG20410021,Jharkhand,Agency,Active
+O022,Organization 22,REG20420022,Jharkhand,Business,Active
+O023,Organization 23,REG20430023,Odisha,Agency,Active
+O024,Organization 24,REG20440024,Jharkhand,Association,Active
+O025,Organization 25,REG20450025,Jharkhand,Association,Inactive
+O026,Organization 26,REG20460026,West Bengal,Company,Active
+O027,Organization 27,REG20470027,Odisha,Business,Inactive
+O028,Organization 28,REG20480028,Odisha,Association,Active
+O029,Organization 29,REG20490029,Bihar,NGO,Active
+O030,Organization 30,REG20500030,Jharkhand,Company,Active
+O031,Organization 31,REG20510031,Odisha,Business,Inactive
+O032,Organization 32,REG20520032,Bihar,NGO,Inactive
+O033,Organization 33,REG20530033,Odisha,NGO,Inactive
+O034,Organization 34,REG20540034,West Bengal,Association,Active
+O035,Organization 35,REG20550035,West Bengal,NGO,Inactive
+O036,Organization 36,REG20560036,Bihar,Business,Inactive
+O037,Organization 37,REG20570037,Bihar,Agency,Active
+O038,Organization 38,REG20580038,Bihar,Business,Inactive
+O039,Organization 39,REG20590039,Jharkhand,NGO,Inactive
+O040,Organization 40,REG20600040,West Bengal,Association,Inactive
+O041,Organization 41,REG20610041,Bihar,Association,Active
+O042,Organization 42,REG20620042,West Bengal,Agency,Inactive
+O043,Organization 43,REG20630043,Bihar,Agency,Inactive
+O044,Organization 44,REG20640044,Jharkhand,Association,Inactive
+O045,Organization 45,REG20650045,West Bengal,Association,Inactive
+O046,Organization 46,REG20660046,Bihar,NGO,Active
+O047,Organization 47,REG20670047,Jharkhand,NGO,Inactive
+O048,Organization 48,REG20680048,West Bengal,Company,Active
+O049,Organization 49,REG20690049,West Bengal,Business,Active
+O050,Organization 50,REG20700050,West Bengal,Business,Inactive

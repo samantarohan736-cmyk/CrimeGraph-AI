@@ -1,9 +1,101 @@
-location_id,name,address,latitude,longitude,location_type
-LOC001,JNPT Port Container Terminal 3,"Nhava Sheva, Navi Mumbai, Maharashtra 400707",18.9498,72.9515,Maritime Port / Cargo Depot
-LOC002,BKC Diamond & Financial Tower,"G-Block, Bandra Kurla Complex, Mumbai 400051",19.0662,72.8687,Commercial Financial Center
-LOC003,Panvel Logistics Hub & Warehouse 14,"Old Mumbai-Pune Highway, Panvel 410206",18.9902,73.1168,Transit Warehouse / Safehouse
-LOC004,Dubai Gold Souk & Bullion Center,"Al Dhagaya, Deira, Dubai, UAE",25.2711,55.2974,Precious Metals Exchange
-LOC005,Colaba Apartment 4B (Safehouse),"Pasta Lane, Colaba, Mumbai 400005",18.9154,72.8258,Covert Residence / Meeting Node
-LOC006,Surat Diamond Bourse Suite 502,"Khajod, Surat, Gujarat 395007",21.1215,72.7885,Jewellery / Cash Exchange
-LOC007,Anjuna Beach Villa Node,"North Anjuna, Bardez, Goa 403509",15.5733,73.7411,Crypto / Darknet Retreat
-LOC008,Zaveri Bazaar Cash Drop Office,"Sheikh Memon St, Kalbadevi, Mumbai 400002",18.9500,72.8310,Hawala Counter / Bullion Trading
+location_id,name,address,city,coordinates,location_type,risk_category
+L001,Location 1,212 Main Road,Durgapur,"23.74309,89.05215",Commercial,Low
+L002,Location 2,317 Main Road,Durgapur,"23.29019,89.72701",Commercial,High
+L003,Location 3,956 Main Road,Durgapur,"22.95249,88.67202",Residential,Low
+L004,Location 4,326 Main Road,Durgapur,"24.18124,89.29631",Office,Medium
+L005,Location 5,311 Main Road,Patna,"24.23683,89.46510",Transit Hub,Low
+L006,Location 6,798 Main Road,Siliguri,"22.32031,87.55424",Warehouse,High
+L007,Location 7,274 Main Road,Siliguri,"23.78908,87.69274",Residential,Medium
+L008,Location 8,82 Main Road,Patna,"22.40226,89.53841",Office,High
+L009,Location 9,666 Main Road,Bhubaneswar,"22.55193,88.16238",Office,Low
+L010,Location 10,168 Main Road,Siliguri,"22.67882,88.22577",Residential,Medium
+L011,Location 11,974 Main Road,Ranchi,"22.66766,89.01402",Commercial,Low
+L012,Location 12,68 Main Road,Durgapur,"24.78131,89.95688",Warehouse,Medium
+L013,Location 13,705 Main Road,Bhubaneswar,"24.60032,89.66276",Office,Medium
+L014,Location 14,795 Main Road,Kolkata,"23.82379,89.47299",Transit Hub,Medium
+L015,Location 15,627 Main Road,Kolkata,"23.56195,88.35483",Residential,Low
+L016,Location 16,532 Main Road,Ranchi,"24.95149,87.11775",Office,High
+L017,Location 17,784 Main Road,Kolkata,"22.56955,88.31866",Transit Hub,Medium
+L018,Location 18,473 Main Road,Durgapur,"23.26739,88.83940",Residential,High
+L019,Location 19,530 Main Road,Durgapur,"23.39074,88.93830",Residential,High
+L020,Location 20,513 Main Road,Howrah,"22.53931,88.75634",Warehouse,Low
+L021,Location 21,403 Main Road,Ranchi,"22.97038,87.07474",Office,High
+L022,Location 22,919 Main Road,Siliguri,"24.64765,87.27054",Transit Hub,High
+L023,Location 23,665 Main Road,Durgapur,"24.15512,87.37063",Residential,High
+L024,Location 24,461 Main Road,Bhubaneswar,"22.25592,89.12184",Warehouse,High
+L025,Location 25,973 Main Road,Durgapur,"23.13604,88.14182",Commercial,Medium
+L026,Location 26,580 Main Road,Durgapur,"22.48637,87.43382",Residential,Medium
+L027,Location 27,316 Main Road,Asansol,"24.19049,89.88290",Transit Hub,High
+L028,Location 28,186 Main Road,Howrah,"24.69563,89.88130",Residential,High
+L029,Location 29,784 Main Road,Asansol,"22.03662,88.49288",Office,High
+L030,Location 30,827 Main Road,Kolkata,"23.82395,88.48040",Commercial,High
+L031,Location 31,676 Main Road,Patna,"23.36122,88.32563",Warehouse,High
+L032,Location 32,7 Main Road,Siliguri,"24.64650,87.83434",Warehouse,Low
+L033,Location 33,51 Main Road,Durgapur,"22.44477,88.95983",Residential,Low
+L034,Location 34,875 Main Road,Kolkata,"24.00099,89.51404",Transit Hub,Medium
+L035,Location 35,943 Main Road,Howrah,"22.14709,88.25087",Commercial,Low
+L036,Location 36,689 Main Road,Asansol,"23.83327,89.07454",Warehouse,High
+L037,Location 37,807 Main Road,Durgapur,"24.89888,89.24800",Transit Hub,Low
+L038,Location 38,96 Main Road,Asansol,"22.96847,89.69259",Residential,Medium
+L039,Location 39,864 Main Road,Howrah,"22.87850,87.40364",Transit Hub,Medium
+L040,Location 40,540 Main Road,Ranchi,"23.57394,89.08749",Warehouse,Low
+L041,Location 41,112 Main Road,Howrah,"23.45099,89.06596",Transit Hub,Medium
+L042,Location 42,624 Main Road,Bhubaneswar,"22.77898,88.72543",Warehouse,Medium
+L043,Location 43,950 Main Road,Durgapur,"23.84287,88.48919",Office,Medium
+L044,Location 44,828 Main Road,Durgapur,"24.65099,87.69816",Transit Hub,Low
+L045,Location 45,2 Main Road,Howrah,"22.07196,88.87638",Residential,High
+L046,Location 46,869 Main Road,Siliguri,"24.39869,89.99696",Office,Low
+L047,Location 47,342 Main Road,Bhubaneswar,"23.68125,88.91251",Residential,High
+L048,Location 48,207 Main Road,Asansol,"22.76325,87.20351",Transit Hub,High
+L049,Location 49,564 Main Road,Bhubaneswar,"24.30110,87.34151",Transit Hub,Medium
+L050,Location 50,406 Main Road,Kolkata,"24.49613,87.58205",Transit Hub,High
+L051,Location 51,491 Main Road,Patna,"24.39176,88.93696",Office,Low
+L052,Location 52,643 Main Road,Patna,"24.67617,88.61090",Transit Hub,Medium
+L053,Location 53,803 Main Road,Ranchi,"24.78337,87.16807",Warehouse,Medium
+L054,Location 54,579 Main Road,Bhubaneswar,"23.66553,87.05616",Warehouse,High
+L055,Location 55,340 Main Road,Bhubaneswar,"22.19864,87.44791",Residential,Medium
+L056,Location 56,385 Main Road,Durgapur,"23.71294,88.16870",Warehouse,Low
+L057,Location 57,886 Main Road,Asansol,"24.11580,87.94350",Residential,Medium
+L058,Location 58,424 Main Road,Howrah,"23.49116,87.71293",Office,Medium
+L059,Location 59,222 Main Road,Asansol,"22.52504,88.12265",Residential,Low
+L060,Location 60,936 Main Road,Howrah,"23.33132,87.07480",Office,High
+L061,Location 61,158 Main Road,Siliguri,"23.02035,88.45042",Warehouse,Medium
+L062,Location 62,795 Main Road,Bhubaneswar,"22.42989,89.61540",Warehouse,High
+L063,Location 63,136 Main Road,Siliguri,"24.17371,88.37811",Warehouse,Low
+L064,Location 64,5 Main Road,Asansol,"24.79701,89.06116",Warehouse,Low
+L065,Location 65,342 Main Road,Patna,"24.66756,87.30931",Transit Hub,Low
+L066,Location 66,592 Main Road,Asansol,"23.91655,87.62954",Commercial,Low
+L067,Location 67,294 Main Road,Asansol,"23.59683,89.31836",Residential,Medium
+L068,Location 68,153 Main Road,Durgapur,"22.82091,87.04577",Warehouse,High
+L069,Location 69,527 Main Road,Howrah,"22.61973,88.05095",Transit Hub,Medium
+L070,Location 70,145 Main Road,Asansol,"23.72225,87.51382",Transit Hub,High
+L071,Location 71,914 Main Road,Bhubaneswar,"23.62173,87.15218",Residential,Medium
+L072,Location 72,925 Main Road,Kolkata,"22.31778,87.16140",Office,Medium
+L073,Location 73,184 Main Road,Patna,"23.84895,87.93732",Commercial,High
+L074,Location 74,777 Main Road,Howrah,"24.92105,89.26723",Office,High
+L075,Location 75,135 Main Road,Howrah,"24.43855,89.75907",Office,Low
+L076,Location 76,467 Main Road,Asansol,"24.05343,89.13065",Office,Medium
+L077,Location 77,238 Main Road,Siliguri,"22.43117,89.68710",Transit Hub,Medium
+L078,Location 78,402 Main Road,Durgapur,"24.09884,88.99554",Transit Hub,Medium
+L079,Location 79,500 Main Road,Kolkata,"22.19610,87.33866",Office,Medium
+L080,Location 80,867 Main Road,Durgapur,"22.84677,88.04585",Warehouse,Low
+L081,Location 81,521 Main Road,Howrah,"23.21706,89.14282",Residential,Medium
+L082,Location 82,570 Main Road,Howrah,"24.37729,88.59824",Office,High
+L083,Location 83,424 Main Road,Siliguri,"23.86262,88.64385",Office,Medium
+L084,Location 84,68 Main Road,Bhubaneswar,"22.62471,89.08218",Office,Medium
+L085,Location 85,581 Main Road,Bhubaneswar,"23.63358,87.70846",Residential,High
+L086,Location 86,954 Main Road,Patna,"22.34297,88.78823",Transit Hub,High
+L087,Location 87,100 Main Road,Patna,"22.52852,89.86765",Residential,High
+L088,Location 88,112 Main Road,Ranchi,"22.98222,88.93497",Residential,Low
+L089,Location 89,223 Main Road,Durgapur,"24.66178,89.70977",Residential,Low
+L090,Location 90,677 Main Road,Durgapur,"23.35892,87.87451",Warehouse,High
+L091,Location 91,458 Main Road,Siliguri,"22.61699,89.63228",Transit Hub,High
+L092,Location 92,814 Main Road,Asansol,"24.75550,89.81003",Transit Hub,Low
+L093,Location 93,597 Main Road,Kolkata,"23.83447,88.53127",Commercial,Medium
+L094,Location 94,64 Main Road,Bhubaneswar,"24.70323,89.90370",Residential,High
+L095,Location 95,574 Main Road,Bhubaneswar,"22.32909,87.84663",Residential,Low
+L096,Location 96,443 Main Road,Ranchi,"23.87564,89.13532",Office,Medium
+L097,Location 97,446 Main Road,Siliguri,"23.98746,88.42461",Commercial,High
+L098,Location 98,394 Main Road,Bhubaneswar,"24.51989,87.46280",Commercial,Low
+L099,Location 99,12 Main Road,Howrah,"23.94517,87.43199",Office,High
+L100,Location 100,448 Main Road,Durgapur,"22.25399,88.92673",Office,Medium

@@ -1,13 +1,501 @@
-person_id,name,aliases,dob,nationality,role,primary_location,risk_level,avatar_url
-P001,Rahul Sharma,"RS, Rahul S., Rocky",1984-06-15,Indian,Syndicate Coordinator & Broker,Mumbai,High,
-P002,Vikram Malhotra,"VM, Boss, Victor",1978-11-03,Indian,Hawala Kingpin & Financier,Dubai / Mumbai,Critical,
-P003,Tariq Khan,"TK, Tiger",1982-03-22,Indian,Port Logistics & Cargo Handler,Navi Mumbai,High,
-P004,Priya Nair,"Priya N., Accountant",1989-09-14,Indian,Shell Company Director & Auditor,Mumbai (BKC),Medium,
-P005,David Miller,"Dave, CryptoDave",1986-01-29,British,Darknet OTC Broker & Crypto Mixer,Goa / London,High,
-P006,Amit Patel,"Bablu, AP",1992-07-08,Indian,Cash Courier & Burner Phone Distributor,Surat / Mumbai,Medium,
-P007,Sanjay Roy,Customs Sanjay,1980-04-19,Indian,Customs Clearance Agent,Nhava Sheva,High,
-P008,Neha Kapoor,Neha K.,1991-12-05,Indian,Forex Desk Operator,Mumbai,Low,
-P009,Rashid Al-Falasi,Rashid Gold,1975-08-30,Emirati,Precious Metals Trader,Dubai (Deira),High,
-P010,Karan Verma,"KV, Transporter",1985-05-18,Indian,Heavy Fleet Transporter,Thane,Medium,
-P011,Sunil Mehta,Mehta Ji,1972-02-11,Indian,Real Estate Front Investor,Pune,Low,
-P012,Zubair Ahmed,"Zee, CyberZee",1995-10-25,Indian,Malware Developer & SIM Swapper,Bengaluru,High,
+person_id,name,aliases,role,primary_location,risk_level,dob,nationality
+P001,Rahul Sharma,P001,Informant,Howrah,Low,1982-04-08,Indian
+P002,Amit Kumar,P002,Witness,Howrah,Medium,1999-02-19,Indian
+P003,Sanjay Das,P003,Victim,Kolkata,Low,1978-04-17,Indian
+P004,Neha Roy,P004,Person of Interest,Kolkata,Low,1999-07-08,Indian
+P005,Arjun Roy,P005,Victim,Asansol,Medium,1965-03-23,Indian
+P006,Person 6,P006,Victim,Bhubaneswar,Low,1978-06-04,Indian
+P007,Person 7,P007,Suspect,Ranchi,Low,1987-10-09,Indian
+P008,Person 8,P008,Suspect,Patna,Low,1989-02-18,Indian
+P009,Person 9,P009,Associate,Bhubaneswar,Low,1969-01-22,Indian
+P010,Person 10,P010,Witness,Asansol,High,1979-02-13,Indian
+P011,Person 11,P011,Associate,Patna,Low,1988-03-12,Indian
+P012,Person 12,P012,Associate,Siliguri,Medium,1969-10-21,Indian
+P013,Person 13,P013,Witness,Siliguri,Low,1989-05-21,Indian
+P014,Person 14,P014,Informant,Siliguri,Medium,1968-04-27,Indian
+P015,Person 15,P015,Suspect,Bhubaneswar,Low,1969-04-19,Indian
+P016,Person 16,P016,Informant,Bhubaneswar,Low,1996-07-21,Indian
+P017,Person 17,P017,Victim,Durgapur,Low,1980-12-18,Indian
+P018,Person 18,P018,Person of Interest,Asansol,Medium,1992-10-13,Indian
+P019,Person 19,P019,Associate,Siliguri,High,1973-09-16,Indian
+P020,Person 20,P020,Suspect,Kolkata,Medium,1974-11-06,Indian
+P021,Person 21,P021,Informant,Ranchi,Low,1989-07-20,Indian
+P022,Person 22,P022,Victim,Asansol,High,1965-11-24,Indian
+P023,Person 23,P023,Suspect,Asansol,Medium,1986-02-10,Indian
+P024,Person 24,P024,Victim,Durgapur,Low,1981-09-25,Indian
+P025,Person 25,P025,Witness,Howrah,Medium,1984-11-17,Indian
+P026,Person 26,P026,Person of Interest,Siliguri,Low,1975-09-25,Indian
+P027,Person 27,P027,Person of Interest,Kolkata,Low,1996-01-04,Indian
+P028,Person 28,P028,Associate,Asansol,Low,1980-10-03,Indian
+P029,Person 29,P029,Suspect,Patna,Medium,1999-03-05,Indian
+P030,Person 30,P030,Informant,Patna,High,1975-05-17,Indian
+P031,Person 31,P031,Person of Interest,Ranchi,High,1999-12-23,Indian
+P032,Person 32,P032,Witness,Asansol,Low,1988-08-17,Indian
+P033,Person 33,P033,Victim,Howrah,Low,1969-06-01,Indian
+P034,Person 34,P034,Person of Interest,Siliguri,Low,1965-02-23,Indian
+P035,Person 35,P035,Informant,Kolkata,Low,1967-06-03,Indian
+P036,Person 36,P036,Person of Interest,Siliguri,Low,1996-04-18,Indian
+P037,Person 37,P037,Witness,Patna,Low,1995-07-07,Indian
+P038,Person 38,P038,Suspect,Howrah,Medium,1987-07-14,Indian
+P039,Person 39,P039,Victim,Kolkata,Medium,1971-01-13,Indian
+P040,Person 40,P040,Informant,Bhubaneswar,Medium,1971-04-07,Indian
+P041,Person 41,P041,Witness,Patna,Low,1976-05-15,Indian
+P042,Person 42,P042,Witness,Howrah,Low,2000-02-02,Indian
+P043,Person 43,P043,Informant,Kolkata,High,1980-03-14,Indian
+P044,Person 44,P044,Victim,Patna,Low,1990-01-06,Indian
+P045,Person 45,P045,Victim,Kolkata,High,1981-08-10,Indian
+P046,Person 46,P046,Victim,Patna,Low,1983-04-02,Indian
+P047,Person 47,P047,Person of Interest,Kolkata,Medium,1968-01-19,Indian
+P048,Person 48,P048,Victim,Durgapur,Low,1997-02-28,Indian
+P049,Person 49,P049,Witness,Howrah,Low,1980-07-04,Indian
+P050,Person 50,P050,Person of Interest,Siliguri,Low,1967-10-03,Indian
+P051,Person 51,P051,Victim,Bhubaneswar,High,1978-11-23,Indian
+P052,Person 52,P052,Associate,Siliguri,Low,1973-11-21,Indian
+P053,Person 53,P053,Associate,Patna,Low,1969-01-15,Indian
+P054,Person 54,P054,Person of Interest,Howrah,Low,1978-09-09,Indian
+P055,Person 55,P055,Witness,Bhubaneswar,Medium,1980-06-10,Indian
+P056,Person 56,P056,Witness,Patna,Medium,1984-10-26,Indian
+P057,Person 57,P057,Informant,Kolkata,Medium,2000-05-22,Indian
+P058,Person 58,P058,Suspect,Durgapur,Low,1971-12-18,Indian
+P059,Person 59,P059,Witness,Asansol,Low,1978-12-11,Indian
+P060,Person 60,P060,Witness,Asansol,Low,1981-01-03,Indian
+P061,Person 61,P061,Informant,Ranchi,Medium,1967-01-11,Indian
+P062,Person 62,P062,Witness,Asansol,Low,1993-09-23,Indian
+P063,Person 63,P063,Victim,Kolkata,Low,1974-09-02,Indian
+P064,Person 64,P064,Associate,Durgapur,Low,1967-05-12,Indian
+P065,Person 65,P065,Suspect,Bhubaneswar,Low,1980-11-04,Indian
+P066,Person 66,P066,Associate,Ranchi,High,1974-04-28,Indian
+P067,Person 67,P067,Witness,Durgapur,Medium,1966-03-24,Indian
+P068,Person 68,P068,Associate,Ranchi,Medium,1980-05-06,Indian
+P069,Person 69,P069,Informant,Howrah,Low,1967-08-08,Indian
+P070,Person 70,P070,Witness,Patna,Low,1979-04-01,Indian
+P071,Person 71,P071,Informant,Siliguri,Low,1982-02-25,Indian
+P072,Person 72,P072,Associate,Bhubaneswar,Low,1990-11-27,Indian
+P073,Person 73,P073,Person of Interest,Bhubaneswar,High,1972-05-06,Indian
+P074,Person 74,P074,Person of Interest,Asansol,Low,1992-06-24,Indian
+P075,Person 75,P075,Associate,Ranchi,Low,1997-02-13,Indian
+P076,Person 76,P076,Person of Interest,Siliguri,Low,1992-01-17,Indian
+P077,Person 77,P077,Person of Interest,Siliguri,Low,1969-11-11,Indian
+P078,Person 78,P078,Person of Interest,Bhubaneswar,Medium,1972-12-10,Indian
+P079,Person 79,P079,Person of Interest,Asansol,Medium,1985-07-23,Indian
+P080,Person 80,P080,Associate,Durgapur,Low,1989-11-24,Indian
+P081,Person 81,P081,Witness,Asansol,Low,1965-05-10,Indian
+P082,Person 82,P082,Witness,Ranchi,Medium,1985-08-15,Indian
+P083,Person 83,P083,Victim,Siliguri,Low,1975-11-03,Indian
+P084,Person 84,P084,Associate,Bhubaneswar,Low,1980-11-10,Indian
+P085,Person 85,P085,Witness,Siliguri,Low,1967-04-16,Indian
+P086,Person 86,P086,Person of Interest,Howrah,Low,2001-04-23,Indian
+P087,Person 87,P087,Informant,Ranchi,Low,1980-03-21,Indian
+P088,Person 88,P088,Informant,Kolkata,Medium,1971-07-08,Indian
+P089,Person 89,P089,Witness,Patna,Low,1980-02-15,Indian
+P090,Person 90,P090,Witness,Patna,Medium,2000-10-11,Indian
+P091,Person 91,P091,Victim,Ranchi,Medium,2000-08-06,Indian
+P092,Person 92,P092,Informant,Patna,Low,1980-11-09,Indian
+P093,Person 93,P093,Person of Interest,Patna,Low,1982-08-03,Indian
+P094,Person 94,P094,Informant,Asansol,Low,1986-06-18,Indian
+P095,Person 95,P095,Suspect,Durgapur,Low,1989-12-05,Indian
+P096,Person 96,P096,Informant,Siliguri,Low,1991-06-18,Indian
+P097,Person 97,P097,Victim,Ranchi,Low,1991-07-25,Indian
+P098,Person 98,P098,Person of Interest,Kolkata,Medium,2001-07-16,Indian
+P099,Person 99,P099,Suspect,Bhubaneswar,Low,1989-07-18,Indian
+P100,Person 100,P100,Informant,Siliguri,Low,1982-07-16,Indian
+P101,Person 101,P101,Suspect,Ranchi,Low,1990-12-06,Indian
+P102,Person 102,P102,Victim,Durgapur,High,1999-01-13,Indian
+P103,Person 103,P103,Person of Interest,Kolkata,Low,1992-03-28,Indian
+P104,Person 104,P104,Victim,Durgapur,Low,1989-06-07,Indian
+P105,Person 105,P105,Victim,Bhubaneswar,Low,1989-05-25,Indian
+P106,Person 106,P106,Victim,Asansol,Medium,1995-01-24,Indian
+P107,Person 107,P107,Person of Interest,Kolkata,High,1987-04-21,Indian
+P108,Person 108,P108,Suspect,Kolkata,Medium,1980-04-27,Indian
+P109,Person 109,P109,Suspect,Durgapur,Low,1995-11-04,Indian
+P110,Person 110,P110,Person of Interest,Siliguri,Low,1981-06-06,Indian
+P111,Person 111,P111,Person of Interest,Howrah,Medium,1975-05-04,Indian
+P112,Person 112,P112,Person of Interest,Kolkata,High,2001-11-13,Indian
+P113,Person 113,P113,Victim,Siliguri,Low,1980-02-23,Indian
+P114,Person 114,P114,Associate,Howrah,Medium,2001-01-12,Indian
+P115,Person 115,P115,Person of Interest,Ranchi,Medium,1969-09-21,Indian
+P116,Person 116,P116,Associate,Kolkata,Medium,1996-02-14,Indian
+P117,Person 117,P117,Associate,Patna,Medium,1992-03-24,Indian
+P118,Person 118,P118,Person of Interest,Asansol,Low,1999-08-15,Indian
+P119,Person 119,P119,Victim,Asansol,Low,1980-02-09,Indian
+P120,Person 120,P120,Victim,Siliguri,Medium,2001-10-22,Indian
+P121,Person 121,P121,Victim,Bhubaneswar,Low,1985-03-16,Indian
+P122,Person 122,P122,Witness,Bhubaneswar,Medium,1986-05-20,Indian
+P123,Person 123,P123,Informant,Asansol,Low,1998-04-03,Indian
+P124,Person 124,P124,Witness,Ranchi,Low,1980-12-16,Indian
+P125,Person 125,P125,Informant,Patna,Low,1966-02-10,Indian
+P126,Person 126,P126,Witness,Ranchi,Medium,1984-11-19,Indian
+P127,Person 127,P127,Associate,Patna,Low,1987-07-24,Indian
+P128,Person 128,P128,Person of Interest,Bhubaneswar,Low,1994-05-10,Indian
+P129,Person 129,P129,Associate,Siliguri,Low,1977-06-04,Indian
+P130,Person 130,P130,Informant,Durgapur,Low,1995-05-24,Indian
+P131,Person 131,P131,Person of Interest,Asansol,High,1977-05-08,Indian
+P132,Person 132,P132,Associate,Durgapur,Low,1999-03-09,Indian
+P133,Person 133,P133,Suspect,Kolkata,Low,1973-11-28,Indian
+P134,Person 134,P134,Victim,Howrah,Medium,2001-05-16,Indian
+P135,Person 135,P135,Victim,Patna,Low,1968-05-28,Indian
+P136,Person 136,P136,Victim,Howrah,Medium,1990-08-03,Indian
+P137,Person 137,P137,Person of Interest,Kolkata,Low,2001-05-03,Indian
+P138,Person 138,P138,Witness,Howrah,Low,1991-10-20,Indian
+P139,Person 139,P139,Person of Interest,Siliguri,Medium,1989-08-15,Indian
+P140,Person 140,P140,Associate,Ranchi,Low,1968-10-24,Indian
+P141,Person 141,P141,Suspect,Siliguri,Low,1981-11-03,Indian
+P142,Person 142,P142,Witness,Siliguri,Low,1969-03-01,Indian
+P143,Person 143,P143,Victim,Patna,Medium,1995-05-02,Indian
+P144,Person 144,P144,Witness,Asansol,Medium,1994-02-22,Indian
+P145,Person 145,P145,Witness,Asansol,Medium,2002-11-26,Indian
+P146,Person 146,P146,Witness,Ranchi,Low,1979-11-05,Indian
+P147,Person 147,P147,Associate,Durgapur,Low,1975-05-20,Indian
+P148,Person 148,P148,Informant,Asansol,Low,1994-12-10,Indian
+P149,Person 149,P149,Informant,Ranchi,High,1997-09-16,Indian
+P150,Person 150,P150,Victim,Howrah,Low,1992-12-11,Indian
+P151,Person 151,P151,Person of Interest,Asansol,Low,1979-11-27,Indian
+P152,Person 152,P152,Person of Interest,Kolkata,High,1982-10-02,Indian
+P153,Person 153,P153,Witness,Patna,Low,1993-05-06,Indian
+P154,Person 154,P154,Person of Interest,Ranchi,Low,1996-02-16,Indian
+P155,Person 155,P155,Associate,Ranchi,Low,1971-03-11,Indian
+P156,Person 156,P156,Victim,Patna,Low,1990-09-02,Indian
+P157,Person 157,P157,Victim,Howrah,Low,1985-02-25,Indian
+P158,Person 158,P158,Victim,Kolkata,Medium,1999-08-14,Indian
+P159,Person 159,P159,Suspect,Siliguri,Low,1996-11-15,Indian
+P160,Person 160,P160,Suspect,Siliguri,Low,1973-05-15,Indian
+P161,Person 161,P161,Informant,Patna,Low,1980-12-06,Indian
+P162,Person 162,P162,Associate,Kolkata,Low,1970-04-27,Indian
+P163,Person 163,P163,Suspect,Patna,High,1974-08-23,Indian
+P164,Person 164,P164,Associate,Asansol,Low,1995-08-08,Indian
+P165,Person 165,P165,Victim,Durgapur,Low,1997-12-05,Indian
+P166,Person 166,P166,Suspect,Asansol,Medium,1991-06-26,Indian
+P167,Person 167,P167,Person of Interest,Asansol,Medium,1983-12-10,Indian
+P168,Person 168,P168,Person of Interest,Patna,Medium,1993-09-16,Indian
+P169,Person 169,P169,Associate,Bhubaneswar,Low,1999-07-15,Indian
+P170,Person 170,P170,Associate,Siliguri,High,1980-10-13,Indian
+P171,Person 171,P171,Witness,Ranchi,Low,1995-12-26,Indian
+P172,Person 172,P172,Victim,Ranchi,High,1974-08-02,Indian
+P173,Person 173,P173,Witness,Bhubaneswar,Medium,1993-02-17,Indian
+P174,Person 174,P174,Victim,Kolkata,Medium,1991-11-05,Indian
+P175,Person 175,P175,Suspect,Patna,Medium,1981-06-20,Indian
+P176,Person 176,P176,Informant,Ranchi,Low,1986-11-28,Indian
+P177,Person 177,P177,Person of Interest,Ranchi,High,1996-09-02,Indian
+P178,Person 178,P178,Person of Interest,Howrah,Low,1983-04-24,Indian
+P179,Person 179,P179,Suspect,Ranchi,High,1971-08-06,Indian
+P180,Person 180,P180,Informant,Asansol,High,1967-06-26,Indian
+P181,Person 181,P181,Suspect,Asansol,Low,1992-03-08,Indian
+P182,Person 182,P182,Person of Interest,Ranchi,Low,1976-03-06,Indian
+P183,Person 183,P183,Suspect,Ranchi,Low,1980-08-19,Indian
+P184,Person 184,P184,Witness,Siliguri,Low,1981-08-09,Indian
+P185,Person 185,P185,Informant,Kolkata,Medium,1994-05-22,Indian
+P186,Person 186,P186,Person of Interest,Durgapur,Low,1987-10-10,Indian
+P187,Person 187,P187,Informant,Ranchi,Medium,1994-05-07,Indian
+P188,Person 188,P188,Victim,Patna,Low,1989-10-12,Indian
+P189,Person 189,P189,Person of Interest,Asansol,High,1983-01-27,Indian
+P190,Person 190,P190,Informant,Ranchi,Low,2001-11-25,Indian
+P191,Person 191,P191,Informant,Kolkata,High,1996-05-25,Indian
+P192,Person 192,P192,Witness,Bhubaneswar,Low,1977-10-09,Indian
+P193,Person 193,P193,Informant,Durgapur,Low,1967-05-26,Indian
+P194,Person 194,P194,Victim,Kolkata,Low,1973-02-10,Indian
+P195,Person 195,P195,Associate,Ranchi,Low,1973-09-12,Indian
+P196,Person 196,P196,Person of Interest,Asansol,Medium,1981-08-26,Indian
+P197,Person 197,P197,Associate,Bhubaneswar,Medium,1994-02-05,Indian
+P198,Person 198,P198,Witness,Ranchi,High,2000-06-03,Indian
+P199,Person 199,P199,Victim,Kolkata,Low,1972-08-12,Indian
+P200,Person 200,P200,Informant,Asansol,Low,1988-02-22,Indian
+P201,Person 201,P201,Witness,Patna,Low,2000-06-20,Indian
+P202,Person 202,P202,Witness,Howrah,Low,1994-12-10,Indian
+P203,Person 203,P203,Informant,Ranchi,Low,1967-01-10,Indian
+P204,Person 204,P204,Victim,Howrah,Low,1999-03-13,Indian
+P205,Person 205,P205,Victim,Bhubaneswar,Medium,1999-07-19,Indian
+P206,Person 206,P206,Informant,Durgapur,Medium,1971-08-20,Indian
+P207,Person 207,P207,Victim,Asansol,Low,1988-04-15,Indian
+P208,Person 208,P208,Victim,Siliguri,Medium,1971-11-12,Indian
+P209,Person 209,P209,Person of Interest,Bhubaneswar,Low,1982-04-04,Indian
+P210,Person 210,P210,Victim,Howrah,Medium,1966-01-26,Indian
+P211,Person 211,P211,Associate,Siliguri,High,2001-04-03,Indian
+P212,Person 212,P212,Person of Interest,Siliguri,Low,1979-06-25,Indian
+P213,Person 213,P213,Witness,Kolkata,Low,1974-03-18,Indian
+P214,Person 214,P214,Associate,Durgapur,Low,1966-03-01,Indian
+P215,Person 215,P215,Associate,Siliguri,Low,1966-03-09,Indian
+P216,Person 216,P216,Suspect,Durgapur,Medium,1998-02-24,Indian
+P217,Person 217,P217,Suspect,Patna,Low,1988-09-19,Indian
+P218,Person 218,P218,Suspect,Patna,Low,1967-12-26,Indian
+P219,Person 219,P219,Informant,Asansol,Low,1966-01-16,Indian
+P220,Person 220,P220,Victim,Ranchi,Medium,1996-12-15,Indian
+P221,Person 221,P221,Suspect,Howrah,Low,1974-02-05,Indian
+P222,Person 222,P222,Associate,Bhubaneswar,Low,1998-05-15,Indian
+P223,Person 223,P223,Person of Interest,Ranchi,Low,1972-11-21,Indian
+P224,Person 224,P224,Person of Interest,Siliguri,Low,1979-07-11,Indian
+P225,Person 225,P225,Victim,Ranchi,Low,1971-06-14,Indian
+P226,Person 226,P226,Associate,Asansol,Low,1974-11-16,Indian
+P227,Person 227,P227,Suspect,Howrah,Medium,1970-07-04,Indian
+P228,Person 228,P228,Informant,Bhubaneswar,Medium,2000-01-19,Indian
+P229,Person 229,P229,Person of Interest,Bhubaneswar,Medium,1991-06-28,Indian
+P230,Person 230,P230,Informant,Ranchi,Medium,1968-05-20,Indian
+P231,Person 231,P231,Associate,Bhubaneswar,Low,1997-04-05,Indian
+P232,Person 232,P232,Informant,Patna,Low,1971-06-28,Indian
+P233,Person 233,P233,Person of Interest,Bhubaneswar,Low,1982-10-08,Indian
+P234,Person 234,P234,Victim,Kolkata,Low,1982-01-06,Indian
+P235,Person 235,P235,Associate,Asansol,High,1987-01-06,Indian
+P236,Person 236,P236,Witness,Ranchi,Low,1966-02-24,Indian
+P237,Person 237,P237,Person of Interest,Siliguri,Low,1994-06-06,Indian
+P238,Person 238,P238,Associate,Asansol,Medium,2001-10-03,Indian
+P239,Person 239,P239,Suspect,Durgapur,Low,1968-11-03,Indian
+P240,Person 240,P240,Associate,Patna,Medium,1996-10-15,Indian
+P241,Person 241,P241,Victim,Asansol,Low,1997-02-12,Indian
+P242,Person 242,P242,Victim,Howrah,Low,2002-08-17,Indian
+P243,Person 243,P243,Informant,Asansol,Low,1990-10-02,Indian
+P244,Person 244,P244,Suspect,Siliguri,Low,1978-03-25,Indian
+P245,Person 245,P245,Associate,Asansol,Low,1965-08-24,Indian
+P246,Person 246,P246,Victim,Durgapur,Low,1999-12-08,Indian
+P247,Person 247,P247,Person of Interest,Bhubaneswar,Low,1967-07-01,Indian
+P248,Person 248,P248,Victim,Howrah,Medium,2001-07-19,Indian
+P249,Person 249,P249,Victim,Ranchi,Low,1990-01-11,Indian
+P250,Person 250,P250,Witness,Patna,Medium,1988-02-14,Indian
+P251,Person 251,P251,Suspect,Siliguri,Low,1990-09-03,Indian
+P252,Person 252,P252,Victim,Asansol,Medium,1979-06-25,Indian
+P253,Person 253,P253,Witness,Howrah,Low,1972-09-17,Indian
+P254,Person 254,P254,Witness,Bhubaneswar,Low,1974-04-04,Indian
+P255,Person 255,P255,Witness,Asansol,Low,1974-11-03,Indian
+P256,Person 256,P256,Witness,Patna,Low,2001-10-15,Indian
+P257,Person 257,P257,Informant,Bhubaneswar,Medium,1985-03-15,Indian
+P258,Person 258,P258,Suspect,Patna,Low,1984-05-19,Indian
+P259,Person 259,P259,Suspect,Bhubaneswar,Low,1984-08-15,Indian
+P260,Person 260,P260,Suspect,Kolkata,Low,1983-02-21,Indian
+P261,Person 261,P261,Suspect,Ranchi,Low,2000-12-02,Indian
+P262,Person 262,P262,Victim,Siliguri,Low,1995-09-05,Indian
+P263,Person 263,P263,Suspect,Patna,Low,1986-12-03,Indian
+P264,Person 264,P264,Person of Interest,Durgapur,Low,1993-08-17,Indian
+P265,Person 265,P265,Person of Interest,Durgapur,Low,1983-07-14,Indian
+P266,Person 266,P266,Associate,Kolkata,Medium,1986-02-11,Indian
+P267,Person 267,P267,Suspect,Ranchi,Low,1974-06-03,Indian
+P268,Person 268,P268,Person of Interest,Durgapur,High,1984-11-23,Indian
+P269,Person 269,P269,Informant,Ranchi,Low,1970-05-18,Indian
+P270,Person 270,P270,Victim,Bhubaneswar,Medium,1998-02-21,Indian
+P271,Person 271,P271,Informant,Ranchi,Low,1966-06-10,Indian
+P272,Person 272,P272,Witness,Siliguri,Low,1996-04-08,Indian
+P273,Person 273,P273,Witness,Durgapur,Low,1971-09-25,Indian
+P274,Person 274,P274,Person of Interest,Kolkata,Medium,1973-10-13,Indian
+P275,Person 275,P275,Witness,Durgapur,Low,1975-12-15,Indian
+P276,Person 276,P276,Suspect,Ranchi,Low,1980-08-20,Indian
+P277,Person 277,P277,Associate,Patna,Low,1980-05-26,Indian
+P278,Person 278,P278,Victim,Siliguri,Low,2001-08-15,Indian
+P279,Person 279,P279,Associate,Ranchi,Low,1991-03-27,Indian
+P280,Person 280,P280,Witness,Durgapur,Medium,1968-11-16,Indian
+P281,Person 281,P281,Associate,Howrah,Medium,1998-02-10,Indian
+P282,Person 282,P282,Suspect,Durgapur,Low,1997-03-27,Indian
+P283,Person 283,P283,Victim,Howrah,High,1979-08-12,Indian
+P284,Person 284,P284,Suspect,Ranchi,Low,1997-06-08,Indian
+P285,Person 285,P285,Victim,Howrah,Low,1966-06-04,Indian
+P286,Person 286,P286,Informant,Bhubaneswar,Medium,1973-01-10,Indian
+P287,Person 287,P287,Victim,Durgapur,Medium,1995-08-20,Indian
+P288,Person 288,P288,Suspect,Howrah,Low,1978-03-18,Indian
+P289,Person 289,P289,Informant,Ranchi,Low,1983-04-10,Indian
+P290,Person 290,P290,Suspect,Kolkata,Low,1994-02-04,Indian
+P291,Person 291,P291,Victim,Kolkata,Low,2001-04-23,Indian
+P292,Person 292,P292,Witness,Asansol,Low,1987-04-19,Indian
+P293,Person 293,P293,Victim,Durgapur,Medium,1970-09-12,Indian
+P294,Person 294,P294,Suspect,Kolkata,Low,1995-01-21,Indian
+P295,Person 295,P295,Victim,Bhubaneswar,Low,1966-06-26,Indian
+P296,Person 296,P296,Suspect,Bhubaneswar,Low,1971-10-24,Indian
+P297,Person 297,P297,Associate,Durgapur,Low,1999-06-27,Indian
+P298,Person 298,P298,Informant,Durgapur,Medium,1994-12-16,Indian
+P299,Person 299,P299,Informant,Durgapur,Medium,1969-12-25,Indian
+P300,Person 300,P300,Victim,Kolkata,Low,1967-04-02,Indian
+P301,Person 301,P301,Associate,Asansol,Low,1999-08-09,Indian
+P302,Person 302,P302,Suspect,Siliguri,Low,1968-11-11,Indian
+P303,Person 303,P303,Associate,Howrah,Medium,1992-07-24,Indian
+P304,Person 304,P304,Victim,Ranchi,Low,1976-08-23,Indian
+P305,Person 305,P305,Victim,Bhubaneswar,High,1998-05-26,Indian
+P306,Person 306,P306,Suspect,Ranchi,Low,1976-09-10,Indian
+P307,Person 307,P307,Associate,Howrah,Low,1983-05-15,Indian
+P308,Person 308,P308,Person of Interest,Ranchi,Low,1993-06-15,Indian
+P309,Person 309,P309,Suspect,Bhubaneswar,Low,1992-05-21,Indian
+P310,Person 310,P310,Suspect,Howrah,Medium,1990-06-17,Indian
+P311,Person 311,P311,Informant,Durgapur,High,1974-10-22,Indian
+P312,Person 312,P312,Victim,Kolkata,Low,1980-11-12,Indian
+P313,Person 313,P313,Associate,Ranchi,High,1967-10-05,Indian
+P314,Person 314,P314,Informant,Patna,High,1988-08-25,Indian
+P315,Person 315,P315,Suspect,Durgapur,Low,1990-06-21,Indian
+P316,Person 316,P316,Associate,Siliguri,High,1966-12-06,Indian
+P317,Person 317,P317,Victim,Ranchi,High,1972-05-25,Indian
+P318,Person 318,P318,Associate,Patna,Low,1983-12-16,Indian
+P319,Person 319,P319,Witness,Howrah,Low,1969-08-06,Indian
+P320,Person 320,P320,Informant,Patna,High,1985-11-12,Indian
+P321,Person 321,P321,Informant,Howrah,Low,1983-05-28,Indian
+P322,Person 322,P322,Witness,Durgapur,Medium,1997-04-04,Indian
+P323,Person 323,P323,Witness,Durgapur,Low,1996-01-12,Indian
+P324,Person 324,P324,Person of Interest,Bhubaneswar,Low,2000-03-20,Indian
+P325,Person 325,P325,Suspect,Howrah,Low,1995-09-14,Indian
+P326,Person 326,P326,Victim,Howrah,Low,1985-11-03,Indian
+P327,Person 327,P327,Victim,Patna,Medium,1987-03-27,Indian
+P328,Person 328,P328,Person of Interest,Durgapur,Medium,1973-07-17,Indian
+P329,Person 329,P329,Suspect,Howrah,Low,1984-03-06,Indian
+P330,Person 330,P330,Associate,Siliguri,Low,1998-05-28,Indian
+P331,Person 331,P331,Suspect,Asansol,Low,2000-05-05,Indian
+P332,Person 332,P332,Informant,Asansol,Low,1970-09-21,Indian
+P333,Person 333,P333,Witness,Durgapur,Low,1986-10-02,Indian
+P334,Person 334,P334,Suspect,Howrah,Low,2001-05-21,Indian
+P335,Person 335,P335,Witness,Ranchi,Low,1966-08-21,Indian
+P336,Person 336,P336,Person of Interest,Asansol,Low,1984-08-08,Indian
+P337,Person 337,P337,Informant,Ranchi,Low,1969-12-02,Indian
+P338,Person 338,P338,Witness,Patna,Low,1994-04-11,Indian
+P339,Person 339,P339,Person of Interest,Durgapur,Low,1985-12-28,Indian
+P340,Person 340,P340,Associate,Ranchi,Low,1988-09-18,Indian
+P341,Person 341,P341,Suspect,Bhubaneswar,Low,1972-05-15,Indian
+P342,Person 342,P342,Witness,Durgapur,Low,1983-07-28,Indian
+P343,Person 343,P343,Person of Interest,Ranchi,Low,1975-06-19,Indian
+P344,Person 344,P344,Informant,Bhubaneswar,Low,1975-08-17,Indian
+P345,Person 345,P345,Victim,Patna,Medium,1996-01-03,Indian
+P346,Person 346,P346,Victim,Patna,High,1978-10-12,Indian
+P347,Person 347,P347,Suspect,Kolkata,Low,1995-05-18,Indian
+P348,Person 348,P348,Suspect,Howrah,Low,1981-12-12,Indian
+P349,Person 349,P349,Victim,Bhubaneswar,Low,1968-10-18,Indian
+P350,Person 350,P350,Witness,Bhubaneswar,Low,1969-07-17,Indian
+P351,Person 351,P351,Victim,Asansol,Medium,1972-03-04,Indian
+P352,Person 352,P352,Victim,Bhubaneswar,Medium,1986-09-12,Indian
+P353,Person 353,P353,Witness,Siliguri,Low,1990-09-02,Indian
+P354,Person 354,P354,Suspect,Kolkata,Low,1986-08-17,Indian
+P355,Person 355,P355,Victim,Durgapur,Low,1997-03-11,Indian
+P356,Person 356,P356,Person of Interest,Bhubaneswar,Low,1984-10-11,Indian
+P357,Person 357,P357,Person of Interest,Patna,Medium,1984-08-27,Indian
+P358,Person 358,P358,Suspect,Bhubaneswar,Low,1972-07-19,Indian
+P359,Person 359,P359,Associate,Kolkata,Low,1981-11-26,Indian
+P360,Person 360,P360,Person of Interest,Siliguri,Medium,2002-08-06,Indian
+P361,Person 361,P361,Person of Interest,Ranchi,Low,1980-01-19,Indian
+P362,Person 362,P362,Informant,Howrah,Low,1993-06-14,Indian
+P363,Person 363,P363,Witness,Ranchi,Medium,1991-09-25,Indian
+P364,Person 364,P364,Person of Interest,Patna,Medium,1968-12-05,Indian
+P365,Person 365,P365,Person of Interest,Siliguri,Low,1995-09-13,Indian
+P366,Person 366,P366,Associate,Durgapur,Low,1999-06-18,Indian
+P367,Person 367,P367,Associate,Asansol,Low,1977-04-09,Indian
+P368,Person 368,P368,Person of Interest,Asansol,Low,1984-05-23,Indian
+P369,Person 369,P369,Witness,Patna,Low,1987-09-26,Indian
+P370,Person 370,P370,Informant,Asansol,Low,2001-11-18,Indian
+P371,Person 371,P371,Victim,Ranchi,Medium,1974-05-02,Indian
+P372,Person 372,P372,Associate,Howrah,Low,1993-11-09,Indian
+P373,Person 373,P373,Informant,Patna,Low,1999-05-18,Indian
+P374,Person 374,P374,Informant,Asansol,Low,2002-04-08,Indian
+P375,Person 375,P375,Suspect,Siliguri,Low,1968-02-14,Indian
+P376,Person 376,P376,Associate,Patna,Low,1973-01-18,Indian
+P377,Person 377,P377,Witness,Ranchi,Medium,1995-08-21,Indian
+P378,Person 378,P378,Witness,Asansol,Low,1968-02-21,Indian
+P379,Person 379,P379,Person of Interest,Siliguri,Low,1967-03-14,Indian
+P380,Person 380,P380,Witness,Kolkata,High,1990-08-06,Indian
+P381,Person 381,P381,Informant,Asansol,Medium,1965-05-19,Indian
+P382,Person 382,P382,Person of Interest,Howrah,High,1986-05-15,Indian
+P383,Person 383,P383,Informant,Patna,Medium,1973-09-15,Indian
+P384,Person 384,P384,Associate,Siliguri,Medium,1986-03-24,Indian
+P385,Person 385,P385,Victim,Asansol,Medium,1965-12-11,Indian
+P386,Person 386,P386,Associate,Siliguri,Low,1990-07-17,Indian
+P387,Person 387,P387,Associate,Howrah,Low,1971-03-05,Indian
+P388,Person 388,P388,Victim,Bhubaneswar,High,1965-05-13,Indian
+P389,Person 389,P389,Witness,Patna,Medium,1986-05-19,Indian
+P390,Person 390,P390,Informant,Kolkata,Low,1988-12-08,Indian
+P391,Person 391,P391,Suspect,Howrah,Low,1975-07-22,Indian
+P392,Person 392,P392,Person of Interest,Asansol,Medium,1983-06-20,Indian
+P393,Person 393,P393,Witness,Siliguri,High,1995-03-15,Indian
+P394,Person 394,P394,Informant,Bhubaneswar,Low,2000-08-25,Indian
+P395,Person 395,P395,Person of Interest,Siliguri,Medium,1970-09-15,Indian
+P396,Person 396,P396,Person of Interest,Bhubaneswar,Low,2001-02-02,Indian
+P397,Person 397,P397,Person of Interest,Siliguri,Low,1974-03-11,Indian
+P398,Person 398,P398,Person of Interest,Patna,Low,1978-12-19,Indian
+P399,Person 399,P399,Victim,Howrah,Medium,1993-01-15,Indian
+P400,Person 400,P400,Witness,Ranchi,Low,1968-09-15,Indian
+P401,Person 401,P401,Informant,Asansol,Medium,1990-05-27,Indian
+P402,Person 402,P402,Suspect,Siliguri,Low,1967-07-12,Indian
+P403,Person 403,P403,Informant,Howrah,Low,1968-02-16,Indian
+P404,Person 404,P404,Suspect,Asansol,Low,1973-11-24,Indian
+P405,Person 405,P405,Informant,Ranchi,Low,1989-08-28,Indian
+P406,Person 406,P406,Victim,Ranchi,Low,1999-03-21,Indian
+P407,Person 407,P407,Associate,Howrah,Low,1999-07-17,Indian
+P408,Person 408,P408,Witness,Siliguri,Medium,1966-05-15,Indian
+P409,Person 409,P409,Informant,Ranchi,Low,1979-04-15,Indian
+P410,Person 410,P410,Associate,Durgapur,Low,1972-01-26,Indian
+P411,Person 411,P411,Informant,Ranchi,Low,1966-04-07,Indian
+P412,Person 412,P412,Suspect,Howrah,Low,1993-10-22,Indian
+P413,Person 413,P413,Informant,Kolkata,Low,1967-07-15,Indian
+P414,Person 414,P414,Witness,Siliguri,Medium,1968-03-17,Indian
+P415,Person 415,P415,Associate,Siliguri,Medium,2001-06-19,Indian
+P416,Person 416,P416,Person of Interest,Bhubaneswar,Low,1974-11-17,Indian
+P417,Person 417,P417,Witness,Ranchi,Low,1968-09-19,Indian
+P418,Person 418,P418,Informant,Durgapur,Low,1992-09-16,Indian
+P419,Person 419,P419,Suspect,Bhubaneswar,High,1989-09-11,Indian
+P420,Person 420,P420,Informant,Ranchi,Low,1984-07-06,Indian
+P421,Person 421,P421,Person of Interest,Patna,Low,1979-05-28,Indian
+P422,Person 422,P422,Informant,Durgapur,Medium,1968-09-14,Indian
+P423,Person 423,P423,Victim,Durgapur,Low,1981-04-11,Indian
+P424,Person 424,P424,Informant,Howrah,High,1988-02-18,Indian
+P425,Person 425,P425,Informant,Siliguri,Low,1989-11-20,Indian
+P426,Person 426,P426,Person of Interest,Kolkata,Medium,1977-10-24,Indian
+P427,Person 427,P427,Informant,Siliguri,Low,1986-05-01,Indian
+P428,Person 428,P428,Witness,Siliguri,High,1972-12-25,Indian
+P429,Person 429,P429,Victim,Siliguri,Medium,1978-07-08,Indian
+P430,Person 430,P430,Person of Interest,Bhubaneswar,Medium,1989-08-18,Indian
+P431,Person 431,P431,Informant,Bhubaneswar,Low,1988-09-16,Indian
+P432,Person 432,P432,Victim,Howrah,Medium,1995-06-07,Indian
+P433,Person 433,P433,Associate,Bhubaneswar,Low,2001-04-24,Indian
+P434,Person 434,P434,Witness,Kolkata,Low,2002-10-24,Indian
+P435,Person 435,P435,Victim,Asansol,Low,1986-04-13,Indian
+P436,Person 436,P436,Person of Interest,Siliguri,Low,1986-05-25,Indian
+P437,Person 437,P437,Victim,Patna,Low,1987-03-05,Indian
+P438,Person 438,P438,Informant,Patna,Low,1999-11-02,Indian
+P439,Person 439,P439,Person of Interest,Kolkata,Medium,1969-11-02,Indian
+P440,Person 440,P440,Suspect,Ranchi,Low,1979-02-23,Indian
+P441,Person 441,P441,Witness,Kolkata,Low,1994-06-02,Indian
+P442,Person 442,P442,Person of Interest,Patna,Medium,1966-01-18,Indian
+P443,Person 443,P443,Person of Interest,Ranchi,Low,1998-12-09,Indian
+P444,Person 444,P444,Person of Interest,Asansol,Low,1992-03-04,Indian
+P445,Person 445,P445,Suspect,Durgapur,Low,1998-05-27,Indian
+P446,Person 446,P446,Associate,Asansol,Medium,1970-06-13,Indian
+P447,Person 447,P447,Victim,Siliguri,High,1979-05-22,Indian
+P448,Person 448,P448,Suspect,Kolkata,Low,1989-07-18,Indian
+P449,Person 449,P449,Victim,Kolkata,Low,1975-02-16,Indian
+P450,Person 450,P450,Victim,Bhubaneswar,Low,1971-09-02,Indian
+P451,Person 451,P451,Witness,Siliguri,High,2001-08-09,Indian
+P452,Person 452,P452,Suspect,Howrah,Medium,1982-09-19,Indian
+P453,Person 453,P453,Informant,Kolkata,Low,1985-01-07,Indian
+P454,Person 454,P454,Person of Interest,Durgapur,Medium,1990-02-10,Indian
+P455,Person 455,P455,Witness,Siliguri,Low,1989-11-18,Indian
+P456,Person 456,P456,Associate,Ranchi,Medium,1973-12-24,Indian
+P457,Person 457,P457,Suspect,Bhubaneswar,Low,1992-04-27,Indian
+P458,Person 458,P458,Suspect,Bhubaneswar,Low,1990-06-01,Indian
+P459,Person 459,P459,Informant,Asansol,Medium,1993-08-08,Indian
+P460,Person 460,P460,Associate,Ranchi,Low,2002-11-13,Indian
+P461,Person 461,P461,Suspect,Asansol,Medium,1969-02-09,Indian
+P462,Person 462,P462,Witness,Ranchi,Medium,1974-12-13,Indian
+P463,Person 463,P463,Associate,Bhubaneswar,Low,1965-05-15,Indian
+P464,Person 464,P464,Associate,Asansol,Low,1970-03-14,Indian
+P465,Person 465,P465,Victim,Ranchi,Low,1970-06-18,Indian
+P466,Person 466,P466,Suspect,Bhubaneswar,Medium,1965-05-14,Indian
+P467,Person 467,P467,Victim,Howrah,Medium,2000-04-19,Indian
+P468,Person 468,P468,Person of Interest,Durgapur,Medium,1975-03-09,Indian
+P469,Person 469,P469,Associate,Asansol,Low,1969-03-14,Indian
+P470,Person 470,P470,Associate,Ranchi,Low,1969-06-09,Indian
+P471,Person 471,P471,Witness,Patna,Low,1977-08-04,Indian
+P472,Person 472,P472,Witness,Asansol,Low,1990-06-27,Indian
+P473,Person 473,P473,Person of Interest,Ranchi,Medium,1986-08-11,Indian
+P474,Person 474,P474,Victim,Durgapur,Low,1977-08-11,Indian
+P475,Person 475,P475,Witness,Ranchi,High,1983-12-23,Indian
+P476,Person 476,P476,Informant,Patna,High,1980-06-13,Indian
+P477,Person 477,P477,Associate,Ranchi,Low,2001-04-19,Indian
+P478,Person 478,P478,Person of Interest,Durgapur,Medium,2000-01-24,Indian
+P479,Person 479,P479,Victim,Siliguri,Low,1983-12-03,Indian
+P480,Person 480,P480,Victim,Patna,Low,1984-04-09,Indian
+P481,Person 481,P481,Informant,Durgapur,Medium,1989-02-15,Indian
+P482,Person 482,P482,Person of Interest,Patna,Low,1999-09-28,Indian
+P483,Person 483,P483,Informant,Ranchi,Low,1988-12-26,Indian
+P484,Person 484,P484,Person of Interest,Howrah,Low,1980-11-22,Indian
+P485,Person 485,P485,Associate,Durgapur,Low,1967-10-21,Indian
+P486,Person 486,P486,Informant,Ranchi,High,1986-07-04,Indian
+P487,Person 487,P487,Suspect,Howrah,Low,1997-12-17,Indian
+P488,Person 488,P488,Person of Interest,Siliguri,Low,1990-08-25,Indian
+P489,Person 489,P489,Informant,Durgapur,Low,1966-08-04,Indian
+P490,Person 490,P490,Associate,Ranchi,High,1970-02-27,Indian
+P491,Person 491,P491,Informant,Durgapur,Low,1986-08-26,Indian
+P492,Person 492,P492,Witness,Patna,Low,1971-08-24,Indian
+P493,Person 493,P493,Informant,Patna,Low,1984-01-26,Indian
+P494,Person 494,P494,Informant,Howrah,Low,1986-11-04,Indian
+P495,Person 495,P495,Informant,Durgapur,High,1980-09-06,Indian
+P496,Person 496,P496,Person of Interest,Durgapur,Low,1992-08-08,Indian
+P497,Person 497,P497,Victim,Durgapur,Low,1992-07-01,Indian
+P498,Person 498,P498,Informant,Siliguri,Low,1992-07-01,Indian
+P499,Person 499,P499,Informant,Siliguri,Low,1969-10-04,Indian
+P500,Person 500,P500,Person of Interest,Durgapur,Low,1977-08-04,Indian

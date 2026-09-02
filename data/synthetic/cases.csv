@@ -1,4 +1,101 @@
 case_id,title,description,case_type,status,priority,lead_officer,date_registered,incident_date,estimated_value
-C042,Operation Golden Hawala Syndicate,"Multi-jurisdictional hawala money laundering and illegal forex ring routing over INR 85 Crore between Mumbai, Dubai, and Zurich through dummy invoice trade.",Financial Crime / Hawala,Active Investigation,Critical,Insp. R. Deshmukh,2025-10-12,2025-10-01,85000000
-C019,Operation Maritime Contraband Intercept,Customs and coastal smuggling operation concealing high-value untaxed electronics and gold ingots inside commercial container freight at Nhava Sheva.,Contraband Smuggling,Active Investigation,High,DSP A. Kulkarni,2025-11-04,2025-10-28,32000000
-C055,Operation Darknet Ransom & Mixer Network,Cyber extortion syndicate extorting healthcare institutions and routing illicit USDT/BTC through peer-to-peer OTC brokers and mixing nodes.,Cyber Crime / Crypto Laundering,Under Surveillance,High,Cyber Cell Div-4,2026-01-15,2026-01-08,18500000
+C001,Case 1,Investigation concerning incident 1.,Theft,Closed,Medium,Officer 09,2026-04-02,2026-01-20,58203
+C002,Case 2,Investigation concerning incident 2.,Fraud,Closed,High,Officer 07,2026-02-23,2026-02-03,459021
+C003,Case 3,Investigation concerning incident 3.,Smuggling,Open,Medium,Officer 22,2026-03-04,2026-03-09,164438
+C004,Case 4,Investigation concerning incident 4.,Cybercrime,Closed,Low,Officer 21,2026-08-09,2026-07-23,483637
+C005,Case 5,Investigation concerning incident 5.,Assault,Under Investigation,Medium,Officer 06,2026-02-09,2026-01-13,213733
+C006,Case 6,Investigation concerning incident 6.,Extortion,Open,Medium,Officer 09,2026-03-15,2026-02-16,496846
+C007,Case 7,Investigation concerning incident 7.,Theft,Closed,Medium,Officer 06,2026-08-04,2026-03-18,413024
+C008,Case 8,Investigation concerning incident 8.,Cybercrime,Open,High,Officer 21,2026-02-15,2026-05-04,28277
+C009,Case 9,Investigation concerning incident 9.,Fraud,Open,High,Officer 24,2026-05-25,2026-08-01,480030
+C010,Case 10,Investigation concerning incident 10.,Cybercrime,Open,High,Officer 21,2026-01-02,2026-07-09,89485
+C011,Case 11,Investigation concerning incident 11.,Assault,Under Investigation,Medium,Officer 19,2026-01-17,2026-08-16,238619
+C012,Case 12,Investigation concerning incident 12.,Cybercrime,Closed,Low,Officer 18,2026-04-01,2026-07-23,438855
+C013,Case 13,Investigation concerning incident 13.,Cybercrime,Open,High,Officer 18,2026-06-11,2026-05-13,38937
+C014,Case 14,Investigation concerning incident 14.,Assault,Closed,Low,Officer 12,2026-06-03,2026-08-25,411870
+C015,Case 15,Investigation concerning incident 15.,Extortion,Closed,Low,Officer 06,2026-01-13,2026-04-10,374842
+C016,Case 16,Investigation concerning incident 16.,Cybercrime,Open,High,Officer 23,2026-06-16,2026-02-21,239629
+C017,Case 17,Investigation concerning incident 17.,Assault,Open,Low,Officer 02,2026-04-01,2026-04-16,213826
+C018,Case 18,Investigation concerning incident 18.,Fraud,Closed,High,Officer 10,2026-08-18,2026-08-01,29421
+C019,Case 19,Investigation concerning incident 19.,Extortion,Open,Medium,Officer 24,2026-01-13,2026-02-07,433154
+C020,Case 20,Investigation concerning incident 20.,Assault,Closed,High,Officer 15,2026-03-24,2026-04-03,29334
+C021,Case 21,Investigation concerning incident 21.,Assault,Open,Medium,Officer 21,2026-01-16,2026-01-08,377681
+C022,Case 22,Investigation concerning incident 22.,Assault,Open,Low,Officer 06,2026-01-10,2026-02-15,330458
+C023,Case 23,Investigation concerning incident 23.,Theft,Closed,Low,Officer 04,2026-02-16,2026-04-03,431765
+C024,Case 24,Investigation concerning incident 24.,Theft,Under Investigation,Medium,Officer 24,2026-07-11,2026-02-22,311972
+C025,Case 25,Investigation concerning incident 25.,Smuggling,Open,Medium,Officer 07,2026-01-19,2026-03-11,43146
+C026,Case 26,Investigation concerning incident 26.,Fraud,Under Investigation,Low,Officer 25,2026-07-06,2026-06-18,96510
+C027,Case 27,Investigation concerning incident 27.,Cybercrime,Open,High,Officer 02,2026-03-04,2026-07-25,92708
+C028,Case 28,Investigation concerning incident 28.,Fraud,Under Investigation,Low,Officer 01,2026-01-06,2026-02-23,351707
+C029,Case 29,Investigation concerning incident 29.,Smuggling,Under Investigation,Medium,Officer 23,2026-08-23,2026-03-07,85019
+C030,Case 30,Investigation concerning incident 30.,Assault,Under Investigation,High,Officer 15,2026-07-08,2026-03-20,372636
+C031,Case 31,Investigation concerning incident 31.,Fraud,Closed,Low,Officer 23,2026-08-20,2026-02-21,443315
+C032,Case 32,Investigation concerning incident 32.,Extortion,Under Investigation,Medium,Officer 01,2026-04-07,2026-02-17,60165
+C033,Case 33,Investigation concerning incident 33.,Smuggling,Under Investigation,High,Officer 17,2026-04-15,2026-04-09,37823
+C034,Case 34,Investigation concerning incident 34.,Theft,Open,Low,Officer 22,2026-08-16,2026-03-06,361347
+C035,Case 35,Investigation concerning incident 35.,Fraud,Open,High,Officer 12,2026-05-07,2026-07-09,185266
+C036,Case 36,Investigation concerning incident 36.,Smuggling,Under Investigation,Low,Officer 04,2026-01-18,2026-03-06,421824
+C037,Case 37,Investigation concerning incident 37.,Fraud,Under Investigation,High,Officer 04,2026-02-08,2026-08-19,313962
+C038,Case 38,Investigation concerning incident 38.,Extortion,Under Investigation,Low,Officer 24,2026-06-08,2026-02-11,129423
+C039,Case 39,Investigation concerning incident 39.,Fraud,Open,High,Officer 14,2026-04-13,2026-04-03,256934
+C040,Case 40,Investigation concerning incident 40.,Smuggling,Under Investigation,Low,Officer 14,2026-03-07,2026-08-06,213072
+C041,Case 41,Investigation concerning incident 41.,Extortion,Open,Medium,Officer 24,2026-04-21,2026-06-09,116016
+C042,Case 42,Investigation concerning incident 42.,Extortion,Open,Low,Officer 23,2026-01-09,2026-03-04,456510
+C043,Case 43,Investigation concerning incident 43.,Cybercrime,Under Investigation,Medium,Officer 06,2026-06-08,2026-05-20,92202
+C044,Case 44,Investigation concerning incident 44.,Assault,Closed,Low,Officer 19,2026-04-03,2026-07-28,283557
+C045,Case 45,Investigation concerning incident 45.,Cybercrime,Open,High,Officer 16,2026-08-09,2026-01-24,234453
+C046,Case 46,Investigation concerning incident 46.,Assault,Open,Low,Officer 11,2026-07-19,2026-04-19,88103
+C047,Case 47,Investigation concerning incident 47.,Smuggling,Open,Medium,Officer 02,2026-01-16,2026-01-14,288460
+C048,Case 48,Investigation concerning incident 48.,Cybercrime,Under Investigation,High,Officer 04,2026-08-16,2026-04-03,302808
+C049,Case 49,Investigation concerning incident 49.,Fraud,Closed,High,Officer 14,2026-04-05,2026-06-10,135337
+C050,Case 50,Investigation concerning incident 50.,Assault,Open,Low,Officer 16,2026-05-06,2026-08-28,309043
+C051,Case 51,Investigation concerning incident 51.,Assault,Closed,Low,Officer 15,2026-08-25,2026-03-28,378645
+C052,Case 52,Investigation concerning incident 52.,Cybercrime,Open,Medium,Officer 21,2026-08-23,2026-01-28,338888
+C053,Case 53,Investigation concerning incident 53.,Fraud,Under Investigation,High,Officer 11,2026-01-10,2026-07-25,151447
+C054,Case 54,Investigation concerning incident 54.,Assault,Closed,High,Officer 19,2026-04-26,2026-02-20,471817
+C055,Case 55,Investigation concerning incident 55.,Extortion,Closed,Low,Officer 17,2026-06-02,2026-02-13,201674
+C056,Case 56,Investigation concerning incident 56.,Cybercrime,Closed,Low,Officer 12,2026-06-06,2026-02-18,381896
+C057,Case 57,Investigation concerning incident 57.,Theft,Open,Medium,Officer 08,2026-02-21,2026-08-24,404409
+C058,Case 58,Investigation concerning incident 58.,Smuggling,Closed,Low,Officer 25,2026-04-11,2026-06-09,274013
+C059,Case 59,Investigation concerning incident 59.,Assault,Under Investigation,Medium,Officer 02,2026-02-12,2026-06-15,264922
+C060,Case 60,Investigation concerning incident 60.,Smuggling,Closed,Low,Officer 16,2026-05-15,2026-06-26,363006
+C061,Case 61,Investigation concerning incident 61.,Assault,Open,Low,Officer 15,2026-02-03,2026-07-06,161190
+C062,Case 62,Investigation concerning incident 62.,Fraud,Open,Low,Officer 09,2026-02-23,2026-03-16,88904
+C063,Case 63,Investigation concerning incident 63.,Theft,Closed,High,Officer 01,2026-05-14,2026-03-16,191770
+C064,Case 64,Investigation concerning incident 64.,Cybercrime,Under Investigation,High,Officer 21,2026-01-10,2026-04-03,21553
+C065,Case 65,Investigation concerning incident 65.,Theft,Closed,High,Officer 11,2026-07-19,2026-06-21,348716
+C066,Case 66,Investigation concerning incident 66.,Extortion,Under Investigation,High,Officer 22,2026-08-15,2026-05-19,79182
+C067,Case 67,Investigation concerning incident 67.,Extortion,Open,Medium,Officer 08,2026-08-12,2026-05-25,453292
+C068,Case 68,Investigation concerning incident 68.,Fraud,Open,Medium,Officer 10,2026-08-06,2026-03-23,290660
+C069,Case 69,Investigation concerning incident 69.,Extortion,Open,Low,Officer 23,2026-03-06,2026-04-04,31575
+C070,Case 70,Investigation concerning incident 70.,Extortion,Closed,Low,Officer 15,2026-05-12,2026-03-07,304905
+C071,Case 71,Investigation concerning incident 71.,Assault,Open,High,Officer 11,2026-06-05,2026-06-15,293045
+C072,Case 72,Investigation concerning incident 72.,Theft,Closed,Medium,Officer 04,2026-01-13,2026-08-25,86223
+C073,Case 73,Investigation concerning incident 73.,Cybercrime,Under Investigation,Low,Officer 01,2026-06-21,2026-05-16,479750
+C074,Case 74,Investigation concerning incident 74.,Extortion,Closed,High,Officer 05,2026-08-11,2026-02-24,261124
+C075,Case 75,Investigation concerning incident 75.,Fraud,Open,High,Officer 18,2026-02-10,2026-01-13,333759
+C076,Case 76,Investigation concerning incident 76.,Theft,Under Investigation,Medium,Officer 03,2026-06-02,2026-04-19,286002
+C077,Case 77,Investigation concerning incident 77.,Theft,Under Investigation,Low,Officer 01,2026-02-18,2026-08-22,362089
+C078,Case 78,Investigation concerning incident 78.,Fraud,Closed,Medium,Officer 07,2026-08-11,2026-01-22,199301
+C079,Case 79,Investigation concerning incident 79.,Cybercrime,Open,High,Officer 14,2026-06-13,2026-06-01,159238
+C080,Case 80,Investigation concerning incident 80.,Extortion,Under Investigation,Medium,Officer 15,2026-02-07,2026-08-24,227899
+C081,Case 81,Investigation concerning incident 81.,Cybercrime,Under Investigation,Low,Officer 24,2026-07-24,2026-07-05,448048
+C082,Case 82,Investigation concerning incident 82.,Smuggling,Closed,Low,Officer 05,2026-04-10,2026-08-28,285409
+C083,Case 83,Investigation concerning incident 83.,Extortion,Open,High,Officer 25,2026-07-03,2026-01-14,344918
+C084,Case 84,Investigation concerning incident 84.,Extortion,Under Investigation,Low,Officer 18,2026-08-23,2026-03-07,107520
+C085,Case 85,Investigation concerning incident 85.,Cybercrime,Under Investigation,High,Officer 16,2026-01-27,2026-05-27,316817
+C086,Case 86,Investigation concerning incident 86.,Extortion,Under Investigation,High,Officer 24,2026-08-08,2026-01-26,11282
+C087,Case 87,Investigation concerning incident 87.,Theft,Under Investigation,Medium,Officer 21,2026-08-04,2026-05-14,104042
+C088,Case 88,Investigation concerning incident 88.,Cybercrime,Closed,High,Officer 08,2026-01-04,2026-05-16,44983
+C089,Case 89,Investigation concerning incident 89.,Smuggling,Closed,Medium,Officer 19,2026-08-19,2026-07-28,145219
+C090,Case 90,Investigation concerning incident 90.,Assault,Closed,Medium,Officer 23,2026-02-12,2026-01-28,146072
+C091,Case 91,Investigation concerning incident 91.,Theft,Closed,Low,Officer 05,2026-06-15,2026-03-12,95620
+C092,Case 92,Investigation concerning incident 92.,Fraud,Under Investigation,Medium,Officer 14,2026-06-02,2026-05-10,287669
+C093,Case 93,Investigation concerning incident 93.,Assault,Open,High,Officer 07,2026-03-25,2026-02-20,404594
+C094,Case 94,Investigation concerning incident 94.,Theft,Closed,Medium,Officer 11,2026-05-09,2026-06-04,290190
+C095,Case 95,Investigation concerning incident 95.,Smuggling,Under Investigation,Low,Officer 01,2026-03-17,2026-05-12,418319
+C096,Case 96,Investigation concerning incident 96.,Cybercrime,Under Investigation,Medium,Officer 06,2026-02-07,2026-03-17,125927
+C097,Case 97,Investigation concerning incident 97.,Theft,Closed,High,Officer 23,2026-02-14,2026-08-03,71113
+C098,Case 98,Investigation concerning incident 98.,Theft,Open,Medium,Officer 12,2026-05-23,2026-06-05,438363
+C099,Case 99,Investigation concerning incident 99.,Cybercrime,Closed,High,Officer 25,2026-06-06,2026-05-01,400311
+C100,Case 100,Investigation concerning incident 100.,Fraud,Open,Low,Officer 23,2026-03-23,2026-04-10,75716
