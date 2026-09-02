@@ -1,7 +1,0 @@
-Intelligence Report for Case 7
-
-Case ID: C007
-Source Type: Intelligence
-Officer: Officer 09
-Entities referenced: No direct person reference.
-This is synthetic demonstration intelligence. It is not real police, CDR, banking, or intelligence data.

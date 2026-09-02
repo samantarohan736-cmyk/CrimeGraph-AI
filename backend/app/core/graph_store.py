@@ -1,21 +1,25 @@
 import os
-import csv
 import json
 import networkx as nx
 from typing import Dict, List, Any, Optional, Tuple
 from backend.app.core.config import settings
+from backend.app.core.neo4j_client import neo4j_client
 from backend.app.schemas.api_schemas import (
     GraphNode, GraphEdge, GraphResponse, ShortestPathResponse,
-    CentralityMetric, CommunityInfo, BridgeNodeInfo, NetworkOverviewMetrics,
-    EntitySearchItem
+    CentralityMetric, CommunityInfo, BridgeNodeInfo, NetworkOverviewMetrics
 )
 
 class KnowledgeGraphStore:
     """
     Unified Knowledge Graph Engine for CrimeGraph AI.
-    Provides fast Cypher/Graph traversals, k-hop subgraphs, Louvain community detection,
-    centrality analytics, shortest paths, and bridge detection.
-    Connects to Neo4j when enabled, or uses in-memory NetworkX with disk persistence.
+    Neo4j is the persistent source of truth for entities and relationships.
+    Every write goes to Neo4j via MERGE (see neo4j_client.py) and is mirrored into an
+    in-memory NetworkX graph, which is what actually powers the fast analytics below
+    (betweenness/degree/PageRank centrality, community detection, bridge detection,
+    shortest paths). NetworkX has no built-in equivalent for these that runs directly
+    against Neo4j without the GDS plugin, so on startup - and any time you want to make
+    sure the mirror reflects the graph exactly - call load_from_neo4j() to rebuild it
+    from what's actually stored in Neo4j.
     """
     def __init__(self):
         self.graph = nx.MultiDiGraph()
@@ -24,12 +28,14 @@ class KnowledgeGraphStore:
         self.edges_data: List[Dict[str, Any]] = []
         self._centrality_cache = None
         self._community_cache = None
-        self._bridge_cache = None
-        # Auto-load synthetic dataset on initialization if files exist
+        # Rehydrate the in-memory analytics mirror from Neo4j on boot. If Neo4j isn't
+        # reachable yet (e.g. container still starting), start with an empty graph rather
+        # than failing hard - main.py's lifespan hook calls load_from_neo4j() again once
+        # the app is fully up.
         try:
-            self.load_from_dataset()
-        except Exception:
-            pass
+            self.load_from_neo4j()
+        except Exception as e:
+            print(f"[KnowledgeGraphStore] Neo4j not reachable at startup ({e}); starting with an empty graph.")
 
     def clear(self):
         self.graph.clear()
@@ -38,21 +44,28 @@ class KnowledgeGraphStore:
         self.edges_data.clear()
         self._centrality_cache = None
         self._community_cache = None
-        self._bridge_cache = None
 
-    def add_entity_node(self, node_id: str, label: str, node_type: str, properties: Dict[str, Any] = None):
-        props = properties or {}
+    def add_entity_node(self, node_id: str, label: str, node_type: str, properties: Dict[str, Any] = None,
+                         sync_to_neo4j: bool = True):
+        props = dict(properties or {})
         props["id"] = node_id
         props["label"] = label
         props["type"] = node_type
-        
+
         self.nodes_data[node_id] = props
         self.graph.add_node(node_id, **props)
         self.undirected_graph.add_node(node_id, **props)
 
+        if sync_to_neo4j:
+            try:
+                neo4j_client.merge_node(label=node_type, node_id=node_id, properties=props)
+            except Exception as e:
+                print(f"[KnowledgeGraphStore] Failed to persist node {node_id} to Neo4j: {e}")
+
     def add_relationship_edge(self, edge_id: str, source_id: str, target_id: str,
                                relationship_type: str, confidence: float = 1.0,
-                               date: str = None, evidence_id: str = None, notes: str = None):
+                               date: str = None, evidence_id: str = None, notes: str = None,
+                               sync_to_neo4j: bool = True):
         edge_data = {
             "id": edge_id,
             "source": source_id,
@@ -72,142 +85,68 @@ class KnowledgeGraphStore:
         if not self.undirected_graph.has_edge(source_id, target_id):
             self.undirected_graph.add_edge(source_id, target_id, **edge_data)
 
-    def load_from_dataset(self, synthetic_dir: str = None):
-        """Loads all entities and relationships from synthetic CSV dataset."""
-        syn_dir = synthetic_dir or settings.SYNTHETIC_DIR
+        if sync_to_neo4j:
+            try:
+                neo4j_client.merge_relationship(
+                    source_id=source_id, target_id=target_id,
+                    relationship_type=relationship_type, properties=edge_data
+                )
+            except Exception as e:
+                print(f"[KnowledgeGraphStore] Failed to persist relationship {edge_id} to Neo4j: {e}")
+
+    def load_from_neo4j(self):
+        """
+        Rebuilds the in-memory NetworkX mirror from whatever is currently persisted in
+        Neo4j. This is the graph's "boot" method - call it on startup, and again any time
+        the mirror might have drifted from Neo4j (e.g. after a bulk import run outside
+        this process).
+        """
         self.clear()
-        # Caches are invalidated by clear() — will be re-built on first API request
-        
-        # 1. Persons
-        p_path = os.path.join(syn_dir, "persons.csv")
-        if os.path.exists(p_path):
-            with open(p_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    self.add_entity_node(
-                        node_id=row["person_id"],
-                        label=row["name"],
-                        node_type="Person",
-                        properties={
-                            "aliases": row.get("aliases", ""),
-                            "role": row.get("role", ""),
-                            "primary_location": row.get("primary_location", ""),
-                            "risk_level": row.get("risk_level", "Medium"),
-                            "dob": row.get("dob", ""),
-                            "nationality": row.get("nationality", "")
-                        }
-                    )
 
-        # 2. Phones
-        ph_path = os.path.join(syn_dir, "phones.csv")
-        if os.path.exists(ph_path):
-            with open(ph_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    self.add_entity_node(
-                        node_id=row["phone_id"],
-                        label=row["phone_number"],
-                        node_type="Phone",
-                        properties={
-                            "imei": row.get("imei", ""),
-                            "operator": row.get("operator") or row.get("carrier", ""),
-                            "telecom_circle": row.get("telecom_circle", ""),
-                            "is_burner": row.get("is_burner", "False") == "True" or "prepaid" in str(row.get("plan_type", "")).lower(),
-                            "registered_owner": row.get("registered_owner", "")
-                        }
-                    )
+        try:
+            nodes = neo4j_client.fetch_all_nodes()
+        except Exception as e:
+            print(f"[KnowledgeGraphStore] Could not fetch nodes from Neo4j: {e}")
+            return
 
-        # 3. Vehicles
-        v_path = os.path.join(syn_dir, "vehicles.csv")
-        if os.path.exists(v_path):
-            with open(v_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    make = row.get("make") or (row.get("make_model", "").split()[0] if row.get("make_model") else "")
-                    model = row.get("model") or (" ".join(row.get("make_model", "").split()[1:]) if row.get("make_model") else "")
-                    self.add_entity_node(
-                        node_id=row["vehicle_id"],
-                        label=row["plate_number"],
-                        node_type="Vehicle",
-                        properties={
-                            "make": make,
-                            "model": model,
-                            "color": row.get("color", ""),
-                            "vehicle_type": row.get("vehicle_type", ""),
-                            "registered_owner": row.get("registered_owner", "")
-                        }
-                    )
+        for n in nodes:
+            node_id = n.get("id")
+            if not node_id:
+                continue
+            props = dict(n.get("props") or {})
+            labels = n.get("labels") or []
+            node_type = props.get("type") or (labels[0] if labels else "Entity")
+            label = props.get("label", node_id)
+            self.add_entity_node(
+                node_id=node_id, label=label, node_type=node_type,
+                properties=props, sync_to_neo4j=False
+            )
 
-        # 4. Locations
-        l_path = os.path.join(syn_dir, "locations.csv")
-        if os.path.exists(l_path):
-            with open(l_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    coords = [c.strip() for c in row.get("coordinates", "").split(",")] if row.get("coordinates") else []
-                    lat = float(coords[0]) if len(coords) > 0 and coords[0] else (float(row["latitude"]) if row.get("latitude") else None)
-                    lon = float(coords[1]) if len(coords) > 1 and coords[1] else (float(row["longitude"]) if row.get("longitude") else None)
-                    self.add_entity_node(
-                        node_id=row["location_id"],
-                        label=row["name"],
-                        node_type="Location",
-                        properties={
-                            "address": row.get("address", ""),
-                            "latitude": lat,
-                            "longitude": lon,
-                            "location_type": row.get("location_type", "")
-                        }
-                    )
+        try:
+            rels = neo4j_client.fetch_all_relationships()
+        except Exception as e:
+            print(f"[KnowledgeGraphStore] Could not fetch relationships from Neo4j: {e}")
+            rels = []
 
-        # 5. Organizations
-        o_path = os.path.join(syn_dir, "organizations.csv")
-        if os.path.exists(o_path):
-            with open(o_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    self.add_entity_node(
-                        node_id=row["org_id"],
-                        label=row["name"],
-                        node_type="Organization",
-                        properties={
-                            "registration_no": row.get("registration_no") or row.get("registration_number", ""),
-                            "jurisdiction": row.get("jurisdiction", ""),
-                            "org_type": row.get("org_type") or row.get("type", ""),
-                            "flagged_status": row.get("flagged_status") or row.get("status", "")
-                        }
-                    )
+        for r in rels:
+            source_id, target_id = r.get("source"), r.get("target")
+            if not source_id or not target_id:
+                continue
+            props = dict(r.get("props") or {})
+            edge_id = props.get("id") or f"{source_id}-{target_id}-{r.get('rel_type')}"
+            self.add_relationship_edge(
+                edge_id=edge_id,
+                source_id=source_id,
+                target_id=target_id,
+                relationship_type=r.get("rel_type", "RELATED_TO"),
+                confidence=props.get("confidence", 1.0),
+                date=props.get("date", ""),
+                evidence_id=props.get("evidence_id", ""),
+                notes=props.get("notes", ""),
+                sync_to_neo4j=False
+            )
 
-        # 6. Cases
-        c_path = os.path.join(syn_dir, "cases.csv")
-        if os.path.exists(c_path):
-            with open(c_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    self.add_entity_node(
-                        node_id=row["case_id"],
-                        label=f"{row['case_id']}: {row['title']}",
-                        node_type="Case",
-                        properties={
-                            "title": row.get("title", ""),
-                            "case_type": row.get("case_type", ""),
-                            "status": row.get("status", "Active Investigation"),
-                            "priority": row.get("priority", "Medium"),
-                            "lead_officer": row.get("lead_officer", ""),
-                            "estimated_value": row.get("estimated_value", "")
-                        }
-                    )
-
-        # 7. Relationships
-        r_path = os.path.join(syn_dir, "relationships.csv")
-        if os.path.exists(r_path):
-            with open(r_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    self.add_relationship_edge(
-                        edge_id=row["rel_id"],
-                        source_id=row["source_id"],
-                        target_id=row["target_id"],
-                        relationship_type=row["relationship_type"],
-                        confidence=float(row.get("confidence", 1.0)),
-                        date=row.get("date", ""),
-                        evidence_id=row.get("evidence_id", ""),
-                        notes=row.get("notes", "")
-                    )
-
-        print(f"[KnowledgeGraphStore] Loaded {self.graph.number_of_nodes()} nodes and {self.graph.number_of_edges()} edges.")
+        print(f"[KnowledgeGraphStore] Loaded {self.graph.number_of_nodes()} nodes and {self.graph.number_of_edges()} edges from Neo4j.")
 
     def get_full_graph(self) -> GraphResponse:
         """Returns the full knowledge graph with computed metrics."""
@@ -255,106 +194,12 @@ class KnowledgeGraphStore:
             total_edges=len(edges)
         )
 
-    def evaluate_node_suspicion(self, node_id: str, node_data: Dict[str, Any], b_score: float, deg: int) -> Tuple[bool, List[str]]:
-        """Evaluates whether a node has potentially suspicious activity indicators (Responsible AI)."""
-        reasons = []
-        is_susp = False
-
-        # 1. High betweenness centrality (bridge gateway)
-        if b_score > 0.12:
-            is_susp = True
-            reasons.append("Potential Bridge Entity (Articulation point linking distinct sub-networks)")
-
-        # 2. Risk classification from properties
-        risk = (node_data.get("risk_level") or "").upper()
-        if risk in ["HIGH", "CRITICAL"]:
-            is_susp = True
-            reasons.append(f"High Risk Classification ({risk.capitalize()}) in Intelligence Records")
-
-        # 3. High degree connectivity anomaly
-        if deg >= 15:
-            is_susp = True
-            reasons.append(f"High Density Hub ({deg} active relationships)")
-
-        # 4. Priority lead score above threshold
-        priority = float(node_data.get("priority_score") or 0.0)
-        if priority >= 70.0:
-            is_susp = True
-            reasons.append(f"Elevated Investigative Priority Score ({round(priority, 1)}/100)")
-
-        return is_susp, reasons
-
-    def get_all_entities_list(self) -> List[EntitySearchItem]:
-        """Returns compact, sorted list of all entities for global graph search & autocomplete."""
-        items = []
-        for n_id, data in self.nodes_data.items():
-            deg = self.undirected_graph.degree(n_id) if self.undirected_graph.has_node(n_id) else 0
-            items.append(EntitySearchItem(
-                id=n_id,
-                label=data.get("label", n_id),
-                type=data.get("type", "Entity"),
-                risk_level=data.get("risk_level", "Medium"),
-                priority_score=data.get("priority_score", 0.0),
-                degree=deg
-            ))
-        # Sort priority: Persons first, then by priority score / degree
-        type_order = {"Person": 0, "Case": 1, "Organization": 2, "Phone": 3, "Vehicle": 4, "Location": 5}
-        items.sort(key=lambda x: (type_order.get(x.type, 9), -x.priority_score, -x.degree))
-        return items
-
-    def get_subgraph(
-        self,
-        center_node_id: Optional[str] = None,
-        max_hops: int = 2,
-        categories: Optional[List[str]] = None,
-        rel_types: Optional[List[str]] = None,
-        max_nodes: int = 25,
-        smart_ranking: bool = True,
-        suspicious_only: bool = False
-    ) -> GraphResponse:
-        """Extracts focused, uncluttered k-hop ego network with edge aggregation and smart ranking."""
-        if not self.undirected_graph.nodes():
+    def get_subgraph(self, center_node_id: str, max_hops: int = 2, rel_types: List[str] = None) -> GraphResponse:
+        """Extracts k-hop ego network around a specific entity node."""
+        if not self.undirected_graph.has_node(center_node_id):
             return GraphResponse(nodes=[], edges=[], total_nodes=0, total_edges=0)
 
-        # Fallback to first high-degree node if center_node_id not provided
-        if not center_node_id or not self.undirected_graph.has_node(center_node_id):
-            if "P001" in self.undirected_graph:
-                center_node_id = "P001"
-            else:
-                center_node_id = max(self.undirected_graph.degree(), key=lambda x: x[1])[0]
-
-        # Category mapping filter
-        CAT_MAP = {
-            "CALLS": ["CALL", "CDR", "DIAL", "SMS", "COMMUNICAT", "CONTACT", "CALLED"],
-            "FINANCIAL": ["TRANSFER", "HAWALA", "FINANC", "PAY", "TRANSACT", "MONEY", "FUND", "BANK", "FOREX", "LAUNDER"],
-            "CASES": ["CASE", "SUSPECT", "EVIDENCE", "INVESTIG", "INCIDENT", "CRIME", "FIR", "LEAD"],
-            "PHONES": ["USE", "OWN", "SIM", "DEVICE", "PHONE", "CALL"],
-            "VEHICLES": ["VEHICLE", "DRIV", "REGIST", "CAR", "TRANSPORT"],
-            "LOCATIONS": ["LOCAT", "SEEN", "VISIT", "STAY", "MEET", "PLACE", "PORT"],
-            "ORGANIZATIONS": ["ORGANIZATION", "MEMBER", "DIRECTOR", "OPERAT", "COMPANY", "SHELL"],
-            "ASSOCIATIONS": ["ASSOCIAT", "KNOWN", "RELAT", "ACCOMPLICE", "FAMILY", "MEETING"]
-        }
-
-        allowed_rel_patterns = []
-        if categories:
-            for cat in categories:
-                cat_upper = cat.upper()
-                if cat_upper in CAT_MAP:
-                    allowed_rel_patterns.extend(CAT_MAP[cat_upper])
-                else:
-                    allowed_rel_patterns.append(cat_upper)
-
-        def is_edge_allowed(rel_name: str) -> bool:
-            if not rel_name:
-                return True
-            r_up = rel_name.upper()
-            if rel_types and rel_name not in rel_types:
-                return False
-            if allowed_rel_patterns:
-                return any(pat in r_up for pat in allowed_rel_patterns)
-            return True
-
-        # BFS to find k-hop reachable candidates
+        # BFS to find k-hop neighbors
         visited = {center_node_id: 0}
         queue = [(center_node_id, 0)]
 
@@ -363,70 +208,22 @@ class KnowledgeGraphStore:
             if depth >= max_hops:
                 continue
             for neighbor in self.undirected_graph.neighbors(curr):
-                # Verify at least one connecting edge matches the category filters
-                edges_between = self.graph.get_edge_data(curr, neighbor) or self.graph.get_edge_data(neighbor, curr) or {}
-                has_matching_edge = any(is_edge_allowed(ed.get("relationship", "")) for ed in edges_between.values())
-                if not has_matching_edge and (allowed_rel_patterns or rel_types):
-                    continue
-
                 if neighbor not in visited or visited[neighbor] > depth + 1:
                     visited[neighbor] = depth + 1
                     queue.append((neighbor, depth + 1))
 
-        all_reachable_node_ids = set(visited.keys())
-        total_connections_count = len(all_reachable_node_ids)
-
+        sub_node_ids = set(visited.keys())
         centrality = self.calculate_centralities()
         communities = self.detect_communities()
         bridges = self.find_bridge_nodes()
         bridge_ids = {b.node_id for b in bridges}
 
-        # Select & Prioritize Nodes (Smart Ranking)
-        if len(all_reachable_node_ids) <= max_nodes:
-            selected_node_ids = all_reachable_node_ids
-        else:
-            # Seed node always included
-            candidate_ids = [n for n in all_reachable_node_ids if n != center_node_id]
-
-            if smart_ranking:
-                def score_node(n_id: str) -> float:
-                    hop_dist = visited.get(n_id, 99)
-                    hop_score = 100.0 / (hop_dist + 1)
-                    data = self.nodes_data.get(n_id, {})
-                    p_score = float(data.get("priority_score", 0.0))
-                    b_score = centrality.get(n_id, {}).get("betweenness", 0.0) * 50.0
-                    deg_score = self.undirected_graph.degree(n_id) * 1.5
-                    is_susp, _ = self.evaluate_node_suspicion(n_id, data, centrality.get(n_id, {}).get("betweenness", 0.0), self.undirected_graph.degree(n_id))
-                    susp_boost = 30.0 if is_susp else 0.0
-                    return hop_score + p_score + b_score + deg_score + susp_boost
-
-                candidate_ids.sort(key=score_node, reverse=True)
-            else:
-                candidate_ids.sort(key=lambda n: (visited.get(n, 99), -self.undirected_graph.degree(n)))
-
-            selected_node_ids = {center_node_id} | set(candidate_ids[:max_nodes - 1])
-
-        # Filter by suspicious_only if enabled
-        if suspicious_only:
-            susp_nodes = {center_node_id}
-            for n_id in selected_node_ids:
-                data = self.nodes_data.get(n_id, {})
-                b_score = centrality.get(n_id, {}).get("betweenness", 0.0)
-                deg = self.undirected_graph.degree(n_id) if self.undirected_graph.has_node(n_id) else 0
-                is_susp, _ = self.evaluate_node_suspicion(n_id, data, b_score, deg)
-                if is_susp:
-                    susp_nodes.add(n_id)
-            selected_node_ids = susp_nodes
-
-        # Build GraphNode list
         nodes = []
-        for n_id in selected_node_ids:
+        for n_id in sub_node_ids:
             data = self.nodes_data.get(n_id, {})
             deg = self.undirected_graph.degree(n_id) if self.undirected_graph.has_node(n_id) else 0
             b_score = centrality.get(n_id, {}).get("betweenness", 0.0)
             comm_id = communities.get(n_id, 0)
-            is_susp, reasons = self.evaluate_node_suspicion(n_id, data, b_score, deg)
-
             nodes.append(GraphNode(
                 id=n_id,
                 label=data.get("label", n_id),
@@ -436,69 +233,29 @@ class KnowledgeGraphStore:
                 betweenness=round(b_score, 4),
                 community=comm_id,
                 is_bridge=n_id in bridge_ids,
-                priority_score=data.get("priority_score", 0.0),
-                is_suspicious=is_susp,
-                suspicion_reasons=reasons,
-                total_connections=deg
+                priority_score=data.get("priority_score", 0.0)
             ))
-
-        # Build & Aggregate Edges between selected nodes
-        edge_groups: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
-        for e in self.edges_data:
-            u, v = e["source"], e["target"]
-            if u in selected_node_ids and v in selected_node_ids:
-                rel = e.get("relationship", "")
-                if is_edge_allowed(rel):
-                    # Canonical unordered pair for undirected representation
-                    pair = (min(u, v), max(u, v))
-                    edge_groups.setdefault(pair, []).append(e)
 
         edges = []
-        for (u, v), recs in edge_groups.items():
-            primary_rec = recs[0]
-            count = len(recs)
-            # Find representative relationship label
-            rel_types_in_group = [r.get("relationship", "CONNECTED") for r in recs]
-            most_frequent_rel = max(set(rel_types_in_group), key=rel_types_in_group.count)
-            display_rel = f"{most_frequent_rel} ×{count}" if count > 1 else most_frequent_rel
-
-            # Aggregate notes and evidence IDs
-            all_evidence = [r["evidence_id"] for r in recs if r.get("evidence_id")]
-            primary_evidence = all_evidence[0] if all_evidence else ""
-
-            # Check if edge is suspicious
-            edge_suspicious = count >= 5 or any("HAWALA" in r.get("relationship", "").upper() or "UNTRACE" in r.get("notes", "").upper() for r in recs)
-            edge_susp_reasons = []
-            if count >= 5:
-                edge_susp_reasons.append(f"High Interaction Frequency ({count} repeated records)")
-            if any("HAWALA" in r.get("relationship", "").upper() for r in recs):
-                edge_susp_reasons.append("Unregulated Hawala Financial Layering Pattern")
-
-            edges.append(GraphEdge(
-                id=f"agg_{u}_{v}",
-                source=u,
-                target=v,
-                relationship=display_rel,
-                date=primary_rec.get("date"),
-                confidence=round(sum(r.get("confidence", 1.0) for r in recs) / count, 2),
-                evidence_id=primary_evidence,
-                notes=primary_rec.get("notes"),
-                count=count,
-                is_suspicious=edge_suspicious,
-                suspicion_reasons=edge_susp_reasons,
-                aggregated_records=recs
-            ))
+        for e in self.edges_data:
+            if e["source"] in sub_node_ids and e["target"] in sub_node_ids:
+                if not rel_types or e["relationship"] in rel_types:
+                    edges.append(GraphEdge(
+                        id=e["id"],
+                        source=e["source"],
+                        target=e["target"],
+                        relationship=e["relationship"],
+                        date=e.get("date"),
+                        confidence=e.get("confidence", 1.0),
+                        evidence_id=e.get("evidence_id"),
+                        notes=e.get("notes")
+                    ))
 
         return GraphResponse(
             nodes=nodes,
             edges=edges,
             total_nodes=len(nodes),
-            total_edges=len(edges),
-            total_connections_count=total_connections_count,
-            filtered_nodes_count=len(nodes),
-            filtered_edges_count=len(edges),
-            seed_node_id=center_node_id,
-            is_filtered=len(nodes) < total_connections_count
+            total_edges=len(edges)
         )
 
     def get_case_subgraph(self, case_id: str, hops: int = 2) -> GraphResponse:
@@ -506,10 +263,7 @@ class KnowledgeGraphStore:
         return self.get_subgraph(center_node_id=case_id, max_hops=hops)
 
     def calculate_centralities(self) -> Dict[str, Dict[str, float]]:
-        """Calculates degree, betweenness, and PageRank centralities (cached after first computation)."""
-        if self._centrality_cache is not None:
-            return self._centrality_cache
-
+        """Calculates degree, betweenness, and PageRank centralities."""
         if self.undirected_graph.number_of_nodes() == 0:
             return {}
 
@@ -518,7 +272,7 @@ class KnowledgeGraphStore:
             bet_cent = nx.betweenness_centrality(self.undirected_graph, normalized=True)
         except Exception:
             bet_cent = {n: 0.0 for n in self.undirected_graph.nodes()}
-
+            
         try:
             pagerank = nx.pagerank(self.undirected_graph, max_iter=200)
         except Exception:
@@ -531,15 +285,10 @@ class KnowledgeGraphStore:
                 "betweenness": bet_cent.get(n, 0.0),
                 "pagerank": pagerank.get(n, 0.0)
             }
-        self._centrality_cache = results
-        print("[KnowledgeGraphStore] Centrality cache built.")
         return results
 
     def detect_communities(self) -> Dict[str, int]:
-        """Detects network communities using greedy modularity or label propagation (cached after first computation)."""
-        if self._community_cache is not None:
-            return self._community_cache
-
+        """Detects network communities using greedy modularity or label propagation."""
         if self.undirected_graph.number_of_nodes() == 0:
             return {}
 
@@ -549,16 +298,14 @@ class KnowledgeGraphStore:
             for comm_idx, comm_set in enumerate(communities_gen):
                 for node_id in comm_set:
                     node_community[node_id] = comm_idx + 1
+            return node_community
         except Exception:
             # Fallback to connected components
             node_community = {}
             for idx, comp in enumerate(nx.connected_components(self.undirected_graph)):
                 for node_id in comp:
                     node_community[node_id] = idx + 1
-
-        self._community_cache = node_community
-        print("[KnowledgeGraphStore] Community cache built.")
-        return node_community
+            return node_community
 
     def get_community_details(self) -> List[CommunityInfo]:
         """Provides rich community summaries and key members."""
@@ -601,10 +348,7 @@ class KnowledgeGraphStore:
         return community_list
 
     def find_bridge_nodes(self) -> List[BridgeNodeInfo]:
-        """Identifies key bridge nodes (articulation points or cross-community gateways) (cached after first computation)."""
-        if self._bridge_cache is not None:
-            return self._bridge_cache
-
+        """Identifies key bridge nodes (articulation points or cross-community gateways)."""
         centralities = self.calculate_centralities()
         communities = self.detect_communities()
         bridge_list = []
@@ -652,8 +396,6 @@ class KnowledgeGraphStore:
                 ))
 
         bridge_list.sort(key=lambda x: x.betweenness, reverse=True)
-        self._bridge_cache = bridge_list
-        print(f"[KnowledgeGraphStore] Bridge cache built ({len(bridge_list)} bridge nodes).")
         return bridge_list
 
     def find_shortest_path(self, source_id: str, target_id: str, max_hops: int = 4) -> ShortestPathResponse:

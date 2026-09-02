@@ -16,30 +16,28 @@ if AI_ENGINE_DIR not in sys.path:
 from backend.app.core.config import settings
 from backend.app.core.database import engine, Base, SessionLocal
 from backend.app.core.graph_store import graph_store
+from backend.app.core.neo4j_client import neo4j_client
 from backend.app.api.router import api_router
-from ingestion.master_pipeline import pipeline
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Ensure database schema and populate if needed
+    # Startup: ensure Postgres schema exists, ensure Neo4j constraints/indexes exist,
+    # then rebuild the in-memory graph analytics mirror from Neo4j.
+    # The app starts with whatever is already in Postgres/Neo4j - no auto-seeding.
+    # To bulk-load data, run: python ai-engine/ingestion/master_pipeline.py
     print("[Startup] Initializing CrimeGraph AI Backend...")
     Base.metadata.create_all(bind=engine)
-    
-    # Load knowledge graph & database records
-    db = SessionLocal()
+
     try:
-        from backend.app.models.entities import Case
-        if db.query(Case).count() == 0:
-            print("[Startup] Running initial synthetic data ingestion...")
-            pipeline.run(db=db)
-        else:
-            print("[Startup] Database exists. Loading Knowledge Graph...")
-            graph_store.load_from_dataset(settings.SYNTHETIC_DIR)
-    finally:
-        db.close()
-    
+        neo4j_client.apply_constraints()
+    except Exception as e:
+        print(f"[Startup] Warning: could not apply Neo4j constraints (is Neo4j running?): {e}")
+
+    graph_store.load_from_neo4j()
+
     print("[Startup] CrimeGraph AI Backend Ready.")
     yield
+    neo4j_client.close()
     print("[Shutdown] Shutting down CrimeGraph AI Backend.")
 
 app = FastAPI(
@@ -75,7 +73,9 @@ def root():
 def health():
     return {
         "status": "healthy",
-        "database": "sqlite/postgresql",
+        "database": "postgresql",
+        "graph_database": "neo4j",
+        "neo4j_connected": neo4j_client.verify_connectivity(),
         "graph_nodes": graph_store.graph.number_of_nodes(),
         "graph_edges": graph_store.graph.number_of_edges()
     }
