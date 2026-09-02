@@ -1,3 +1,4 @@
+import os
 import re
 from typing import List, Dict, Any
 
@@ -55,6 +56,33 @@ class HybridEntityExtractor:
     """
     def __init__(self):
         self._spacy_nlp = None
+        self.person_names = list(PATTERNS["PERSON_NAMES"])
+        self.locations = list(PATTERNS["LOCATIONS"])
+        self.organizations = list(PATTERNS["ORGANIZATIONS"])
+
+    def load_gazetteers_from_data(self, synthetic_dir: str):
+        import csv
+        p_path = os.path.join(synthetic_dir, "persons.csv")
+        if os.path.exists(p_path):
+            with open(p_path, "r", encoding="utf-8") as f:
+                for row in csv.DictReader(f):
+                    name = row.get("name", "").strip()
+                    if name and len(name) > 2 and name not in self.person_names:
+                        self.person_names.append(name)
+        l_path = os.path.join(synthetic_dir, "locations.csv")
+        if os.path.exists(l_path):
+            with open(l_path, "r", encoding="utf-8") as f:
+                for row in csv.DictReader(f):
+                    name = row.get("name", "").strip()
+                    if name and len(name) > 2 and name not in self.locations:
+                        self.locations.append(name)
+        o_path = os.path.join(synthetic_dir, "organizations.csv")
+        if os.path.exists(o_path):
+            with open(o_path, "r", encoding="utf-8") as f:
+                for row in csv.DictReader(f):
+                    name = row.get("name", "").strip()
+                    if name and len(name) > 2 and name not in self.organizations:
+                        self.organizations.append(name)
 
     @property
     def spacy_nlp(self):
@@ -71,7 +99,7 @@ class HybridEntityExtractor:
         seen_spans = set()
 
         # 1. Custom Known Person Entities with Aliases
-        for name in PATTERNS["PERSON_NAMES"]:
+        for name in self.person_names:
             pattern = rf"\b{re.escape(name)}\b"
             for m in re.finditer(pattern, text, re.IGNORECASE):
                 span = (m.start(), m.end())
@@ -88,7 +116,7 @@ class HybridEntityExtractor:
                     })
 
         # 2. Known Locations
-        for loc in PATTERNS["LOCATIONS"]:
+        for loc in self.locations:
             pattern = rf"\b{re.escape(loc)}\b"
             for m in re.finditer(pattern, text, re.IGNORECASE):
                 span = (m.start(), m.end())
@@ -105,7 +133,7 @@ class HybridEntityExtractor:
                     })
 
         # 3. Known Organizations
-        for org in PATTERNS["ORGANIZATIONS"]:
+        for org in self.organizations:
             pattern = rf"\b{re.escape(org)}\b"
             for m in re.finditer(pattern, text, re.IGNORECASE):
                 span = (m.start(), m.end())

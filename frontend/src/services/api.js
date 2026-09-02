@@ -30,10 +30,35 @@ export const getPersons = () => api.get('/persons');
 export const getPersonDetails = (id) => api.get(`/persons/${id}`);
 
 export const getFullGraph = () => api.get('/graph/full');
-export const getPersonGraph = (id, hops = 2) => api.get(`/graph/person/${id}?hops=${hops}`);
-export const getCaseGraph = (id, hops = 2) => api.get(`/graph/case/${id}?hops=${hops}`);
-export const exploreNode = (id, hops = 1, relType = null) => {
-  const url = relType ? `/graph/explore?node_id=${id}&hops=${hops}&rel_type=${relType}` : `/graph/explore?node_id=${id}&hops=${hops}`;
+export const getPersonGraph = (id, { hops = 2, maxNodes = 25, smartRanking = true, suspiciousOnly = false, categories = null } = {}) => {
+  const q = new URLSearchParams({ hops, max_nodes: maxNodes, smart_ranking: smartRanking, suspicious_only: suspiciousOnly });
+  if (categories && categories.length > 0) q.set('categories', Array.isArray(categories) ? categories.join(',') : categories);
+  return api.get(`/graph/person/${id}?${q}`);
+};
+
+export const getCaseGraph = (id, { hops = 2, maxNodes = 25, smartRanking = true, suspiciousOnly = false, categories = null } = {}) => {
+  const q = new URLSearchParams({ hops, max_nodes: maxNodes, smart_ranking: smartRanking, suspicious_only: suspiciousOnly });
+  if (categories && categories.length > 0) q.set('categories', Array.isArray(categories) ? categories.join(',') : categories);
+  return api.get(`/graph/case/${id}?${q}`);
+};
+
+export const getGraphEntities = () => api.get('/graph/entities');
+
+export const exploreNode = (paramsOrId, hops = 1, relType = null) => {
+  if (typeof paramsOrId === 'object' && paramsOrId !== null) {
+    const queryParams = new URLSearchParams();
+    if (paramsOrId.nodeId || paramsOrId.id) queryParams.set('node_id', paramsOrId.nodeId || paramsOrId.id);
+    if (paramsOrId.hops !== undefined) queryParams.set('hops', paramsOrId.hops);
+    if (paramsOrId.maxNodes !== undefined) queryParams.set('max_nodes', paramsOrId.maxNodes);
+    if (paramsOrId.smartRanking !== undefined) queryParams.set('smart_ranking', paramsOrId.smartRanking);
+    if (paramsOrId.suspiciousOnly !== undefined) queryParams.set('suspicious_only', paramsOrId.suspiciousOnly);
+    if (paramsOrId.categories && paramsOrId.categories.length > 0) {
+      queryParams.set('categories', Array.isArray(paramsOrId.categories) ? paramsOrId.categories.join(',') : paramsOrId.categories);
+    }
+    if (paramsOrId.relType) queryParams.set('rel_type', paramsOrId.relType);
+    return api.get(`/graph/explore?${queryParams.toString()}`);
+  }
+  const url = relType ? `/graph/explore?node_id=${paramsOrId}&hops=${hops}&rel_type=${relType}` : `/graph/explore?node_id=${paramsOrId}&hops=${hops}`;
   return api.get(url);
 };
 export const findGraphPath = (source_id, target_id, max_hops = 4) => 

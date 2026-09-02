@@ -9,21 +9,25 @@ import {
   MapPin, 
   Building, 
   ExternalLink, 
-  Share2
+  Target,
+  GitFork,
+  AlertTriangle
 } from 'lucide-react';
 import PriorityScoreMeter from '../common/PriorityScoreMeter';
 import { ENTITY_COLORS } from '../../utils/colors';
 
-export default function NodeDetailsPanel({ node, onClose, onExpand }) {
+export default function NodeDetailsPanel({ node, onClose, onSetFocus, onOpenPathWithSource }) {
   const navigate = useNavigate();
   if (!node) return null;
 
   const props = node.properties || {};
   const isPerson = node.type === 'Person';
   const isCase = node.type === 'Case';
+  const isSuspicious = node.is_suspicious;
+  const suspicionReasons = node.suspicion_reasons || [];
 
   return (
-    <div className="absolute top-4 right-4 bottom-4 w-96 z-30 flex flex-col bg-white border-[3px] border-black rounded-xl shadow-brutal overflow-hidden divide-y-2 divide-black">
+    <div className="absolute top-4 right-4 bottom-4 w-96 z-30 flex flex-col bg-white border-[3px] border-black rounded-xl shadow-brutal overflow-hidden divide-y-2 divide-black pointer-events-auto">
       {/* Header */}
       <div className="p-4 flex items-start justify-between bg-cream-100">
         <div className="flex items-center gap-3">
@@ -39,9 +43,16 @@ export default function NodeDetailsPanel({ node, onClose, onExpand }) {
             {node.type === 'Organization' && <Building className="w-5 h-5" />}
           </div>
           <div>
-            <span className="neo-badge bg-brutal-cyan text-black text-[10px] uppercase">
-              {node.type} ENTITY
-            </span>
+            <div className="flex items-center gap-1 flex-wrap">
+              <span className="neo-badge bg-brutal-cyan text-black text-[10px] uppercase">
+                {node.type}
+              </span>
+              {node.is_bridge && (
+                <span className="neo-badge bg-brutal-pink text-black text-[10px] font-black">
+                  BRIDGE
+                </span>
+              )}
+            </div>
             <h3 className="text-base font-black text-black leading-tight mt-1 font-mono">
               {node.label}
             </h3>
@@ -51,7 +62,7 @@ export default function NodeDetailsPanel({ node, onClose, onExpand }) {
 
         <button
           onClick={onClose}
-          className="neo-btn p-1 bg-cream-200 text-black hover:bg-brutal-pink"
+          className="neo-btn p-1 bg-cream-200 text-black hover:bg-brutal-pink shrink-0"
         >
           <X className="w-4 h-4" />
         </button>
@@ -59,12 +70,29 @@ export default function NodeDetailsPanel({ node, onClose, onExpand }) {
 
       {/* Body Content */}
       <div className="p-4 space-y-4 flex-1 overflow-y-auto bg-white">
+        {/* Suspicious Lead Alert */}
+        {isSuspicious && (
+          <div className="p-3 rounded-lg bg-brutal-pink/20 border-2 border-black space-y-1.5 font-mono">
+            <div className="flex items-center gap-1.5 font-black text-brutal-hotpink text-xs">
+              <AlertTriangle className="w-4 h-4" />
+              <span>POTENTIALLY SUSPICIOUS ACTIVITY</span>
+            </div>
+            {suspicionReasons.length > 0 && (
+              <ul className="list-disc list-inside space-y-1 text-slate-900 font-sans font-medium text-xs">
+                {suspicionReasons.map((r, i) => (
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
         {/* Priority Score (if Person) */}
         {isPerson && (
           <div className="neo-box p-3.5 space-y-2 bg-cream-50">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-mono font-black text-slate-800">INVESTIGATION PRIORITY</span>
-              <span className="neo-badge bg-brutal-yellow text-black text-[10px]">LEAD SCORE</span>
+            <div className="flex items-center justify-between font-mono">
+              <span className="text-xs font-black text-slate-800">INVESTIGATION PRIORITY</span>
+              <span className="neo-badge bg-brutal-yellow text-black text-[10px]">SCORE</span>
             </div>
             <PriorityScoreMeter score={node.priority_score || props.priority_score || 45} />
           </div>
@@ -73,8 +101,8 @@ export default function NodeDetailsPanel({ node, onClose, onExpand }) {
         {/* Network Metrics */}
         <div className="grid grid-cols-2 gap-2 font-mono">
           <div className="p-2.5 rounded-lg bg-cream-100 border-2 border-black">
-            <span className="text-[10px] text-slate-700 block font-black">DEGREE LINKS</span>
-            <span className="text-lg font-black text-black">{node.degree || 0}</span>
+            <span className="text-[10px] text-slate-700 block font-black">CONNECTIONS</span>
+            <span className="text-lg font-black text-black">{node.degree || node.total_connections || 0}</span>
           </div>
           <div className="p-2.5 rounded-lg bg-cream-100 border-2 border-black">
             <span className="text-[10px] text-slate-700 block font-black">BETWEENNESS</span>
@@ -91,11 +119,11 @@ export default function NodeDetailsPanel({ node, onClose, onExpand }) {
           </span>
           <div className="p-3 rounded-lg bg-cream-100 border-2 border-black space-y-2 text-xs">
             {Object.entries(props).map(([k, v]) => {
-              if (['id', 'label', 'type', 'priority_score'].includes(k)) return null;
+              if (['id', 'label', 'type', 'priority_score', 'is_suspicious', 'suspicion_reasons'].includes(k)) return null;
               return (
                 <div key={k} className="flex items-center justify-between border-b border-slate-300 pb-1 last:border-0 last:pb-0">
-                  <span className="text-slate-700 uppercase font-bold">{k.replace('_', ' ')}:</span>
-                  <span className="text-black font-black text-right truncate max-w-[170px]">
+                  <span className="text-slate-700 uppercase font-bold">{k.replace(/_/g, ' ')}:</span>
+                  <span className="text-black font-black text-right truncate max-w-[170px]" title={String(v)}>
                     {String(v)}
                   </span>
                 </div>
@@ -104,15 +132,27 @@ export default function NodeDetailsPanel({ node, onClose, onExpand }) {
           </div>
         </div>
 
-        {/* Neighborhood Expansion Action */}
-        <div className="pt-2">
-          <button
-            onClick={() => onExpand && onExpand(node.id)}
-            className="w-full neo-btn py-2 bg-brutal-cyan text-black text-xs font-black font-mono flex items-center justify-center gap-2"
-          >
-            <Share2 className="w-4 h-4 text-black" />
-            <span>EXPAND NEIGHBORHOOD</span>
-          </button>
+        {/* Focus and Path Actions */}
+        <div className="space-y-2 pt-1 font-mono">
+          {onSetFocus && (
+            <button
+              onClick={() => onSetFocus(node.id)}
+              className="w-full neo-btn py-2 bg-brutal-cyan text-black text-xs font-black flex items-center justify-center gap-2"
+            >
+              <Target className="w-4 h-4 text-black" />
+              <span>FOCUS ON THIS ENTITY</span>
+            </button>
+          )}
+
+          {onOpenPathWithSource && (
+            <button
+              onClick={() => onOpenPathWithSource(node.id)}
+              className="w-full neo-btn py-2 bg-cream-200 text-black text-xs font-black flex items-center justify-center gap-2 hover:bg-brutal-yellow"
+            >
+              <GitFork className="w-4 h-4 text-black" />
+              <span>FIND PATH FROM HERE</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -126,7 +166,7 @@ export default function NodeDetailsPanel({ node, onClose, onExpand }) {
             }}
             className="w-full neo-btn py-2 bg-brutal-yellow text-black text-xs font-mono font-black flex items-center justify-center gap-2"
           >
-            <span>VIEW FULL DOSSIER</span>
+            <span>VIEW FULL INTELLIGENCE DOSSIER</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </button>
         </div>

@@ -6,7 +6,8 @@ from typing import Dict, List, Any, Optional, Tuple
 from backend.app.core.config import settings
 from backend.app.schemas.api_schemas import (
     GraphNode, GraphEdge, GraphResponse, ShortestPathResponse,
-    CentralityMetric, CommunityInfo, BridgeNodeInfo, NetworkOverviewMetrics
+    CentralityMetric, CommunityInfo, BridgeNodeInfo, NetworkOverviewMetrics,
+    EntitySearchItem
 )
 
 class KnowledgeGraphStore:
@@ -23,6 +24,7 @@ class KnowledgeGraphStore:
         self.edges_data: List[Dict[str, Any]] = []
         self._centrality_cache = None
         self._community_cache = None
+        self._bridge_cache = None
         # Auto-load synthetic dataset on initialization if files exist
         try:
             self.load_from_dataset()
@@ -36,6 +38,7 @@ class KnowledgeGraphStore:
         self.edges_data.clear()
         self._centrality_cache = None
         self._community_cache = None
+        self._bridge_cache = None
 
     def add_entity_node(self, node_id: str, label: str, node_type: str, properties: Dict[str, Any] = None):
         props = properties or {}
@@ -73,6 +76,7 @@ class KnowledgeGraphStore:
         """Loads all entities and relationships from synthetic CSV dataset."""
         syn_dir = synthetic_dir or settings.SYNTHETIC_DIR
         self.clear()
+        # Caches are invalidated by clear() — will be re-built on first API request
         
         # 1. Persons
         p_path = os.path.join(syn_dir, "persons.csv")
@@ -104,9 +108,9 @@ class KnowledgeGraphStore:
                         node_type="Phone",
                         properties={
                             "imei": row.get("imei", ""),
-                            "operator": row.get("operator", ""),
+                            "operator": row.get("operator") or row.get("carrier", ""),
                             "telecom_circle": row.get("telecom_circle", ""),
-                            "is_burner": row.get("is_burner", "False") == "True",
+                            "is_burner": row.get("is_burner", "False") == "True" or "prepaid" in str(row.get("plan_type", "")).lower(),
                             "registered_owner": row.get("registered_owner", "")
                         }
                     )
@@ -116,13 +120,15 @@ class KnowledgeGraphStore:
         if os.path.exists(v_path):
             with open(v_path, "r", encoding="utf-8") as f:
                 for row in csv.DictReader(f):
+                    make = row.get("make") or (row.get("make_model", "").split()[0] if row.get("make_model") else "")
+                    model = row.get("model") or (" ".join(row.get("make_model", "").split()[1:]) if row.get("make_model") else "")
                     self.add_entity_node(
                         node_id=row["vehicle_id"],
                         label=row["plate_number"],
                         node_type="Vehicle",
                         properties={
-                            "make": row.get("make", ""),
-                            "model": row.get("model", ""),
+                            "make": make,
+                            "model": model,
                             "color": row.get("color", ""),
                             "vehicle_type": row.get("vehicle_type", ""),
                             "registered_owner": row.get("registered_owner", "")
@@ -134,14 +140,17 @@ class KnowledgeGraphStore:
         if os.path.exists(l_path):
             with open(l_path, "r", encoding="utf-8") as f:
                 for row in csv.DictReader(f):
+                    coords = [c.strip() for c in row.get("coordinates", "").split(",")] if row.get("coordinates") else []
+                    lat = float(coords[0]) if len(coords) > 0 and coords[0] else (float(row["latitude"]) if row.get("latitude") else None)
+                    lon = float(coords[1]) if len(coords) > 1 and coords[1] else (float(row["longitude"]) if row.get("longitude") else None)
                     self.add_entity_node(
                         node_id=row["location_id"],
                         label=row["name"],
                         node_type="Location",
                         properties={
                             "address": row.get("address", ""),
-                            "latitude": float(row["latitude"]) if row.get("latitude") else None,
-                            "longitude": float(row["longitude"]) if row.get("longitude") else None,
+                            "latitude": lat,
+                            "longitude": lon,
                             "location_type": row.get("location_type", "")
                         }
                     )
@@ -156,10 +165,10 @@ class KnowledgeGraphStore:
                         label=row["name"],
                         node_type="Organization",
                         properties={
-                            "registration_no": row.get("registration_no", ""),
+                            "registration_no": row.get("registration_no") or row.get("registration_number", ""),
                             "jurisdiction": row.get("jurisdiction", ""),
-                            "org_type": row.get("org_type", ""),
-                            "flagged_status": row.get("flagged_status", "")
+                            "org_type": row.get("org_type") or row.get("type", ""),
+                            "flagged_status": row.get("flagged_status") or row.get("status", "")
                         }
                     )
 
@@ -246,12 +255,106 @@ class KnowledgeGraphStore:
             total_edges=len(edges)
         )
 
-    def get_subgraph(self, center_node_id: str, max_hops: int = 2, rel_types: List[str] = None) -> GraphResponse:
-        """Extracts k-hop ego network around a specific entity node."""
-        if not self.undirected_graph.has_node(center_node_id):
+    def evaluate_node_suspicion(self, node_id: str, node_data: Dict[str, Any], b_score: float, deg: int) -> Tuple[bool, List[str]]:
+        """Evaluates whether a node has potentially suspicious activity indicators (Responsible AI)."""
+        reasons = []
+        is_susp = False
+
+        # 1. High betweenness centrality (bridge gateway)
+        if b_score > 0.12:
+            is_susp = True
+            reasons.append("Potential Bridge Entity (Articulation point linking distinct sub-networks)")
+
+        # 2. Risk classification from properties
+        risk = (node_data.get("risk_level") or "").upper()
+        if risk in ["HIGH", "CRITICAL"]:
+            is_susp = True
+            reasons.append(f"High Risk Classification ({risk.capitalize()}) in Intelligence Records")
+
+        # 3. High degree connectivity anomaly
+        if deg >= 15:
+            is_susp = True
+            reasons.append(f"High Density Hub ({deg} active relationships)")
+
+        # 4. Priority lead score above threshold
+        priority = float(node_data.get("priority_score") or 0.0)
+        if priority >= 70.0:
+            is_susp = True
+            reasons.append(f"Elevated Investigative Priority Score ({round(priority, 1)}/100)")
+
+        return is_susp, reasons
+
+    def get_all_entities_list(self) -> List[EntitySearchItem]:
+        """Returns compact, sorted list of all entities for global graph search & autocomplete."""
+        items = []
+        for n_id, data in self.nodes_data.items():
+            deg = self.undirected_graph.degree(n_id) if self.undirected_graph.has_node(n_id) else 0
+            items.append(EntitySearchItem(
+                id=n_id,
+                label=data.get("label", n_id),
+                type=data.get("type", "Entity"),
+                risk_level=data.get("risk_level", "Medium"),
+                priority_score=data.get("priority_score", 0.0),
+                degree=deg
+            ))
+        # Sort priority: Persons first, then by priority score / degree
+        type_order = {"Person": 0, "Case": 1, "Organization": 2, "Phone": 3, "Vehicle": 4, "Location": 5}
+        items.sort(key=lambda x: (type_order.get(x.type, 9), -x.priority_score, -x.degree))
+        return items
+
+    def get_subgraph(
+        self,
+        center_node_id: Optional[str] = None,
+        max_hops: int = 2,
+        categories: Optional[List[str]] = None,
+        rel_types: Optional[List[str]] = None,
+        max_nodes: int = 25,
+        smart_ranking: bool = True,
+        suspicious_only: bool = False
+    ) -> GraphResponse:
+        """Extracts focused, uncluttered k-hop ego network with edge aggregation and smart ranking."""
+        if not self.undirected_graph.nodes():
             return GraphResponse(nodes=[], edges=[], total_nodes=0, total_edges=0)
 
-        # BFS to find k-hop neighbors
+        # Fallback to first high-degree node if center_node_id not provided
+        if not center_node_id or not self.undirected_graph.has_node(center_node_id):
+            if "P001" in self.undirected_graph:
+                center_node_id = "P001"
+            else:
+                center_node_id = max(self.undirected_graph.degree(), key=lambda x: x[1])[0]
+
+        # Category mapping filter
+        CAT_MAP = {
+            "CALLS": ["CALL", "CDR", "DIAL", "SMS", "COMMUNICAT", "CONTACT", "CALLED"],
+            "FINANCIAL": ["TRANSFER", "HAWALA", "FINANC", "PAY", "TRANSACT", "MONEY", "FUND", "BANK", "FOREX", "LAUNDER"],
+            "CASES": ["CASE", "SUSPECT", "EVIDENCE", "INVESTIG", "INCIDENT", "CRIME", "FIR", "LEAD"],
+            "PHONES": ["USE", "OWN", "SIM", "DEVICE", "PHONE", "CALL"],
+            "VEHICLES": ["VEHICLE", "DRIV", "REGIST", "CAR", "TRANSPORT"],
+            "LOCATIONS": ["LOCAT", "SEEN", "VISIT", "STAY", "MEET", "PLACE", "PORT"],
+            "ORGANIZATIONS": ["ORGANIZATION", "MEMBER", "DIRECTOR", "OPERAT", "COMPANY", "SHELL"],
+            "ASSOCIATIONS": ["ASSOCIAT", "KNOWN", "RELAT", "ACCOMPLICE", "FAMILY", "MEETING"]
+        }
+
+        allowed_rel_patterns = []
+        if categories:
+            for cat in categories:
+                cat_upper = cat.upper()
+                if cat_upper in CAT_MAP:
+                    allowed_rel_patterns.extend(CAT_MAP[cat_upper])
+                else:
+                    allowed_rel_patterns.append(cat_upper)
+
+        def is_edge_allowed(rel_name: str) -> bool:
+            if not rel_name:
+                return True
+            r_up = rel_name.upper()
+            if rel_types and rel_name not in rel_types:
+                return False
+            if allowed_rel_patterns:
+                return any(pat in r_up for pat in allowed_rel_patterns)
+            return True
+
+        # BFS to find k-hop reachable candidates
         visited = {center_node_id: 0}
         queue = [(center_node_id, 0)]
 
@@ -260,22 +363,70 @@ class KnowledgeGraphStore:
             if depth >= max_hops:
                 continue
             for neighbor in self.undirected_graph.neighbors(curr):
+                # Verify at least one connecting edge matches the category filters
+                edges_between = self.graph.get_edge_data(curr, neighbor) or self.graph.get_edge_data(neighbor, curr) or {}
+                has_matching_edge = any(is_edge_allowed(ed.get("relationship", "")) for ed in edges_between.values())
+                if not has_matching_edge and (allowed_rel_patterns or rel_types):
+                    continue
+
                 if neighbor not in visited or visited[neighbor] > depth + 1:
                     visited[neighbor] = depth + 1
                     queue.append((neighbor, depth + 1))
 
-        sub_node_ids = set(visited.keys())
+        all_reachable_node_ids = set(visited.keys())
+        total_connections_count = len(all_reachable_node_ids)
+
         centrality = self.calculate_centralities()
         communities = self.detect_communities()
         bridges = self.find_bridge_nodes()
         bridge_ids = {b.node_id for b in bridges}
 
+        # Select & Prioritize Nodes (Smart Ranking)
+        if len(all_reachable_node_ids) <= max_nodes:
+            selected_node_ids = all_reachable_node_ids
+        else:
+            # Seed node always included
+            candidate_ids = [n for n in all_reachable_node_ids if n != center_node_id]
+
+            if smart_ranking:
+                def score_node(n_id: str) -> float:
+                    hop_dist = visited.get(n_id, 99)
+                    hop_score = 100.0 / (hop_dist + 1)
+                    data = self.nodes_data.get(n_id, {})
+                    p_score = float(data.get("priority_score", 0.0))
+                    b_score = centrality.get(n_id, {}).get("betweenness", 0.0) * 50.0
+                    deg_score = self.undirected_graph.degree(n_id) * 1.5
+                    is_susp, _ = self.evaluate_node_suspicion(n_id, data, centrality.get(n_id, {}).get("betweenness", 0.0), self.undirected_graph.degree(n_id))
+                    susp_boost = 30.0 if is_susp else 0.0
+                    return hop_score + p_score + b_score + deg_score + susp_boost
+
+                candidate_ids.sort(key=score_node, reverse=True)
+            else:
+                candidate_ids.sort(key=lambda n: (visited.get(n, 99), -self.undirected_graph.degree(n)))
+
+            selected_node_ids = {center_node_id} | set(candidate_ids[:max_nodes - 1])
+
+        # Filter by suspicious_only if enabled
+        if suspicious_only:
+            susp_nodes = {center_node_id}
+            for n_id in selected_node_ids:
+                data = self.nodes_data.get(n_id, {})
+                b_score = centrality.get(n_id, {}).get("betweenness", 0.0)
+                deg = self.undirected_graph.degree(n_id) if self.undirected_graph.has_node(n_id) else 0
+                is_susp, _ = self.evaluate_node_suspicion(n_id, data, b_score, deg)
+                if is_susp:
+                    susp_nodes.add(n_id)
+            selected_node_ids = susp_nodes
+
+        # Build GraphNode list
         nodes = []
-        for n_id in sub_node_ids:
+        for n_id in selected_node_ids:
             data = self.nodes_data.get(n_id, {})
             deg = self.undirected_graph.degree(n_id) if self.undirected_graph.has_node(n_id) else 0
             b_score = centrality.get(n_id, {}).get("betweenness", 0.0)
             comm_id = communities.get(n_id, 0)
+            is_susp, reasons = self.evaluate_node_suspicion(n_id, data, b_score, deg)
+
             nodes.append(GraphNode(
                 id=n_id,
                 label=data.get("label", n_id),
@@ -285,29 +436,69 @@ class KnowledgeGraphStore:
                 betweenness=round(b_score, 4),
                 community=comm_id,
                 is_bridge=n_id in bridge_ids,
-                priority_score=data.get("priority_score", 0.0)
+                priority_score=data.get("priority_score", 0.0),
+                is_suspicious=is_susp,
+                suspicion_reasons=reasons,
+                total_connections=deg
             ))
 
-        edges = []
+        # Build & Aggregate Edges between selected nodes
+        edge_groups: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
         for e in self.edges_data:
-            if e["source"] in sub_node_ids and e["target"] in sub_node_ids:
-                if not rel_types or e["relationship"] in rel_types:
-                    edges.append(GraphEdge(
-                        id=e["id"],
-                        source=e["source"],
-                        target=e["target"],
-                        relationship=e["relationship"],
-                        date=e.get("date"),
-                        confidence=e.get("confidence", 1.0),
-                        evidence_id=e.get("evidence_id"),
-                        notes=e.get("notes")
-                    ))
+            u, v = e["source"], e["target"]
+            if u in selected_node_ids and v in selected_node_ids:
+                rel = e.get("relationship", "")
+                if is_edge_allowed(rel):
+                    # Canonical unordered pair for undirected representation
+                    pair = (min(u, v), max(u, v))
+                    edge_groups.setdefault(pair, []).append(e)
+
+        edges = []
+        for (u, v), recs in edge_groups.items():
+            primary_rec = recs[0]
+            count = len(recs)
+            # Find representative relationship label
+            rel_types_in_group = [r.get("relationship", "CONNECTED") for r in recs]
+            most_frequent_rel = max(set(rel_types_in_group), key=rel_types_in_group.count)
+            display_rel = f"{most_frequent_rel} ×{count}" if count > 1 else most_frequent_rel
+
+            # Aggregate notes and evidence IDs
+            all_evidence = [r["evidence_id"] for r in recs if r.get("evidence_id")]
+            primary_evidence = all_evidence[0] if all_evidence else ""
+
+            # Check if edge is suspicious
+            edge_suspicious = count >= 5 or any("HAWALA" in r.get("relationship", "").upper() or "UNTRACE" in r.get("notes", "").upper() for r in recs)
+            edge_susp_reasons = []
+            if count >= 5:
+                edge_susp_reasons.append(f"High Interaction Frequency ({count} repeated records)")
+            if any("HAWALA" in r.get("relationship", "").upper() for r in recs):
+                edge_susp_reasons.append("Unregulated Hawala Financial Layering Pattern")
+
+            edges.append(GraphEdge(
+                id=f"agg_{u}_{v}",
+                source=u,
+                target=v,
+                relationship=display_rel,
+                date=primary_rec.get("date"),
+                confidence=round(sum(r.get("confidence", 1.0) for r in recs) / count, 2),
+                evidence_id=primary_evidence,
+                notes=primary_rec.get("notes"),
+                count=count,
+                is_suspicious=edge_suspicious,
+                suspicion_reasons=edge_susp_reasons,
+                aggregated_records=recs
+            ))
 
         return GraphResponse(
             nodes=nodes,
             edges=edges,
             total_nodes=len(nodes),
-            total_edges=len(edges)
+            total_edges=len(edges),
+            total_connections_count=total_connections_count,
+            filtered_nodes_count=len(nodes),
+            filtered_edges_count=len(edges),
+            seed_node_id=center_node_id,
+            is_filtered=len(nodes) < total_connections_count
         )
 
     def get_case_subgraph(self, case_id: str, hops: int = 2) -> GraphResponse:
@@ -315,7 +506,10 @@ class KnowledgeGraphStore:
         return self.get_subgraph(center_node_id=case_id, max_hops=hops)
 
     def calculate_centralities(self) -> Dict[str, Dict[str, float]]:
-        """Calculates degree, betweenness, and PageRank centralities."""
+        """Calculates degree, betweenness, and PageRank centralities (cached after first computation)."""
+        if self._centrality_cache is not None:
+            return self._centrality_cache
+
         if self.undirected_graph.number_of_nodes() == 0:
             return {}
 
@@ -324,7 +518,7 @@ class KnowledgeGraphStore:
             bet_cent = nx.betweenness_centrality(self.undirected_graph, normalized=True)
         except Exception:
             bet_cent = {n: 0.0 for n in self.undirected_graph.nodes()}
-            
+
         try:
             pagerank = nx.pagerank(self.undirected_graph, max_iter=200)
         except Exception:
@@ -337,10 +531,15 @@ class KnowledgeGraphStore:
                 "betweenness": bet_cent.get(n, 0.0),
                 "pagerank": pagerank.get(n, 0.0)
             }
+        self._centrality_cache = results
+        print("[KnowledgeGraphStore] Centrality cache built.")
         return results
 
     def detect_communities(self) -> Dict[str, int]:
-        """Detects network communities using greedy modularity or label propagation."""
+        """Detects network communities using greedy modularity or label propagation (cached after first computation)."""
+        if self._community_cache is not None:
+            return self._community_cache
+
         if self.undirected_graph.number_of_nodes() == 0:
             return {}
 
@@ -350,14 +549,16 @@ class KnowledgeGraphStore:
             for comm_idx, comm_set in enumerate(communities_gen):
                 for node_id in comm_set:
                     node_community[node_id] = comm_idx + 1
-            return node_community
         except Exception:
             # Fallback to connected components
             node_community = {}
             for idx, comp in enumerate(nx.connected_components(self.undirected_graph)):
                 for node_id in comp:
                     node_community[node_id] = idx + 1
-            return node_community
+
+        self._community_cache = node_community
+        print("[KnowledgeGraphStore] Community cache built.")
+        return node_community
 
     def get_community_details(self) -> List[CommunityInfo]:
         """Provides rich community summaries and key members."""
@@ -400,7 +601,10 @@ class KnowledgeGraphStore:
         return community_list
 
     def find_bridge_nodes(self) -> List[BridgeNodeInfo]:
-        """Identifies key bridge nodes (articulation points or cross-community gateways)."""
+        """Identifies key bridge nodes (articulation points or cross-community gateways) (cached after first computation)."""
+        if self._bridge_cache is not None:
+            return self._bridge_cache
+
         centralities = self.calculate_centralities()
         communities = self.detect_communities()
         bridge_list = []
@@ -448,6 +652,8 @@ class KnowledgeGraphStore:
                 ))
 
         bridge_list.sort(key=lambda x: x.betweenness, reverse=True)
+        self._bridge_cache = bridge_list
+        print(f"[KnowledgeGraphStore] Bridge cache built ({len(bridge_list)} bridge nodes).")
         return bridge_list
 
     def find_shortest_path(self, source_id: str, target_id: str, max_hops: int = 4) -> ShortestPathResponse:
