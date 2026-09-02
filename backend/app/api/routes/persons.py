@@ -79,17 +79,13 @@ def get_person_details(person_id: str, db: Session = Depends(get_db)):
     
     # Map person case associations
     case_ids = [c["case_id"] for c in associated_cases]
-    if person_id == "P001" and "C019" not in case_ids:
-        case_ids.append("C019")
-        if not any(c["case_id"] == "C019" for c in associated_cases):
-            associated_cases.append({"case_id": "C019", "title": "C019: Operation Maritime Contraband Intercept"})
 
     score_data = priority_scorer.calculate_priority_score(
         person_id=person_id,
         graph_metrics={
             "betweenness": p_cent.get("betweenness", 0.0),
             "degree": graph_store.undirected_graph.degree(person_id) if graph_store.undirected_graph.has_node(person_id) else 0,
-            "is_bridge": is_bridge or person_id == "P001"
+            "is_bridge": is_bridge
         },
         associated_cases=case_ids,
         alerts=alert_dicts,
