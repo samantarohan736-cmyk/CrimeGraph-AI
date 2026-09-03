@@ -1,4 +1,3 @@
-import os
 import re
 from typing import List, Dict, Any
 
@@ -56,33 +55,6 @@ class HybridEntityExtractor:
     """
     def __init__(self):
         self._spacy_nlp = None
-        self.person_names = list(PATTERNS["PERSON_NAMES"])
-        self.locations = list(PATTERNS["LOCATIONS"])
-        self.organizations = list(PATTERNS["ORGANIZATIONS"])
-
-    def load_gazetteers_from_data(self, synthetic_dir: str):
-        import csv
-        p_path = os.path.join(synthetic_dir, "persons.csv")
-        if os.path.exists(p_path):
-            with open(p_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    name = row.get("name", "").strip()
-                    if name and len(name) > 2 and name not in self.person_names:
-                        self.person_names.append(name)
-        l_path = os.path.join(synthetic_dir, "locations.csv")
-        if os.path.exists(l_path):
-            with open(l_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    name = row.get("name", "").strip()
-                    if name and len(name) > 2 and name not in self.locations:
-                        self.locations.append(name)
-        o_path = os.path.join(synthetic_dir, "organizations.csv")
-        if os.path.exists(o_path):
-            with open(o_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    name = row.get("name", "").strip()
-                    if name and len(name) > 2 and name not in self.organizations:
-                        self.organizations.append(name)
 
     @property
     def spacy_nlp(self):
@@ -98,8 +70,33 @@ class HybridEntityExtractor:
         entities = []
         seen_spans = set()
 
-        # 1. Custom Known Person Entities with Aliases
-        for name in self.person_names:
+        # 1. General-purpose NER via spaCy, when the model is available. This is what
+        # makes PERSON/ORGANIZATION/LOCATION recognition work on any real document,
+        # rather than only the fixed alias list in step 2 below.
+        nlp = self.spacy_nlp
+        if nlp is not None and text:
+            spacy_label_map = {"PERSON": "PERSON", "ORG": "ORGANIZATION", "GPE": "LOCATION", "LOC": "LOCATION", "FAC": "LOCATION"}
+            for ent in nlp(text).ents:
+                mapped_type = spacy_label_map.get(ent.label_)
+                if not mapped_type:
+                    continue
+                span = (ent.start_char, ent.end_char)
+                if span not in seen_spans:
+                    seen_spans.add(span)
+                    entities.append({
+                        "entity_type": mapped_type,
+                        "extracted_text": ent.text,
+                        "normalized_value": ent.text.strip(),
+                        "start_char": ent.start_char,
+                        "end_char": ent.end_char,
+                        "confidence": 0.85,
+                        "source_doc": source_doc
+                    })
+
+        # 2. Known Person/Location/Organization aliases - supplementary, catches
+        # entities already on file (e.g. short codenames) that a general NER model
+        # might not recognize on its own. Never the only source of these entity types.
+        for name in PATTERNS["PERSON_NAMES"]:
             pattern = rf"\b{re.escape(name)}\b"
             for m in re.finditer(pattern, text, re.IGNORECASE):
                 span = (m.start(), m.end())
@@ -115,8 +112,8 @@ class HybridEntityExtractor:
                         "source_doc": source_doc
                     })
 
-        # 2. Known Locations
-        for loc in self.locations:
+        # 3. Known Locations
+        for loc in PATTERNS["LOCATIONS"]:
             pattern = rf"\b{re.escape(loc)}\b"
             for m in re.finditer(pattern, text, re.IGNORECASE):
                 span = (m.start(), m.end())
@@ -132,8 +129,8 @@ class HybridEntityExtractor:
                         "source_doc": source_doc
                     })
 
-        # 3. Known Organizations
-        for org in self.organizations:
+        # 4. Known Organizations
+        for org in PATTERNS["ORGANIZATIONS"]:
             pattern = rf"\b{re.escape(org)}\b"
             for m in re.finditer(pattern, text, re.IGNORECASE):
                 span = (m.start(), m.end())
@@ -149,7 +146,7 @@ class HybridEntityExtractor:
                         "source_doc": source_doc
                     })
 
-        # 4. Regex Phone Numbers
+        # 5. Regex Phone Numbers
         for p_regex in PATTERNS["PHONE"]:
             for m in re.finditer(p_regex, text):
                 val = m.group(0).strip()
@@ -167,7 +164,7 @@ class HybridEntityExtractor:
                             "source_doc": source_doc
                         })
 
-        # 5. Regex Vehicles
+        # 6. Regex Vehicles
         for v_regex in PATTERNS["VEHICLE"]:
             for m in re.finditer(v_regex, text):
                 val = m.group(0).strip()
@@ -184,7 +181,7 @@ class HybridEntityExtractor:
                         "source_doc": source_doc
                     })
 
-        # 6. Regex Cases
+        # 7. Regex Cases
         for c_regex in PATTERNS["CASE"]:
             for m in re.finditer(c_regex, text, re.IGNORECASE):
                 val = m.group(0).strip()
@@ -201,7 +198,7 @@ class HybridEntityExtractor:
                         "source_doc": source_doc
                     })
 
-        # 7. Regex Amounts
+        # 8. Regex Amounts
         for a_regex in PATTERNS["AMOUNT"]:
             for m in re.finditer(a_regex, text, re.IGNORECASE):
                 val = m.group(0).strip()
@@ -218,7 +215,7 @@ class HybridEntityExtractor:
                         "source_doc": source_doc
                     })
 
-        # 8. Regex Dates
+        # 9. Regex Dates
         for d_regex in PATTERNS["DATE"]:
             for m in re.finditer(d_regex, text, re.IGNORECASE):
                 val = m.group(0).strip()

@@ -308,23 +308,18 @@ class KnowledgeGraphStore:
             return node_community
 
     def get_community_details(self) -> List[CommunityInfo]:
-        """Provides rich community summaries and key members."""
+        """Provides rich community summaries and key members, themed from whatever
+        Case nodes actually sit in each cluster - never a fixed guess."""
         comm_map = self.detect_communities()
         groups: Dict[int, List[str]] = {}
         for node_id, c_id in comm_map.items():
             groups.setdefault(c_id, []).append(node_id)
 
-        themes = {
-            1: "Hawala & Financial Layering (Case C042 Focus)",
-            2: "Maritime Contraband & Port Cargo (Case C019 Focus)",
-            3: "Cyber Extortion & Darknet OTC Mixing (Case C055 Focus)"
-        }
-
         community_list = []
         for c_id, members in sorted(groups.items()):
             key_entities = [self.nodes_data.get(m, {}).get("label", m) for m in members if self.nodes_data.get(m, {}).get("type") in ["Person", "Case", "Organization"]]
-            theme = themes.get(c_id, f"Cluster #{c_id} Syndicate Subgroup")
-            
+            theme = self._community_theme_label(members)
+
             member_nodes = []
             for m in members:
                 data = self.nodes_data.get(m, {})
@@ -338,7 +333,7 @@ class KnowledgeGraphStore:
 
             community_list.append(CommunityInfo(
                 community_id=c_id,
-                name=f"Syndicate Cluster {c_id}: {theme.split('(')[0].strip()}",
+                name=f"Cluster {c_id}",
                 size=len(members),
                 key_entities=key_entities[:5],
                 dominant_crime_theme=theme,
@@ -346,6 +341,19 @@ class KnowledgeGraphStore:
             ))
 
         return community_list
+
+    def _community_theme_label(self, member_ids: List[str]) -> str:
+        """Builds a theme label for a cluster from its actual Case nodes, falling back
+        to the cluster's dominant entity type when no case is linked yet."""
+        case_titles = [self.nodes_data.get(m, {}).get("label", m) for m in member_ids if self.nodes_data.get(m, {}).get("type") == "Case"]
+        if case_titles:
+            return f"Linked to {', '.join(case_titles)}"
+        type_counts: Dict[str, int] = {}
+        for m in member_ids:
+            t = self.nodes_data.get(m, {}).get("type", "Entity")
+            type_counts[t] = type_counts.get(t, 0) + 1
+        dominant_type = max(type_counts, key=type_counts.get) if type_counts else "Entity"
+        return f"{dominant_type}-Dominant Cluster (no case linked yet)"
 
     def find_bridge_nodes(self) -> List[BridgeNodeInfo]:
         """Identifies key bridge nodes (articulation points or cross-community gateways)."""
@@ -380,9 +388,9 @@ class KnowledgeGraphStore:
                         ))
 
                 themes = []
-                if 1 in neighbor_communities: themes.append("Hawala Syndicate (C042)")
-                if 2 in neighbor_communities: themes.append("Contraband Logistics (C019)")
-                if 3 in neighbor_communities: themes.append("Cyber Extortion (C055)")
+                for nc in neighbor_communities:
+                    nc_members = [n for n, c in communities.items() if c == nc]
+                    themes.append(self._community_theme_label(nc_members))
 
                 bridge_list.append(BridgeNodeInfo(
                     node_id=node_id,
@@ -508,7 +516,7 @@ class KnowledgeGraphStore:
         return NetworkOverviewMetrics(
             total_nodes=n_count,
             total_edges=e_count,
-            network_density=round(density, 4),
+            network_density=round(ensity, 4),
             average_clustering=round(clustering, 4),
             connected_components=components,
             louvain_communities_count=communities,

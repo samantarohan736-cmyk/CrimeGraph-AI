@@ -4,7 +4,7 @@ import {
   Upload, 
   RefreshCw
 } from 'lucide-react';
-import { getDocuments, getDocumentDetails, uploadDocument, analyzeDocument } from '../services/api';
+import { getDocuments, getDocumentDetails, uploadDocument, analyzeDocument, getCases } from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 
 export default function DocumentsPage() {
@@ -13,12 +13,22 @@ export default function DocumentsPage() {
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [cases, setCases] = useState([]);
 
   // Upload Form State
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadTitle, setUploadTitle] = useState('');
-  const [uploadCaseId, setUploadCaseId] = useState('C042');
+  const [uploadCaseId, setUploadCaseId] = useState('');
   const [uploading, setUploading] = useState(false);
+
+  const fetchCases = async () => {
+    try {
+      const res = await getCases();
+      setCases(res);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchDocs = async () => {
     try {
@@ -38,6 +48,7 @@ export default function DocumentsPage() {
 
   useEffect(() => {
     fetchDocs();
+    fetchCases();
   }, []);
 
   const handleSelectDoc = async (docId) => {
@@ -74,7 +85,9 @@ export default function DocumentsPage() {
       const formData = new FormData();
       formData.append('file', uploadFile);
       formData.append('title', uploadTitle);
-      formData.append('case_id', uploadCaseId);
+      if (uploadCaseId) {
+        formData.append('case_id', uploadCaseId);
+      }
       await uploadDocument(formData);
       setUploadOpen(false);
       setUploadFile(null);
@@ -276,9 +289,10 @@ export default function DocumentsPage() {
                   onChange={(e) => setUploadCaseId(e.target.value)}
                   className="w-full px-3 py-2 bg-cream-100 border-2 border-black rounded-lg text-black font-bold focus:outline-none shadow-brutal-sm"
                 >
-                  <option value="C042">C042: Operation Golden Hawala</option>
-                  <option value="C019">C019: Maritime Contraband</option>
-                  <option value="C055">C055: Cyber Extortion</option>
+                  <option value="">-- No case association --</option>
+                  {cases.map((c) => (
+                    <option key={c.case_id} value={c.case_id}>{c.case_id}: {c.title}</option>
+                  ))}
                 </select>
               </div>
 

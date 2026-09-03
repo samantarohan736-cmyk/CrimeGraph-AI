@@ -82,54 +82,107 @@ class InvestigationPriorityScorer:
         )
         final_score = int(round(total_score))
 
-        # Explicit Factor Contribution Breakdown
+        # Explicit Factor Contribution Breakdown - descriptions and evidence citations
+        # below are built entirely from what was actually passed in for this person,
+        # never a fixed narrative, so they stay honest for whatever real data exists.
+        cdr_reasons = [a.get("reason") for a in cdr_alerts if a.get("reason")]
+        tx_reasons = [a.get("reason") for a in tx_alerts if a.get("reason")]
+        night_alerts = [
+            a for a in alerts
+            if a.get("entity_id") == person_id and
+            ("TIME" in str(a.get("alert_type")) or "TEMPORAL" in str(a.get("alert_type")))
+        ]
+        night_reasons = [a.get("reason") for a in night_alerts if a.get("reason")]
+
+        cent_desc = f"Betweenness centrality of {betweenness:.3f} across {degree} direct graph connection(s)."
+        if is_bridge:
+            cent_desc += " Identified as a network bridge entity linking otherwise separate clusters."
+
+        case_desc = (
+            f"Directly linked to {case_count} case(s): {', '.join(associated_cases)}."
+            if associated_cases else "Not currently linked to any active case in the graph."
+        )
+
+        if cdr_reasons:
+            cdr_desc = "; ".join(cdr_reasons[:3])
+        elif cdr_alerts:
+            cdr_desc = f"{len(cdr_alerts)} communication anomaly alert(s) on file for this entity."
+        else:
+            cdr_desc = "No statistically significant communication anomalies detected for this entity."
+
+        if tx_reasons:
+            tx_desc = "; ".join(tx_reasons[:3])
+        elif tx_alerts:
+            tx_desc = f"{len(tx_alerts)} transaction anomaly alert(s) on file for this entity."
+        else:
+            tx_desc = "No statistically significant transaction anomalies detected for this entity."
+
+        if night_reasons:
+            temp_desc = "; ".join(night_reasons[:3])
+        elif has_night:
+            temp_desc = "Off-hours / nocturnal activity pattern flagged for this entity."
+        else:
+            temp_desc = "No off-hours activity pattern detected for this entity."
+
         factors = [
             {
                 "factor_name": "Network Centrality & Bridge Role",
                 "score": cent_score,
                 "weight": self.w_centrality,
                 "contribution": round(cent_score * self.w_centrality, 1),
-                "description": f"High topological betweenness ({betweenness:.3f}) and {degree} multi-modal links acting as bridge entity.",
-                "supporting_evidence": ["GRAPH-TOPOLOGY-CENTRALITY", "BRIDGE-ARTICULATION"]
+                "description": cent_desc,
+                "supporting_evidence": []
             },
             {
                 "factor_name": "Cross-Case Association",
                 "score": case_score,
                 "weight": self.w_cross_case,
                 "contribution": round(case_score * self.w_cross_case, 1),
-                "description": f"Direct active involvement in {case_count} high-priority investigative cases ({', '.join(associated_cases) if associated_cases else 'None'}).",
-                "supporting_evidence": [f"CASE-{c}" for c in associated_cases]
+                "description": case_desc,
+                "supporting_evidence": []
             },
             {
                 "factor_name": "Communication Spike Anomaly",
                 "score": cdr_score,
                 "weight": self.w_cdr,
                 "contribution": round(cdr_score * self.w_cdr, 1),
-                "description": "420% increase in call frequency over baseline including burner phone coordination.",
-                "supporting_evidence": [a.get("supporting_evidence_id", "CDR-182") for a in cdr_alerts] or ["CDR-LOGS"]
+                "description": cdr_desc,
+                "supporting_evidence": [a.get("supporting_evidence_id") for a in cdr_alerts if a.get("supporting_evidence_id")]
             },
             {
                 "factor_name": "Transaction Surge Anomaly",
                 "score": tx_score,
                 "weight": self.w_tx,
                 "contribution": round(tx_score * self.w_tx, 1),
-                "description": "Surge transaction 7.4x above historical median linked to OTC crypto/hawala routing.",
-                "supporting_evidence": [a.get("supporting_evidence_id", "TX-01082") for a in tx_alerts] or ["TX-RECORDS"]
+                "description": tx_desc,
+                "supporting_evidence": [a.get("supporting_evidence_id") for a in tx_alerts if a.get("supporting_evidence_id")]
             },
             {
                 "factor_name": "Temporal Off-Hours Patterns",
                 "score": temp_score,
                 "weight": self.w_time,
                 "contribution": round(temp_score * self.w_time, 1),
-                "description": "Concentrated nocturnal communications and off-hours logistics dispatches between 01:00 AM - 04:00 AM.",
-                "supporting_evidence": ["EVD-TIME-OFFHOURS"]
+                "description": temp_desc,
+                "supporting_evidence": [a.get("supporting_evidence_id") for a in night_alerts if a.get("supporting_evidence_id")]
             }
         ]
 
+        active_factor_notes = []
+        if is_bridge:
+            active_factor_notes.append("network bridge positioning")
+        if case_count > 0:
+            active_factor_notes.append(f"association with {case_count} case(s)")
+        if cdr_alerts:
+            active_factor_notes.append("communication anomalies")
+        if tx_alerts:
+            active_factor_notes.append("transaction anomalies")
+        if has_night:
+            active_factor_notes.append("off-hours activity")
+
         explanation = (
-            f"Investigation Priority Score is {final_score}/100 based on elevated graph centrality (contribution: {round(cent_score * self.w_centrality, 1)}), "
-            f"cross-case connectivity across {case_count} active operations (contribution: {round(case_score * self.w_cross_case, 1)}), "
-            f"and statistical spikes in communications and financial disbursements."
+            f"Investigation Priority Score is {final_score}/100, driven by " +
+            (", ".join(active_factor_notes) if active_factor_notes else "baseline graph position with no anomaly alerts currently on file") +
+            "."
         )
 
         return {

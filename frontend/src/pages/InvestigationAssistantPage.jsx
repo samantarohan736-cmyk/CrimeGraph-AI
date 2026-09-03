@@ -11,12 +11,10 @@ import {
 import { queryAssistant } from '../services/api';
 
 const PRESET_QUERIES = [
-  "How is Rahul Sharma connected to Case C042?",
   "Who are the most connected entities?",
   "Which person bridges two communities?",
   "Show suspicious transaction activity",
-  "Why was P001 prioritized?",
-  "Show the shortest path between P001 and C042"
+  "Which entity has the highest priority score, and why?"
 ];
 
 export default function InvestigationAssistantPage() {
@@ -215,7 +213,7 @@ export default function InvestigationAssistantPage() {
           type="text"
           value={queryInput}
           onChange={(e) => setQueryInput(e.target.value)}
-          placeholder="ASK INVESTIGATIVE QUESTION (e.g. 'How is Rahul Sharma connected to Case C042?')..."
+          placeholder="ASK INVESTIGATIVE QUESTION (e.g. 'Who are the most connected entities?')..."
           className="w-full pl-4 pr-28 py-3.5 bg-white border-[3px] border-black rounded-xl text-sm font-bold text-black placeholder-slate-500 focus:outline-none shadow-brutal"
         />
         <button
