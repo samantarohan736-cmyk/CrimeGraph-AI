@@ -25,19 +25,28 @@ export default function DocumentsPage() {
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
+<<<<<<< HEAD
   const [uploadSuccessMsg, setUploadSuccessMsg] = useState(null);
   const [selectedCaseFilter, setSelectedCaseFilter] = useState('ALL');
   const navigate = useNavigate();
+=======
+  const [cases, setCases] = useState([]);
+>>>>>>> origin/Anirudha
 
   // Upload Form State
   const [uploadMode, setUploadMode] = useState('file'); // 'file' | 'text'
   const [uploadFile, setUploadFile] = useState(null);
   const [uploadRawText, setUploadRawText] = useState('');
   const [uploadTitle, setUploadTitle] = useState('');
+<<<<<<< HEAD
   const [uploadCaseId, setUploadCaseId] = useState(''); // Optional!
+=======
+  const [uploadCaseId, setUploadCaseId] = useState('');
+>>>>>>> origin/Anirudha
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+<<<<<<< HEAD
   // Distinct cases with docs count
   const casesWithDocsMap = {};
   docs.forEach(d => {
@@ -152,6 +161,7 @@ export default function DocumentsPage() {
     setUploading(true);
     try {
       const formData = new FormData();
+<<<<<<< HEAD
       formData.append('title', finalTitle);
       if (uploadCaseId && uploadCaseId.trim()) {
         formData.append('case_id', uploadCaseId.trim());
@@ -163,6 +173,14 @@ export default function DocumentsPage() {
       }
 
       const res = await uploadDocument(formData);
+=======
+      formData.append('file', uploadFile);
+      formData.append('title', uploadTitle);
+      if (uploadCaseId) {
+        formData.append('case_id', uploadCaseId);
+      }
+      await uploadDocument(formData);
+>>>>>>> origin/Anirudha
       setUploadOpen(false);
       setUploadFile(null);
       setUploadRawText('');
@@ -701,8 +719,37 @@ export default function DocumentsPage() {
                 </div>
               </div>
 
+<<<<<<< HEAD
               {/* Sticky Action Buttons */}
               <div className="flex items-center justify-end gap-2 p-3 border-t-2 border-black bg-cream-100 shrink-0">
+=======
+              <div>
+                <label className="text-slate-900 block mb-1 font-black">CASE ASSOCIATION</label>
+                <select
+                  value={uploadCaseId}
+                  onChange={(e) => setUploadCaseId(e.target.value)}
+                  className="w-full px-3 py-2 bg-cream-100 border-2 border-black rounded-lg text-black font-bold focus:outline-none shadow-brutal-sm"
+                >
+                  <option value="">-- No case association --</option>
+                  {cases.map((c) => (
+                    <option key={c.case_id} value={c.case_id}>{c.case_id}: {c.title}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-slate-900 block mb-1 font-black">FILE (TXT OR PDF)</label>
+                <input
+                  type="file"
+                  required
+                  accept=".txt,.pdf"
+                  onChange={(e) => setUploadFile(e.target.files[0])}
+                  className="w-full text-black file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-2 file:border-black file:text-xs file:font-black file:bg-brutal-yellow file:text-black hover:file:bg-brutal-cyan cursor-pointer"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+>>>>>>> origin/Anirudha
                 <button
                   type="button"
                   onClick={() => setUploadOpen(false)}

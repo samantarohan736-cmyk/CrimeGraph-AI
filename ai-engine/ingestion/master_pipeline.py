@@ -24,22 +24,29 @@ from anomaly_detection.cdr_anomaly import cdr_anomaly_detector
 from scoring.priority_scorer import priority_scorer
 from nlp.entity_extractor import entity_extractor
 
+
 class MasterIngestionPipeline:
     """
-    End-to-End Data Ingestion & Intelligence Pipeline for CrimeGraph AI.
-    Handles data validation, relational persistence, graph loading, NLP extraction,
-    anomaly detection, alert generation, entity resolution, and priority scoring.
-    """
-    def __init__(self, synthetic_dir: str = None, reports_dir: str = None):
-        self.synthetic_dir = synthetic_dir or settings.SYNTHETIC_DIR
-        self.reports_dir = reports_dir or settings.REPORTS_DIR
+    Manual bulk-import pipeline for CrimeGraph AI.
 
-    def validate_csv(self, filename: str, required_fields_options: list) -> tuple[bool, list, list]:
-        """
-        Validates CSV file existence and presence of required fields.
-        required_fields_options is a list where each item is either a field name or a list/tuple of alternative field names.
-        """
-        filepath = os.path.join(self.synthetic_dir, filename)
+    This is NOT run automatically on startup - the application boots with an empty
+    graph/database and stays that way until you run this explicitly. Drop CSV files
+    matching the schemas documented in data/import/README.md into the import
+    directory (default: data/import/) and run:
+
+        python ai-engine/ingestion/master_pipeline.py
+
+    It validates and loads structured records into PostgreSQL, mirrors entities and
+    relationships into the Neo4j-backed knowledge graph, runs statistical anomaly
+    detection on CDRs/transactions, and (re)computes Investigation Priority Scores
+    from the graph itself (not a hardcoded mapping). Safe to re-run: existing
+    records are matched by primary key and skipped.
+    """
+    def __init__(self, import_dir: str = None):
+        self.import_dir = import_dir or settings.IMPORT_DIR
+
+    def validate_csv(self, filename: str, required_fields: list) -> tuple[bool, list, list]:
+        filepath = os.path.join(self.import_dir, filename)
         if not os.path.exists(filepath):
             return False, [], [f"File not found: {filepath}"]
 
@@ -49,414 +56,345 @@ class MasterIngestionPipeline:
 
         with open(filepath, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
-            headers = set(reader.fieldnames or [])
-            
-            for req in required_fields_options:
-                if isinstance(req, (list, tuple)):
-                    if not any(alt in headers for alt in req):
-                        errors.append(f"[{filename}] Missing required field from alternatives {req}.")
-                elif req not in headers:
-                    errors.append(f"[{filename}] Missing required field '{req}'.")
-
-            first_col = reader.fieldnames[0] if reader.fieldnames else None
-
             for idx, row in enumerate(reader, start=1):
-                if first_col:
-                    rec_id = row.get(first_col, "").strip()
-                    if rec_id:
-                        if rec_id in seen_ids:
-                            errors.append(f"[{filename}:Row {idx}] Duplicate ID detected: '{rec_id}'.")
-                        else:
-                            seen_ids.add(rec_id)
+                for field in required_fields:
+                    if not row.get(field) or not row[field].strip():
+                        errors.append(f"[{filename}:Row {idx}] Missing required field '{field}'.")
+
+                id_field = required_fields[0]
+                rec_id = row.get(id_field, "").strip()
+                if rec_id:
+                    if rec_id in seen_ids:
+                        errors.append(f"[{filename}:Row {idx}] Duplicate ID detected: '{rec_id}'.")
+                    else:
+                        seen_ids.add(rec_id)
                 records.append(row)
 
         return len(errors) == 0, records, errors
 
-    def extract_person_cases_map(self) -> dict:
-        """Dynamically maps person IDs to associated Case IDs from relationships and cases."""
-        person_cases_map = {}
-        rel_path = os.path.join(self.synthetic_dir, "relationships.csv")
-        if os.path.exists(rel_path):
-            with open(rel_path, "r", encoding="utf-8") as f:
-                for row in csv.DictReader(f):
-                    s, t = row.get("source_id", ""), row.get("target_id", "")
-                    if s.startswith("P") and t.startswith("C"):
-                        person_cases_map.setdefault(s, set()).add(t)
-                    elif t.startswith("P") and s.startswith("C"):
-                        person_cases_map.setdefault(t, set()).add(s)
-
-        # Convert sets to sorted lists
-        return {k: sorted(list(v)) for k, v in person_cases_map.items()}
-
-    def run(self, db: Session = None, reset_db: bool = True):
+    def run(self, db: Session = None):
         print("\n==========================================")
-        print("Starting CrimeGraph AI Master Ingestion Pipeline")
+        print("Starting CrimeGraph AI Bulk Import Pipeline")
+        print(f"Import directory: {self.import_dir}")
         print("==========================================")
 
-        # 0. Load Gazetteers into NLP Entity Extractor
-        entity_extractor.load_gazetteers_from_data(self.synthetic_dir)
-
-        # Reset database tables if requested
-        if reset_db:
-            print("[Database] Re-creating database schema from scratch...")
-            Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
-        
+
         close_session = False
         if db is None:
             db = SessionLocal()
             close_session = True
 
         try:
-            # 1. Validate & Ingest Cases
+            # 1. Cases
             valid, cases_data, errs = self.validate_csv("cases.csv", ["case_id", "title"])
             if errs:
                 print(f"[Validation Warning] Cases errors: {errs}")
-            
+
             for c in cases_data:
                 existing = db.query(Case).filter(Case.case_id == c["case_id"]).first()
                 if not existing:
-                    reg_date = None
-                    if c.get("date_registered"):
-                        try:
-                            reg_date = datetime.strptime(c["date_registered"], "%Y-%m-%d")
-                        except Exception:
-                            pass
-                    inc_date = None
-                    if c.get("incident_date"):
-                        try:
-                            inc_date = datetime.strptime(c["incident_date"], "%Y-%m-%d")
-                        except Exception:
-                            pass
-                    
-                    est_val = None
-                    if c.get("estimated_value"):
-                        try:
-                            est_val = float(c["estimated_value"])
-                        except Exception:
-                            pass
-
-                    case_obj = Case(
-                        case_id=c["case_id"],
-                        title=c["title"],
-                        description=c.get("description"),
-                        case_type=c.get("case_type"),
-                        status=c.get("status", "Active Investigation"),
-                        priority=c.get("priority", "Medium"),
-                        lead_officer=c.get("lead_officer"),
-                        date_registered=reg_date,
-                        incident_date=inc_date,
-                        estimated_value=est_val
-                    )
-                    db.add(case_obj)
+                    reg_date = datetime.strptime(c["date_registered"], "%Y-%m-%d") if c.get("date_registered") else None
+                    inc_date = datetime.strptime(c["incident_date"], "%Y-%m-%d") if c.get("incident_date") else None
+                    db.add(Case(
+                        case_id=c["case_id"], title=c["title"], description=c.get("description"),
+                        case_type=c.get("case_type"), status=c.get("status", "Active Investigation"),
+                        priority=c.get("priority", "Medium"), lead_officer=c.get("lead_officer"),
+                        date_registered=reg_date, incident_date=inc_date,
+                        estimated_value=float(c["estimated_value"]) if c.get("estimated_value") else None
+                    ))
             db.commit()
             print(f"[Ingestion] Cases loaded: {len(cases_data)}")
 
-            # 2. Validate & Ingest Persons
+            for c in cases_data:
+                graph_store.add_entity_node(
+                    node_id=c["case_id"], label=f"{c['case_id']}: {c['title']}", node_type="Case",
+                    properties={
+                        "title": c.get("title", ""), "case_type": c.get("case_type", ""),
+                        "status": c.get("status", "Active Investigation"), "priority": c.get("priority", "Medium"),
+                        "lead_officer": c.get("lead_officer", ""), "estimated_value": c.get("estimated_value", "")
+                    }
+                )
+
+            # 2. Persons
             valid, persons_data, errs = self.validate_csv("persons.csv", ["person_id", "name"])
+            if errs:
+                print(f"[Validation Warning] Persons errors: {errs}")
             for p in persons_data:
                 existing = db.query(Person).filter(Person.person_id == p["person_id"]).first()
-                dob_val = None
-                if p.get("dob"):
-                    try:
-                        dob_val = datetime.strptime(p["dob"], "%Y-%m-%d").date()
-                    except Exception:
-                        pass
+                dob_val = datetime.strptime(p["dob"], "%Y-%m-%d").date() if p.get("dob") else None
                 if not existing:
-                    p_obj = Person(
-                        person_id=p["person_id"],
-                        name=p["name"],
-                        aliases=p.get("aliases"),
-                        dob=dob_val,
-                        nationality=p.get("nationality"),
-                        role=p.get("role"),
-                        primary_location=p.get("primary_location"),
-                        risk_level=p.get("risk_level", "Medium"),
+                    db.add(Person(
+                        person_id=p["person_id"], name=p["name"], aliases=p.get("aliases"), dob=dob_val,
+                        nationality=p.get("nationality"), role=p.get("role"),
+                        primary_location=p.get("primary_location"), risk_level=p.get("risk_level", "Medium"),
                         priority_score=0.0
-                    )
-                    db.add(p_obj)
+                    ))
             db.commit()
             print(f"[Ingestion] Persons loaded: {len(persons_data)}")
 
-            # 3. Validate & Ingest Phones
+            for p in persons_data:
+                graph_store.add_entity_node(
+                    node_id=p["person_id"], label=p["name"], node_type="Person",
+                    properties={
+                        "aliases": p.get("aliases", ""), "role": p.get("role", ""),
+                        "primary_location": p.get("primary_location", ""),
+                        "risk_level": p.get("risk_level", "Medium"), "dob": p.get("dob", ""),
+                        "nationality": p.get("nationality", "")
+                    }
+                )
+
+            # 3. Phones
             valid, phones_data, errs = self.validate_csv("phones.csv", ["phone_id", "phone_number"])
+            if errs:
+                print(f"[Validation Warning] Phones errors: {errs}")
             for ph in phones_data:
                 existing = db.query(Phone).filter(Phone.phone_id == ph["phone_id"]).first()
                 if not existing:
-                    is_burner = ph.get("is_burner", "False") == "True" or "prepaid" in str(ph.get("plan_type", "")).lower()
-                    ph_obj = Phone(
-                        phone_id=ph["phone_id"],
-                        phone_number=ph["phone_number"],
-                        imei=ph.get("imei"),
-                        imsi=ph.get("imsi"),
-                        telecom_circle=ph.get("telecom_circle"),
-                        operator=ph.get("operator") or ph.get("carrier"),
-                        registered_owner=ph.get("registered_owner"),
-                        is_burner=is_burner
-                    )
-                    db.add(ph_obj)
+                    db.add(Phone(
+                        phone_id=ph["phone_id"], phone_number=ph["phone_number"], imei=ph.get("imei"),
+                        imsi=ph.get("imsi"), telecom_circle=ph.get("telecom_circle"), operator=ph.get("operator"),
+                        registered_owner=ph.get("registered_owner"), is_burner=ph.get("is_burner", "False") == "True"
+                    ))
             db.commit()
-            print(f"[Ingestion] Phones loaded: {len(phones_data)}")
+            for ph in phones_data:
+                graph_store.add_entity_node(
+                    node_id=ph["phone_id"], label=ph["phone_number"], node_type="Phone",
+                    properties={
+                        "imei": ph.get("imei", ""), "operator": ph.get("operator", ""),
+                        "telecom_circle": ph.get("telecom_circle", ""),
+                        "is_burner": ph.get("is_burner", "False") == "True",
+                        "registered_owner": ph.get("registered_owner", "")
+                    }
+                )
 
             # 4. Vehicles
             valid, vehicles_data, errs = self.validate_csv("vehicles.csv", ["vehicle_id", "plate_number"])
+            if errs:
+                print(f"[Validation Warning] Vehicles errors: {errs}")
             for v in vehicles_data:
                 existing = db.query(Vehicle).filter(Vehicle.vehicle_id == v["vehicle_id"]).first()
                 if not existing:
-                    make = v.get("make") or (v.get("make_model", "").split()[0] if v.get("make_model") else "")
-                    model = v.get("model") or (" ".join(v.get("make_model", "").split()[1:]) if v.get("make_model") else "")
-                    v_obj = Vehicle(
-                        vehicle_id=v["vehicle_id"],
-                        plate_number=v["plate_number"],
-                        make=make,
-                        model=model,
-                        color=v.get("color"),
-                        registered_owner=v.get("registered_owner"),
+                    db.add(Vehicle(
+                        vehicle_id=v["vehicle_id"], plate_number=v["plate_number"], make=v.get("make"),
+                        model=v.get("model"), color=v.get("color"), registered_owner=v.get("registered_owner"),
                         vehicle_type=v.get("vehicle_type")
-                    )
-                    db.add(v_obj)
+                    ))
             db.commit()
-            print(f"[Ingestion] Vehicles loaded: {len(vehicles_data)}")
+            for v in vehicles_data:
+                graph_store.add_entity_node(
+                    node_id=v["vehicle_id"], label=v["plate_number"], node_type="Vehicle",
+                    properties={
+                        "make": v.get("make", ""), "model": v.get("model", ""), "color": v.get("color", ""),
+                        "vehicle_type": v.get("vehicle_type", ""), "registered_owner": v.get("registered_owner", "")
+                    }
+                )
 
             # 5. Locations
             valid, locs_data, errs = self.validate_csv("locations.csv", ["location_id", "name"])
+            if errs:
+                print(f"[Validation Warning] Locations errors: {errs}")
             for l in locs_data:
                 existing = db.query(Location).filter(Location.location_id == l["location_id"]).first()
                 if not existing:
-                    coords = [c.strip() for c in l.get("coordinates", "").split(",")] if l.get("coordinates") else []
-                    lat = float(coords[0]) if len(coords) > 0 and coords[0] else (float(l["latitude"]) if l.get("latitude") else None)
-                    lon = float(coords[1]) if len(coords) > 1 and coords[1] else (float(l["longitude"]) if l.get("longitude") else None)
-                    
-                    l_obj = Location(
-                        location_id=l["location_id"],
-                        name=l["name"],
-                        address=l.get("address"),
-                        latitude=lat,
-                        longitude=lon,
+                    db.add(Location(
+                        location_id=l["location_id"], name=l["name"], address=l.get("address"),
+                        latitude=float(l["latitude"]) if l.get("latitude") else None,
+                        longitude=float(l["longitude"]) if l.get("longitude") else None,
                         location_type=l.get("location_type")
-                    )
-                    db.add(l_obj)
+                    ))
             db.commit()
-            print(f"[Ingestion] Locations loaded: {len(locs_data)}")
+            for l in locs_data:
+                graph_store.add_entity_node(
+                    node_id=l["location_id"], label=l["name"], node_type="Location",
+                    properties={
+                        "address": l.get("address", ""),
+                        "latitude": float(l["latitude"]) if l.get("latitude") else None,
+                        "longitude": float(l["longitude"]) if l.get("longitude") else None,
+                        "location_type": l.get("location_type", "")
+                    }
+                )
 
             # 6. Organizations
             valid, orgs_data, errs = self.validate_csv("organizations.csv", ["org_id", "name"])
+            if errs:
+                print(f"[Validation Warning] Organizations errors: {errs}")
             for o in orgs_data:
                 existing = db.query(Organization).filter(Organization.org_id == o["org_id"]).first()
                 if not existing:
-                    o_obj = Organization(
-                        org_id=o["org_id"],
-                        name=o["name"],
-                        registration_no=o.get("registration_no") or o.get("registration_number"),
-                        jurisdiction=o.get("jurisdiction"),
-                        org_type=o.get("org_type") or o.get("type"),
-                        flagged_status=o.get("flagged_status") or o.get("status")
-                    )
-                    db.add(o_obj)
+                    db.add(Organization(
+                        org_id=o["org_id"], name=o["name"], registration_no=o.get("registration_no"),
+                        jurisdiction=o.get("jurisdiction"), org_type=o.get("org_type"),
+                        flagged_status=o.get("flagged_status")
+                    ))
             db.commit()
-            print(f"[Ingestion] Organizations loaded: {len(orgs_data)}")
+            for o in orgs_data:
+                graph_store.add_entity_node(
+                    node_id=o["org_id"], label=o["name"], node_type="Organization",
+                    properties={
+                        "registration_no": o.get("registration_no", ""), "jurisdiction": o.get("jurisdiction", ""),
+                        "org_type": o.get("org_type", ""), "flagged_status": o.get("flagged_status", "")
+                    }
+                )
 
-            # 7. CDR Records
-            valid, cdr_data, errs = self.validate_csv("cdr.csv", ["cdr_id", ["caller_phone", "caller_id"]])
+            # 7. Relationships -> knowledge graph (Neo4j, via graph_store write-through)
+            valid, rel_data, errs = self.validate_csv("relationships.csv", ["rel_id", "source_id", "target_id"])
+            if errs:
+                print(f"[Validation Warning] Relationships errors: {errs}")
+            for r in rel_data:
+                graph_store.add_relationship_edge(
+                    edge_id=r["rel_id"], source_id=r["source_id"], target_id=r["target_id"],
+                    relationship_type=r.get("relationship_type", "RELATED_TO"),
+                    confidence=float(r.get("confidence", 1.0)) if r.get("confidence") else 1.0,
+                    date=r.get("date", ""), evidence_id=r.get("evidence_id", ""), notes=r.get("notes", "")
+                )
+            print(f"[Ingestion] Relationships loaded into knowledge graph: {len(rel_data)}")
+
+            # 8. CDR Records
+            valid, cdr_data, errs = self.validate_csv("cdr.csv", ["cdr_id", "caller_phone", "receiver_phone"])
+            if errs:
+                print(f"[Validation Warning] CDR errors: {errs}")
             for c in cdr_data:
                 existing = db.query(CDRRecord).filter(CDRRecord.cdr_id == c["cdr_id"]).first()
                 if not existing:
-                    ts = None
-                    if c.get("timestamp"):
-                        try:
-                            ts = datetime.strptime(c["timestamp"], "%Y-%m-%d %H:%M:%S")
-                        except Exception:
-                            try:
-                                ts = datetime.fromisoformat(c["timestamp"])
-                            except Exception:
-                                pass
-                    dur = int(c.get("duration_seconds") or c.get("duration_sec") or 0)
-                    caller_id = c.get("caller_id")
-                    callee_id = c.get("callee_id") or c.get("receiver_id")
-                    tower = c.get("cell_tower") or c.get("cell_tower_location")
-                    flagged = c.get("flagged_surge") or c.get("flagged_status")
-
-                    cdr_obj = CDRRecord(
-                        cdr_id=c["cdr_id"],
-                        caller_id=caller_id,
-                        caller_phone=c.get("caller_phone"),
-                        receiver_id=callee_id,
-                        receiver_phone=c.get("receiver_phone"),
-                        timestamp=ts,
-                        duration_sec=dur,
-                        cell_tower_location=tower,
-                        call_type=c.get("call_type"),
-                        flagged_status=flagged
-                    )
-                    db.add(cdr_obj)
+                    ts = datetime.strptime(c["timestamp"], "%Y-%m-%d %H:%M:%S") if c.get("timestamp") else None
+                    db.add(CDRRecord(
+                        cdr_id=c["cdr_id"], caller_id=c.get("caller_id"), caller_phone=c.get("caller_phone"),
+                        receiver_id=c.get("receiver_id"), receiver_phone=c.get("receiver_phone"), timestamp=ts,
+                        duration_sec=int(c.get("duration_sec")) if c.get("duration_sec") else 0,
+                        cell_tower_location=c.get("cell_tower_location"), call_type=c.get("call_type"),
+                        flagged_status=c.get("flagged_status")
+                    ))
             db.commit()
-            print(f"[Ingestion] CDR Records loaded: {len(cdr_data)}")
+            print(f"[Ingestion] CDR records loaded: {len(cdr_data)}")
 
-            # 8. Transactions
-            valid, tx_data, errs = self.validate_csv("transactions.csv", ["tx_id", ["sender_name", "source_id"], "amount"])
+            # 9. Transactions
+            valid, tx_data, errs = self.validate_csv("transactions.csv", ["tx_id", "sender_name", "amount"])
+            if errs:
+                print(f"[Validation Warning] Transactions errors: {errs}")
             for t in tx_data:
                 existing = db.query(TransactionRecord).filter(TransactionRecord.tx_id == t["tx_id"]).first()
                 if not existing:
-                    ts = None
-                    if t.get("timestamp"):
-                        try:
-                            ts = datetime.strptime(t["timestamp"], "%Y-%m-%d %H:%M:%S")
-                        except Exception:
-                            try:
-                                ts = datetime.fromisoformat(t["timestamp"])
-                            except Exception:
-                                pass
-                    
-                    sender_id = t.get("sender_id") or t.get("source_id")
-                    receiver_id = t.get("receiver_id") or t.get("target_id")
-                    ref = t.get("bank_reference") or t.get("reference_no")
-                    flagged = t.get("flagged_anomaly") or t.get("flagged_status")
-
-                    tx_obj = TransactionRecord(
-                        tx_id=t["tx_id"],
-                        sender_id=sender_id,
-                        sender_name=t.get("sender_name") or sender_id,
-                        receiver_id=receiver_id,
-                        receiver_name=t.get("receiver_name") or receiver_id,
-                        amount=float(t.get("amount", 0.0)),
-                        currency=t.get("currency", "INR"),
-                        channel=t.get("channel"),
-                        bank_reference=ref,
-                        timestamp=ts,
-                        category=t.get("category"),
-                        flagged_status=str(flagged) if flagged is not None else None,
+                    ts = datetime.strptime(t["timestamp"], "%Y-%m-%d %H:%M:%S") if t.get("timestamp") else None
+                    db.add(TransactionRecord(
+                        tx_id=t["tx_id"], sender_id=t.get("sender_id"), sender_name=t.get("sender_name"),
+                        receiver_id=t.get("receiver_id"), receiver_name=t.get("receiver_name"),
+                        amount=float(t.get("amount", 0.0)), currency=t.get("currency", "INR"),
+                        channel=t.get("channel"), bank_reference=t.get("bank_reference"), timestamp=ts,
+                        category=t.get("category"), flagged_status=t.get("flagged_status"),
                         anomaly_multiplier=t.get("anomaly_multiplier")
-                    )
-                    db.add(tx_obj)
+                    ))
             db.commit()
             print(f"[Ingestion] Transactions loaded: {len(tx_data)}")
 
-            # 9. Ingest Unstructured Documents & Run NLP Entity Extraction
+            # 10. Unstructured reports -> Documents + NLP entity extraction
             valid, reports_data, errs = self.validate_csv("reports.csv", ["report_id", "title", "filename"])
+            if errs:
+                print(f"[Validation Warning] Reports errors: {errs}")
             for r in reports_data:
-                doc_file = os.path.join(self.reports_dir, r.get("filename", ""))
+                doc_file = os.path.join(self.import_dir, r.get("filename", ""))
                 doc_text = ""
                 if os.path.exists(doc_file):
                     with open(doc_file, "r", encoding="utf-8") as f:
                         doc_text = f.read()
 
                 extracted_entities = entity_extractor.extract_entities(doc_text, source_doc=r["report_id"])
-                
+
                 existing_doc = db.query(Document).filter(Document.document_id == r["report_id"]).first()
                 if not existing_doc:
-                    doc_obj = Document(
-                        document_id=r["report_id"],
-                        case_id=r.get("case_id"),
-                        title=r.get("title"),
-                        filename=r.get("filename"),
-                        source_agency=r.get("source_agency") or r.get("source_type"),
-                        author=r.get("author") or r.get("officer"),
-                        content=doc_text,
-                        content_summary=r.get("content_summary") or f"{r.get('title')} filed by {r.get('officer', 'Investigator')}.",
-                        classification=r.get("classification") or "CONFIDENTIAL",
-                        extracted_entities=extracted_entities,
+                    db.add(Document(
+                        document_id=r["report_id"], case_id=r.get("case_id"), title=r.get("title"),
+                        filename=r.get("filename"), source_agency=r.get("source_agency"), author=r.get("author"),
+                        content=doc_text, content_summary=r.get("content_summary"),
+                        classification=r.get("classification"), extracted_entities=extracted_entities,
                         extracted_relationships=[]
-                    )
-                    db.add(doc_obj)
+                    ))
             db.commit()
-            print(f"[NLP Engine] Ingested {len(reports_data)} unstructured documents & extracted entity spans.")
+            print(f"[Ingestion] Reports loaded: {len(reports_data)}")
 
-            # 10. Populate Evidence Catalog
-            for r in reports_data:
-                ev_id = f"EVD-{r['report_id']}"
-                existing_ev = db.query(Evidence).filter(Evidence.evidence_id == ev_id).first()
+            # 11. Evidence catalog (optional evidence.csv - only what's actually provided)
+            valid, evidence_data, errs = self.validate_csv("evidence.csv", ["evidence_id", "title", "evidence_type"])
+            if errs:
+                print(f"[Validation Warning] Evidence errors: {errs}")
+            for ev in evidence_data:
+                existing_ev = db.query(Evidence).filter(Evidence.evidence_id == ev["evidence_id"]).first()
                 if not existing_ev:
-                    ev_obj = Evidence(
-                        evidence_id=ev_id,
-                        case_id=r.get("case_id"),
-                        document_id=r["report_id"],
-                        title=r["title"],
-                        evidence_type=r.get("source_type", "Intelligence Report"),
-                        source_record=r.get("filename", ""),
-                        description=f"Official investigative documentation: {r['title']}",
-                        confidence=0.98,
+                    db.add(Evidence(
+                        evidence_id=ev["evidence_id"], case_id=ev.get("case_id"), title=ev["title"],
+                        evidence_type=ev["evidence_type"], source_record=ev.get("source_record", ev["evidence_id"]),
+                        description=ev.get("description"),
+                        confidence=float(ev.get("confidence", 1.0)) if ev.get("confidence") else 1.0,
                         timestamp=datetime.utcnow()
-                    )
-                    db.add(ev_obj)
+                    ))
             db.commit()
-            print(f"[Evidence] Cataloged {len(reports_data)} primary evidence items.")
+            print(f"[Ingestion] Evidence records loaded: {len(evidence_data)}")
 
-            # 11. Extract Dynamic Person-Case Associations
-            person_cases_map = self.extract_person_cases_map()
-            print(f"[Intelligence] Discovered cross-case links for {len(person_cases_map)} persons.")
-
-            # 12. Run Anomaly Detectors & Generate Alerts
-            tx_anomalies = tx_anomaly_detector.detect_anomalies(tx_data, person_cases_map=person_cases_map)
-            cdr_anomalies = cdr_anomaly_detector.detect_anomalies(cdr_data, person_cases_map=person_cases_map)
+            # 12. Anomaly detection -> Alerts
+            tx_anomalies = tx_anomaly_detector.detect_anomalies(tx_data)
+            cdr_anomalies = cdr_anomaly_detector.detect_anomalies(cdr_data)
             all_anomalies = tx_anomalies + cdr_anomalies
 
             for anom in all_anomalies:
                 existing_alert = db.query(Alert).filter(Alert.alert_id == anom["alert_id"]).first()
                 if not existing_alert:
-                    alert_obj = Alert(
-                        alert_id=anom["alert_id"],
-                        entity_id=anom["entity_id"],
-                        entity_type=anom["entity_type"],
-                        case_id=anom.get("case_id"),
-                        alert_type=anom["alert_type"],
-                        severity=anom["severity"],
-                        reason=anom["reason"],
-                        supporting_evidence_id=anom.get("supporting_evidence_id"),
-                        supporting_records=anom.get("supporting_records"),
-                        confidence=anom.get("confidence", 0.9),
+                    db.add(Alert(
+                        alert_id=anom["alert_id"], entity_id=anom["entity_id"], entity_type=anom["entity_type"],
+                        case_id=anom.get("case_id"), alert_type=anom["alert_type"], severity=anom["severity"],
+                        reason=anom["reason"], supporting_evidence_id=anom.get("supporting_evidence_id"),
+                        supporting_records=anom.get("supporting_records"), confidence=anom.get("confidence", 0.9),
                         status="ACTIVE"
-                    )
-                    db.add(alert_obj)
+                    ))
             db.commit()
-            print(f"[Analytics] Generated {len(all_anomalies)} statistical anomaly alerts (TX: {len(tx_anomalies)}, CDR: {len(cdr_anomalies)}).")
+            print(f"[Analytics] Generated {len(all_anomalies)} statistical anomaly alerts.")
 
-            # 13. Load Knowledge Graph Engine
-            graph_store.load_from_dataset(self.synthetic_dir)
+            # 13. Priority scoring - cases-per-person is read live from the graph
+            # (whatever relationships.csv actually connected them to), not a hardcoded map.
             centralities = graph_store.calculate_centralities()
             bridges = graph_store.find_bridge_nodes()
             bridge_ids = {b.node_id for b in bridges}
 
-            # 14. Calculate & Update Investigation Priority Scores
             active_alerts = db.query(Alert).all()
-            alert_dicts = [{"entity_id": a.entity_id, "alert_type": a.alert_type, "severity": a.severity, "supporting_evidence_id": a.supporting_evidence_id} for a in active_alerts]
-            
-            scored_count = 0
+            alert_dicts = [
+                {"entity_id": a.entity_id, "alert_type": a.alert_type, "severity": a.severity,
+                 "supporting_evidence_id": a.supporting_evidence_id}
+                for a in active_alerts
+            ]
+
             for p in persons_data:
                 p_id = p["person_id"]
+
+                person_subgraph = graph_store.get_subgraph(p_id, max_hops=2)
+                associated_case_ids = [n.id for n in person_subgraph.nodes if n.type == "Case"]
+
                 p_metrics = {
                     "betweenness": centralities.get(p_id, {}).get("betweenness", 0.0),
                     "degree": graph_store.undirected_graph.degree(p_id) if graph_store.undirected_graph.has_node(p_id) else 0,
                     "is_bridge": p_id in bridge_ids
                 }
-                
+
                 score_res = priority_scorer.calculate_priority_score(
-                    person_id=p_id,
-                    graph_metrics=p_metrics,
-                    associated_cases=person_cases_map.get(p_id, []),
-                    alerts=alert_dicts,
-                    cdrs=cdr_data,
-                    transactions=tx_data
+                    person_id=p_id, graph_metrics=p_metrics, associated_cases=associated_case_ids,
+                    alerts=alert_dicts, cdrs=cdr_data, transactions=tx_data
                 )
-                
+
                 db_p = db.query(Person).filter(Person.person_id == p_id).first()
                 if db_p:
                     db_p.priority_score = score_res["score"]
                     db.add(db_p)
-                    scored_count += 1
 
-                # Also update node in graph store
                 if p_id in graph_store.nodes_data:
                     graph_store.nodes_data[p_id]["priority_score"] = score_res["score"]
 
             db.commit()
-            print(f"[Scoring] Calculated & persisted priority scores for {scored_count} persons.")
+            print("[Scoring] Investigation Priority Scores successfully calculated and persisted.")
             print("==========================================")
-            print("Master Ingestion Pipeline Completed Successfully!")
+            print("Bulk Import Pipeline Completed Successfully!")
             print("==========================================\n")
 
         finally:
             if close_session:
                 db.close()
+
 
 pipeline = MasterIngestionPipeline()
 

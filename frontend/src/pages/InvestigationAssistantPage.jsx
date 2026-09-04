@@ -38,6 +38,11 @@ const EXAMPLE_QUESTIONS = [
     title: "Suspicious Financial Spikes",
     query: "Show suspicious transaction activity",
     tag: "Anomalies"
+  },
+  {
+    title: "Priority Score Analysis",
+    query: "Which entity has the highest priority score, and why?",
+    tag: "Scoring"
   }
 ];
 

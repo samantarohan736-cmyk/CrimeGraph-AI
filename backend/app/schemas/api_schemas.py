@@ -82,9 +82,6 @@ class GraphNode(BaseModel):
     community: Optional[int] = 0
     is_bridge: Optional[bool] = False
     priority_score: Optional[float] = 0.0
-    is_suspicious: Optional[bool] = False
-    suspicion_reasons: List[str] = []
-    total_connections: Optional[int] = None
 
 class GraphEdge(BaseModel):
     id: str
@@ -95,31 +92,12 @@ class GraphEdge(BaseModel):
     confidence: Optional[float] = 1.0
     evidence_id: Optional[str] = None
     notes: Optional[str] = None
-    count: Optional[int] = 1
-    total_amount: Optional[float] = None
-    currency: Optional[str] = None
-    is_suspicious: Optional[bool] = False
-    suspicion_reasons: List[str] = []
-    aggregated_records: List[Dict[str, Any]] = []
 
 class GraphResponse(BaseModel):
     nodes: List[GraphNode]
     edges: List[GraphEdge]
     total_nodes: int
     total_edges: int
-    total_connections_count: Optional[int] = None
-    filtered_nodes_count: Optional[int] = None
-    filtered_edges_count: Optional[int] = None
-    seed_node_id: Optional[str] = None
-    is_filtered: Optional[bool] = False
-
-class EntitySearchItem(BaseModel):
-    id: str
-    label: str
-    type: str
-    risk_level: Optional[str] = "Medium"
-    priority_score: Optional[float] = 0.0
-    degree: Optional[int] = 0
 
 class ShortestPathRequest(BaseModel):
     source_id: str
