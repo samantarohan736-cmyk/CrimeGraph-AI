@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
-import DisclaimerBanner from './components/layout/DisclaimerBanner';
 
 import DashboardPage from './pages/DashboardPage';
 import NetworkAnalysisPage from './pages/NetworkAnalysisPage';
@@ -18,8 +17,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-[#FDFBF7] text-black flex flex-col selection:bg-brutal-yellow selection:text-black">
-        {/* Always-visible Responsible AI Disclaimer Banner */}
-        <DisclaimerBanner />
 
         {/* Top Navbar with Global Search */}
         <Navbar />

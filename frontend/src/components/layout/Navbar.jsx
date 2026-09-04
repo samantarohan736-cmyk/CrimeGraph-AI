@@ -17,9 +17,6 @@ export default function Navbar() {
               <span className="font-black text-lg tracking-tight text-black font-mono uppercase">
                 CrimeGraph <span className="bg-brutal-cyan text-black px-1.5 py-0.5 rounded border-2 border-black">AI</span>
               </span>
-              <span className="neo-badge bg-brutal-pink text-black text-[10px] uppercase">
-                SIH MVP
-              </span>
             </div>
             <p className="text-[11px] text-slate-700 font-mono font-bold tracking-tight hidden sm:block">
               Criminal Network Intelligence & Prioritization Framework
