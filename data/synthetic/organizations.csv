@@ -1,51 +1,51 @@
 org_id,name,registration_number,jurisdiction,type,status
-O001,Organization 1,REG20210001,Bihar,Agency,Active
-O002,Organization 2,REG20220002,Bihar,Agency,Inactive
-O003,Organization 3,REG20230003,Bihar,Business,Inactive
-O004,Organization 4,REG20240004,Odisha,NGO,Inactive
-O005,Organization 5,REG20250005,West Bengal,Agency,Inactive
-O006,Organization 6,REG20260006,Odisha,Agency,Inactive
-O007,Organization 7,REG20270007,Bihar,Agency,Inactive
-O008,Organization 8,REG20280008,West Bengal,Company,Inactive
-O009,Organization 9,REG20290009,Jharkhand,Company,Inactive
-O010,Organization 10,REG20300010,West Bengal,NGO,Inactive
-O011,Organization 11,REG20310011,Bihar,Agency,Active
-O012,Organization 12,REG20320012,West Bengal,NGO,Inactive
-O013,Organization 13,REG20330013,West Bengal,Agency,Inactive
-O014,Organization 14,REG20340014,West Bengal,Association,Active
-O015,Organization 15,REG20350015,Bihar,Business,Inactive
-O016,Organization 16,REG20360016,Jharkhand,Business,Inactive
-O017,Organization 17,REG20370017,Jharkhand,Association,Active
-O018,Organization 18,REG20380018,West Bengal,Agency,Inactive
-O019,Organization 19,REG20390019,Jharkhand,Company,Inactive
-O020,Organization 20,REG20400020,Odisha,Agency,Active
-O021,Organization 21,REG20410021,Jharkhand,Agency,Active
-O022,Organization 22,REG20420022,Jharkhand,Business,Active
-O023,Organization 23,REG20430023,Odisha,Agency,Active
-O024,Organization 24,REG20440024,Jharkhand,Association,Active
-O025,Organization 25,REG20450025,Jharkhand,Association,Inactive
-O026,Organization 26,REG20460026,West Bengal,Company,Active
-O027,Organization 27,REG20470027,Odisha,Business,Inactive
-O028,Organization 28,REG20480028,Odisha,Association,Active
-O029,Organization 29,REG20490029,Bihar,NGO,Active
-O030,Organization 30,REG20500030,Jharkhand,Company,Active
-O031,Organization 31,REG20510031,Odisha,Business,Inactive
-O032,Organization 32,REG20520032,Bihar,NGO,Inactive
-O033,Organization 33,REG20530033,Odisha,NGO,Inactive
-O034,Organization 34,REG20540034,West Bengal,Association,Active
-O035,Organization 35,REG20550035,West Bengal,NGO,Inactive
-O036,Organization 36,REG20560036,Bihar,Business,Inactive
-O037,Organization 37,REG20570037,Bihar,Agency,Active
-O038,Organization 38,REG20580038,Bihar,Business,Inactive
-O039,Organization 39,REG20590039,Jharkhand,NGO,Inactive
-O040,Organization 40,REG20600040,West Bengal,Association,Inactive
-O041,Organization 41,REG20610041,Bihar,Association,Active
-O042,Organization 42,REG20620042,West Bengal,Agency,Inactive
-O043,Organization 43,REG20630043,Bihar,Agency,Inactive
-O044,Organization 44,REG20640044,Jharkhand,Association,Inactive
-O045,Organization 45,REG20650045,West Bengal,Association,Inactive
-O046,Organization 46,REG20660046,Bihar,NGO,Active
-O047,Organization 47,REG20670047,Jharkhand,NGO,Inactive
-O048,Organization 48,REG20680048,West Bengal,Company,Active
-O049,Organization 49,REG20690049,West Bengal,Business,Active
-O050,Organization 50,REG20700050,West Bengal,Business,Inactive
+O001,Eastern Meridian Logistics,REG-2021-1001,Odisha,Trading,Active
+O002,Blue River Trading,REG-2022-1002,Jharkhand,Finance,Active
+O003,Silverline Imports,REG-2023-1003,Bihar,Technology,Active
+O004,Northstar Freight,REG-2024-1004,West Bengal,Services,Active
+O005,Greenfield Finance,REG-2025-1005,Odisha,Logistics,Active
+O006,Crescent Telecom,REG-2026-1006,Jharkhand,Trading,Active
+O007,Harbor Link Services,REG-2027-1007,Bihar,Finance,Active
+O008,Sunrise Warehousing,REG-2028-1008,West Bengal,Technology,Inactive
+O009,Metroline Exports,REG-2029-1009,Odisha,Services,Active
+O010,Redwood Technologies,REG-2030-1010,Jharkhand,Logistics,Active
+O011,Oakbridge Consulting,REG-2031-1011,Bihar,Trading,Active
+O012,Riverstone Transport,REG-2032-1012,West Bengal,Finance,Active
+O013,Golden Gate Supplies,REG-2033-1013,Odisha,Technology,Active
+O014,Pioneer Textiles,REG-2034-1014,Jharkhand,Services,Active
+O015,Vertex Communications,REG-2035-1015,Bihar,Logistics,Active
+O016,Westland Enterprises,REG-2036-1016,West Bengal,Trading,Inactive
+O017,Atlas Distribution,REG-2037-1017,Odisha,Finance,Active
+O018,Skyline Retail,REG-2038-1018,Jharkhand,Technology,Active
+O019,Evergreen Ventures,REG-2039-1019,Bihar,Services,Active
+O020,Coastal Mercantile,REG-2040-1020,West Bengal,Logistics,Active
+O021,Prime Route Logistics,REG-2041-1021,Odisha,Trading,Active
+O022,Summit Wholesale,REG-2042-1022,Jharkhand,Finance,Active
+O023,Urban Crest Services,REG-2043-1023,Bihar,Technology,Active
+O024,Delta Trade House,REG-2044-1024,West Bengal,Services,Inactive
+O025,Bright Horizon Foods,REG-2045-1025,Odisha,Logistics,Active
+O026,Crownline Motors,REG-2046-1026,Jharkhand,Trading,Active
+O027,Lakeside Infrastructure,REG-2047-1027,Bihar,Finance,Active
+O028,Bluecrest Solutions,REG-2048-1028,West Bengal,Technology,Active
+O029,Grand Avenue Traders,REG-2049-1029,Odisha,Services,Active
+O030,Eastgate Services,REG-2050-1030,Jharkhand,Logistics,Active
+O031,Sterling Industrial Works,REG-2051-1031,Bihar,Trading,Active
+O032,Maple Leaf Commerce,REG-2052-1032,West Bengal,Finance,Inactive
+O033,Ironbridge Systems,REG-2053-1033,Odisha,Technology,Active
+O034,Horizon Agro,REG-2054-1034,Jharkhand,Services,Active
+O035,Parkview Holdings,REG-2055-1035,Bihar,Logistics,Active
+O036,Clearpath Networks,REG-2056-1036,West Bengal,Trading,Active
+O037,Royal Meridian Group,REG-2057-1037,Odisha,Finance,Active
+O038,Stonebridge Finance,REG-2058-1038,Jharkhand,Technology,Active
+O039,Capital Reach,REG-2059-1039,Bihar,Services,Active
+O040,Willow Creek Traders,REG-2060-1040,West Bengal,Logistics,Inactive
+O041,Frontier Supply Co,REG-2061-1041,Odisha,Trading,Active
+O042,Oakline Services,REG-2062-1042,Jharkhand,Finance,Active
+O043,Central Market Group,REG-2063-1043,Bihar,Technology,Active
+O044,Riverview Enterprises,REG-2064-1044,West Bengal,Services,Active
+O045,Highpoint Distribution,REG-2065-1045,Odisha,Logistics,Active
+O046,Cedar Valley Exports,REG-2066-1046,Jharkhand,Trading,Active
+O047,Northwind Commerce,REG-2067-1047,Bihar,Finance,Active
+O048,Westgate Solutions,REG-2068-1048,West Bengal,Technology,Inactive
+O049,Ashford Trading,REG-2069-1049,Odisha,Services,Active
+O050,Meridian Square Holdings,REG-2070-1050,Jharkhand,Logistics,Active

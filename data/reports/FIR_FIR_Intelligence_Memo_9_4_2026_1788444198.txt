@@ -1,0 +1,26 @@
+**FIRST INFORMATION REPORT (FIR)**
+
+**FIR No.:** FIR-2026-021
+**Police Station:** Lake Town Police Station
+**Date:** 04 September 2026
+**Time:** 18:30
+
+### Incident
+
+On 04 September 2026 at approximately 17:45, **Arjun Sharma** reported that his mobile phone was stolen near **Lake Town Market, Kolkata**.
+
+According to Arjun Sharma, he was approached by **Ravi Das**, who was riding a **red motorcycle (WB24C7812)**.
+
+The investigation is currently ongoing.
+
+### Persons Mentioned
+
+* Arjun Sharma — Complainant
+* Ravi Das — Person of interest
+
+### Evidence
+
+* Vehicle: WB24C7812
+* Location: Lake Town Market, Kolkata
+
+**Note:** This FIR is completely synthetic and intended only for testing the CrimeDetect application.

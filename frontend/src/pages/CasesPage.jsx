@@ -118,8 +118,11 @@ export default function CasesPage() {
               </div>
 
               <div className="pt-3 border-t-2 border-black flex items-center justify-between font-mono">
-                <div className="flex items-center gap-3 text-xs text-slate-700 font-bold">
+                <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-700 font-bold">
                   <span><strong>{c.entity_count}</strong> entities</span>
+                  <span className="neo-badge bg-cream-200 text-black text-[10px]">
+                    <strong>{c.document_count || 0}</strong> FIR Reports
+                  </span>
                   <span><strong>{c.alert_count}</strong> alerts</span>
                 </div>
 

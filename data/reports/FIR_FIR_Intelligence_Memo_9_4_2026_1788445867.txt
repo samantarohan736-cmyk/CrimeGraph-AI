@@ -1,0 +1,33 @@
+**FIRST INFORMATION REPORT (FIR)**
+
+**FIR No.:** FIR-2026-031
+**Police Station:** Riverside Police Station
+**Date:** 04 September 2026
+**Time:** 14:20
+
+### Incident
+
+On 04 September 2026 at approximately 13:10, **Vikram Mehta** reported that his laptop was stolen from his parked vehicle near **Riverside Bus Terminal**.
+
+According to Vikram Mehta, he noticed an unknown individual wearing a blue jacket leaving the area shortly after the incident.
+
+A nearby shop employee, **Neha Kapoor**, stated that she saw the individual enter a **white van** and leave towards **Greenfield Road**.
+
+The investigation is ongoing.
+
+### Persons Mentioned
+
+* Vikram Mehta — Complainant
+* Neha Kapoor — Witness
+
+### Locations
+
+* Riverside Bus Terminal
+* Greenfield Road
+
+### Evidence / Objects
+
+* Stolen item: Laptop
+* Vehicle: White van
+
+**Note:** This FIR is completely synthetic and intentionally uses entities that should be different from those in the existing CSV dataset.

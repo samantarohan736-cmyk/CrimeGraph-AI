@@ -1,101 +1,101 @@
 report_id,case_id,title,filename,source_type,filing_date,officer
-RPT001,C001,Intelligence Report for Case 1,INTELLIGENCE_C001.txt,Intelligence,2026-01-11,Officer 15
-RPT002,C002,FIR Report for Case 2,FIR_C002.txt,FIR,2026-02-04,Officer 09
-RPT003,C003,Intelligence Report for Case 3,INTELLIGENCE_C003.txt,Intelligence,2026-08-15,Officer 22
-RPT004,C004,Intelligence Report for Case 4,INTELLIGENCE_C004.txt,Intelligence,2026-04-04,Officer 22
-RPT005,C005,Financial Report for Case 5,FINANCIAL_C005.txt,Financial,2026-08-02,Officer 14
-RPT006,C006,Intelligence Report for Case 6,INTELLIGENCE_C006.txt,Intelligence,2026-01-18,Officer 22
-RPT007,C007,Intelligence Report for Case 7,INTELLIGENCE_C007.txt,Intelligence,2026-07-27,Officer 09
-RPT008,C008,FIR Report for Case 8,FIR_C008.txt,FIR,2026-03-20,Officer 05
-RPT009,C009,Surveillance Report for Case 9,SURVEILLANCE_C009.txt,Surveillance,2026-08-18,Officer 01
-RPT010,C010,Financial Report for Case 10,FINANCIAL_C010.txt,Financial,2026-08-15,Officer 23
-RPT011,C011,Surveillance Report for Case 11,SURVEILLANCE_C011.txt,Surveillance,2026-04-15,Officer 09
-RPT012,C012,Financial Report for Case 12,FINANCIAL_C012.txt,Financial,2026-07-17,Officer 20
-RPT013,C013,Intelligence Report for Case 13,INTELLIGENCE_C013.txt,Intelligence,2026-07-06,Officer 18
-RPT014,C014,Intelligence Report for Case 14,INTELLIGENCE_C014.txt,Intelligence,2026-03-23,Officer 09
-RPT015,C015,Surveillance Report for Case 15,SURVEILLANCE_C015.txt,Surveillance,2026-01-19,Officer 01
-RPT016,C016,Intelligence Report for Case 16,INTELLIGENCE_C016.txt,Intelligence,2026-06-09,Officer 03
-RPT017,C017,Intelligence Report for Case 17,INTELLIGENCE_C017.txt,Intelligence,2026-06-01,Officer 11
-RPT018,C018,FIR Report for Case 18,FIR_C018.txt,FIR,2026-04-13,Officer 07
-RPT019,C019,Intelligence Report for Case 19,INTELLIGENCE_C019.txt,Intelligence,2026-02-03,Officer 05
-RPT020,C020,Financial Report for Case 20,FINANCIAL_C020.txt,Financial,2026-08-25,Officer 13
-RPT021,C021,FIR Report for Case 21,FIR_C021.txt,FIR,2026-01-18,Officer 09
-RPT022,C022,Surveillance Report for Case 22,SURVEILLANCE_C022.txt,Surveillance,2026-03-10,Officer 18
-RPT023,C023,Intelligence Report for Case 23,INTELLIGENCE_C023.txt,Intelligence,2026-02-21,Officer 10
-RPT024,C024,Surveillance Report for Case 24,SURVEILLANCE_C024.txt,Surveillance,2026-02-14,Officer 15
-RPT025,C025,Financial Report for Case 25,FINANCIAL_C025.txt,Financial,2026-05-22,Officer 02
-RPT026,C026,Surveillance Report for Case 26,SURVEILLANCE_C026.txt,Surveillance,2026-04-22,Officer 22
-RPT027,C027,FIR Report for Case 27,FIR_C027.txt,FIR,2026-07-21,Officer 12
-RPT028,C028,Surveillance Report for Case 28,SURVEILLANCE_C028.txt,Surveillance,2026-02-26,Officer 16
-RPT029,C029,Surveillance Report for Case 29,SURVEILLANCE_C029.txt,Surveillance,2026-02-12,Officer 04
-RPT030,C030,FIR Report for Case 30,FIR_C030.txt,FIR,2026-02-23,Officer 17
-RPT031,C031,Surveillance Report for Case 31,SURVEILLANCE_C031.txt,Surveillance,2026-01-01,Officer 13
-RPT032,C032,Financial Report for Case 32,FINANCIAL_C032.txt,Financial,2026-01-10,Officer 15
-RPT033,C033,Intelligence Report for Case 33,INTELLIGENCE_C033.txt,Intelligence,2026-05-10,Officer 24
-RPT034,C034,Financial Report for Case 34,FINANCIAL_C034.txt,Financial,2026-06-22,Officer 02
-RPT035,C035,FIR Report for Case 35,FIR_C035.txt,FIR,2026-02-20,Officer 11
-RPT036,C036,Surveillance Report for Case 36,SURVEILLANCE_C036.txt,Surveillance,2026-05-05,Officer 20
-RPT037,C037,Intelligence Report for Case 37,INTELLIGENCE_C037.txt,Intelligence,2026-02-28,Officer 18
-RPT038,C038,FIR Report for Case 38,FIR_C038.txt,FIR,2026-03-14,Officer 20
-RPT039,C039,FIR Report for Case 39,FIR_C039.txt,FIR,2026-07-22,Officer 01
-RPT040,C040,FIR Report for Case 40,FIR_C040.txt,FIR,2026-07-27,Officer 21
-RPT041,C041,FIR Report for Case 41,FIR_C041.txt,FIR,2026-05-28,Officer 10
-RPT042,C042,FIR Report for Case 42,FIR_C042.txt,FIR,2026-07-28,Officer 14
-RPT043,C043,Intelligence Report for Case 43,INTELLIGENCE_C043.txt,Intelligence,2026-02-16,Officer 04
-RPT044,C044,Intelligence Report for Case 44,INTELLIGENCE_C044.txt,Intelligence,2026-03-27,Officer 22
-RPT045,C045,Financial Report for Case 45,FINANCIAL_C045.txt,Financial,2026-01-14,Officer 06
-RPT046,C046,Intelligence Report for Case 46,INTELLIGENCE_C046.txt,Intelligence,2026-01-11,Officer 02
-RPT047,C047,Financial Report for Case 47,FINANCIAL_C047.txt,Financial,2026-03-09,Officer 18
-RPT048,C048,FIR Report for Case 48,FIR_C048.txt,FIR,2026-08-16,Officer 09
-RPT049,C049,Financial Report for Case 49,FINANCIAL_C049.txt,Financial,2026-08-06,Officer 23
-RPT050,C050,Financial Report for Case 50,FINANCIAL_C050.txt,Financial,2026-01-08,Officer 01
-RPT051,C051,FIR Report for Case 51,FIR_C051.txt,FIR,2026-02-12,Officer 07
-RPT052,C052,FIR Report for Case 52,FIR_C052.txt,FIR,2026-07-03,Officer 24
-RPT053,C053,Intelligence Report for Case 53,INTELLIGENCE_C053.txt,Intelligence,2026-07-06,Officer 12
-RPT054,C054,Surveillance Report for Case 54,SURVEILLANCE_C054.txt,Surveillance,2026-05-20,Officer 22
-RPT055,C055,Financial Report for Case 55,FINANCIAL_C055.txt,Financial,2026-08-14,Officer 21
-RPT056,C056,Financial Report for Case 56,FINANCIAL_C056.txt,Financial,2026-02-20,Officer 21
-RPT057,C057,Financial Report for Case 57,FINANCIAL_C057.txt,Financial,2026-06-28,Officer 19
-RPT058,C058,Surveillance Report for Case 58,SURVEILLANCE_C058.txt,Surveillance,2026-06-03,Officer 06
-RPT059,C059,FIR Report for Case 59,FIR_C059.txt,FIR,2026-01-05,Officer 03
-RPT060,C060,Intelligence Report for Case 60,INTELLIGENCE_C060.txt,Intelligence,2026-04-09,Officer 08
-RPT061,C061,Surveillance Report for Case 61,SURVEILLANCE_C061.txt,Surveillance,2026-08-25,Officer 05
-RPT062,C062,Intelligence Report for Case 62,INTELLIGENCE_C062.txt,Intelligence,2026-08-02,Officer 23
-RPT063,C063,Financial Report for Case 63,FINANCIAL_C063.txt,Financial,2026-05-28,Officer 19
-RPT064,C064,Surveillance Report for Case 64,SURVEILLANCE_C064.txt,Surveillance,2026-03-08,Officer 14
-RPT065,C065,Financial Report for Case 65,FINANCIAL_C065.txt,Financial,2026-06-09,Officer 24
-RPT066,C066,Surveillance Report for Case 66,SURVEILLANCE_C066.txt,Surveillance,2026-05-09,Officer 23
-RPT067,C067,Surveillance Report for Case 67,SURVEILLANCE_C067.txt,Surveillance,2026-04-17,Officer 03
-RPT068,C068,FIR Report for Case 68,FIR_C068.txt,FIR,2026-02-11,Officer 04
-RPT069,C069,Financial Report for Case 69,FINANCIAL_C069.txt,Financial,2026-07-20,Officer 16
-RPT070,C070,Financial Report for Case 70,FINANCIAL_C070.txt,Financial,2026-02-22,Officer 25
-RPT071,C071,Financial Report for Case 71,FINANCIAL_C071.txt,Financial,2026-04-20,Officer 04
-RPT072,C072,Financial Report for Case 72,FINANCIAL_C072.txt,Financial,2026-04-06,Officer 12
-RPT073,C073,Surveillance Report for Case 73,SURVEILLANCE_C073.txt,Surveillance,2026-06-01,Officer 16
-RPT074,C074,Surveillance Report for Case 74,SURVEILLANCE_C074.txt,Surveillance,2026-08-08,Officer 20
-RPT075,C075,FIR Report for Case 75,FIR_C075.txt,FIR,2026-06-06,Officer 15
-RPT076,C076,Financial Report for Case 76,FINANCIAL_C076.txt,Financial,2026-04-05,Officer 05
-RPT077,C077,Financial Report for Case 77,FINANCIAL_C077.txt,Financial,2026-05-23,Officer 08
-RPT078,C078,Surveillance Report for Case 78,SURVEILLANCE_C078.txt,Surveillance,2026-04-19,Officer 04
-RPT079,C079,Financial Report for Case 79,FINANCIAL_C079.txt,Financial,2026-08-26,Officer 24
-RPT080,C080,Intelligence Report for Case 80,INTELLIGENCE_C080.txt,Intelligence,2026-07-06,Officer 11
-RPT081,C081,FIR Report for Case 81,FIR_C081.txt,FIR,2026-04-08,Officer 16
-RPT082,C082,Financial Report for Case 82,FINANCIAL_C082.txt,Financial,2026-01-14,Officer 01
-RPT083,C083,Financial Report for Case 83,FINANCIAL_C083.txt,Financial,2026-06-25,Officer 23
-RPT084,C084,Financial Report for Case 84,FINANCIAL_C084.txt,Financial,2026-01-10,Officer 24
-RPT085,C085,Surveillance Report for Case 85,SURVEILLANCE_C085.txt,Surveillance,2026-05-02,Officer 20
-RPT086,C086,Intelligence Report for Case 86,INTELLIGENCE_C086.txt,Intelligence,2026-03-17,Officer 22
-RPT087,C087,Intelligence Report for Case 87,INTELLIGENCE_C087.txt,Intelligence,2026-06-24,Officer 06
-RPT088,C088,Financial Report for Case 88,FINANCIAL_C088.txt,Financial,2026-08-24,Officer 17
-RPT089,C089,Surveillance Report for Case 89,SURVEILLANCE_C089.txt,Surveillance,2026-04-28,Officer 19
-RPT090,C090,Intelligence Report for Case 90,INTELLIGENCE_C090.txt,Intelligence,2026-07-25,Officer 01
-RPT091,C091,Surveillance Report for Case 91,SURVEILLANCE_C091.txt,Surveillance,2026-06-28,Officer 21
-RPT092,C092,Intelligence Report for Case 92,INTELLIGENCE_C092.txt,Intelligence,2026-04-13,Officer 24
-RPT093,C093,FIR Report for Case 93,FIR_C093.txt,FIR,2026-01-12,Officer 17
-RPT094,C094,Financial Report for Case 94,FINANCIAL_C094.txt,Financial,2026-03-27,Officer 18
-RPT095,C095,Surveillance Report for Case 95,SURVEILLANCE_C095.txt,Surveillance,2026-03-25,Officer 14
-RPT096,C096,Surveillance Report for Case 96,SURVEILLANCE_C096.txt,Surveillance,2026-02-14,Officer 23
-RPT097,C097,Intelligence Report for Case 97,INTELLIGENCE_C097.txt,Intelligence,2026-01-03,Officer 12
-RPT098,C098,FIR Report for Case 98,FIR_C098.txt,FIR,2026-04-28,Officer 12
-RPT099,C099,Surveillance Report for Case 99,SURVEILLANCE_C099.txt,Surveillance,2026-08-24,Officer 21
-RPT100,C100,FIR Report for Case 100,FIR_C100.txt,FIR,2026-04-27,Officer 25
+RPT-001,C001,FIR Report — Operation Harbor 01,FIR Report C001.txt,FIR,2026-02-02,Ananya Sen
+RPT-002,C002,Surveillance Report — Operation Silver 02,Surveillance Report C002.txt,Surveillance,2026-03-03,Vikram Roy
+RPT-003,C003,Financial Report — Operation Riverside 03,Financial Report C003.txt,Financial,2026-04-04,Sourav Das
+RPT-004,C004,Intelligence Report — Operation Northstar 04,Intelligence Report C004.txt,Intelligence,2026-05-05,Ishita Mehta
+RPT-005,C005,FIR Report — Operation Crescent 05,FIR Report C005.txt,FIR,2026-06-06,Amit Sharma
+RPT-006,C006,Surveillance Report — Operation Summit 06,Surveillance Report C006.txt,Surveillance,2026-07-07,Madhurima Ghosh
+RPT-007,C007,Financial Report — Operation Bluebird 07,Financial Report C007.txt,Financial,2026-08-08,Debashis Dutta
+RPT-008,C008,Intelligence Report — Operation Lakeside 08,Intelligence Report C008.txt,Intelligence,2026-01-09,Ritu Bose
+RPT-009,C009,FIR Report — Operation Frontier 09,FIR Report C009.txt,FIR,2026-02-10,Sanjay Nandi
+RPT-010,C010,Surveillance Report — Operation Meridian 10,Surveillance Report C010.txt,Surveillance,2026-03-11,Nandini Sarkar
+RPT-011,C011,Financial Report — Operation Harbor 11,Financial Report C011.txt,Financial,2026-04-12,Arindam Sen
+RPT-012,C012,Intelligence Report — Operation Silver 12,Intelligence Report C012.txt,Intelligence,2026-05-13,Priyanka Roy
+RPT-013,C013,FIR Report — Operation Riverside 13,FIR Report C013.txt,FIR,2026-06-14,Karan Das
+RPT-014,C014,Surveillance Report — Operation Northstar 14,Surveillance Report C014.txt,Surveillance,2026-07-15,Moumita Mehta
+RPT-015,C015,Financial Report — Operation Crescent 15,Financial Report C015.txt,Financial,2026-08-16,Abhishek Sharma
+RPT-016,C016,Intelligence Report — Operation Summit 16,Intelligence Report C016.txt,Intelligence,2026-01-17,Tania Ghosh
+RPT-017,C017,FIR Report — Operation Bluebird 17,FIR Report C017.txt,FIR,2026-02-18,Subhajit Dutta
+RPT-018,C018,Surveillance Report — Operation Lakeside 18,Surveillance Report C018.txt,Surveillance,2026-03-19,Rakesh Bose
+RPT-019,C019,Financial Report — Operation Frontier 19,Financial Report C019.txt,Financial,2026-04-20,Sohini Nandi
+RPT-020,C020,Intelligence Report — Operation Meridian 20,Intelligence Report C020.txt,Intelligence,2026-05-21,Ayan Sarkar
+RPT-021,C021,FIR Report — Operation Harbor 21,FIR Report C021.txt,FIR,2026-06-22,Rajesh Sen
+RPT-022,C022,Surveillance Report — Operation Silver 22,Surveillance Report C022.txt,Surveillance,2026-07-23,Trisha Roy
+RPT-023,C023,Financial Report — Operation Riverside 23,Financial Report C023.txt,Financial,2026-08-24,Indranil Das
+RPT-024,C024,Intelligence Report — Operation Northstar 24,Intelligence Report C024.txt,Intelligence,2026-01-25,Pallavi Mehta
+RPT-025,C025,FIR Report — Operation Crescent 25,FIR Report C025.txt,FIR,2026-02-26,Suman Sharma
+RPT-026,C026,Surveillance Report — Operation Summit 26,Surveillance Report C026.txt,Surveillance,2026-03-27,Ananya Sen
+RPT-027,C027,Financial Report — Operation Bluebird 27,Financial Report C027.txt,Financial,2026-04-01,Vikram Roy
+RPT-028,C028,Intelligence Report — Operation Lakeside 28,Intelligence Report C028.txt,Intelligence,2026-05-02,Sourav Das
+RPT-029,C029,FIR Report — Operation Frontier 29,FIR Report C029.txt,FIR,2026-06-03,Ishita Mehta
+RPT-030,C030,Surveillance Report — Operation Meridian 30,Surveillance Report C030.txt,Surveillance,2026-07-04,Amit Sharma
+RPT-031,C031,Financial Report — Operation Harbor 31,Financial Report C031.txt,Financial,2026-08-05,Madhurima Ghosh
+RPT-032,C032,Intelligence Report — Operation Silver 32,Intelligence Report C032.txt,Intelligence,2026-01-06,Debashis Dutta
+RPT-033,C033,FIR Report — Operation Riverside 33,FIR Report C033.txt,FIR,2026-02-07,Ritu Bose
+RPT-034,C034,Surveillance Report — Operation Northstar 34,Surveillance Report C034.txt,Surveillance,2026-03-08,Sanjay Nandi
+RPT-035,C035,Financial Report — Operation Crescent 35,Financial Report C035.txt,Financial,2026-04-09,Nandini Sarkar
+RPT-036,C036,Intelligence Report — Operation Summit 36,Intelligence Report C036.txt,Intelligence,2026-05-10,Arindam Sen
+RPT-037,C037,FIR Report — Operation Bluebird 37,FIR Report C037.txt,FIR,2026-06-11,Priyanka Roy
+RPT-038,C038,Surveillance Report — Operation Lakeside 38,Surveillance Report C038.txt,Surveillance,2026-07-12,Karan Das
+RPT-039,C039,Financial Report — Operation Frontier 39,Financial Report C039.txt,Financial,2026-08-13,Moumita Mehta
+RPT-040,C040,Intelligence Report — Operation Meridian 40,Intelligence Report C040.txt,Intelligence,2026-01-14,Abhishek Sharma
+RPT-041,C041,FIR Report — Operation Harbor 41,FIR Report C041.txt,FIR,2026-02-15,Tania Ghosh
+RPT-042,C042,Surveillance Report — Operation Silver 42,Surveillance Report C042.txt,Surveillance,2026-03-16,Subhajit Dutta
+RPT-043,C043,Financial Report — Operation Riverside 43,Financial Report C043.txt,Financial,2026-04-17,Rakesh Bose
+RPT-044,C044,Intelligence Report — Operation Northstar 44,Intelligence Report C044.txt,Intelligence,2026-05-18,Sohini Nandi
+RPT-045,C045,FIR Report — Operation Crescent 45,FIR Report C045.txt,FIR,2026-06-19,Ayan Sarkar
+RPT-046,C046,Surveillance Report — Operation Summit 46,Surveillance Report C046.txt,Surveillance,2026-07-20,Rajesh Sen
+RPT-047,C047,Financial Report — Operation Bluebird 47,Financial Report C047.txt,Financial,2026-08-21,Trisha Roy
+RPT-048,C048,Intelligence Report — Operation Lakeside 48,Intelligence Report C048.txt,Intelligence,2026-01-22,Indranil Das
+RPT-049,C049,FIR Report — Operation Frontier 49,FIR Report C049.txt,FIR,2026-02-23,Pallavi Mehta
+RPT-050,C050,Surveillance Report — Operation Meridian 50,Surveillance Report C050.txt,Surveillance,2026-03-24,Suman Sharma
+RPT-051,C051,Financial Report — Operation Harbor 51,Financial Report C051.txt,Financial,2026-04-25,Ananya Sen
+RPT-052,C052,Intelligence Report — Operation Silver 52,Intelligence Report C052.txt,Intelligence,2026-05-26,Vikram Roy
+RPT-053,C053,FIR Report — Operation Riverside 53,FIR Report C053.txt,FIR,2026-06-27,Sourav Das
+RPT-054,C054,Surveillance Report — Operation Northstar 54,Surveillance Report C054.txt,Surveillance,2026-07-01,Ishita Mehta
+RPT-055,C055,Financial Report — Operation Crescent 55,Financial Report C055.txt,Financial,2026-08-02,Amit Sharma
+RPT-056,C056,Intelligence Report — Operation Summit 56,Intelligence Report C056.txt,Intelligence,2026-01-03,Madhurima Ghosh
+RPT-057,C057,FIR Report — Operation Bluebird 57,FIR Report C057.txt,FIR,2026-02-04,Debashis Dutta
+RPT-058,C058,Surveillance Report — Operation Lakeside 58,Surveillance Report C058.txt,Surveillance,2026-03-05,Ritu Bose
+RPT-059,C059,Financial Report — Operation Frontier 59,Financial Report C059.txt,Financial,2026-04-06,Sanjay Nandi
+RPT-060,C060,Intelligence Report — Operation Meridian 60,Intelligence Report C060.txt,Intelligence,2026-05-07,Nandini Sarkar
+RPT-061,C061,FIR Report — Operation Harbor 61,FIR Report C061.txt,FIR,2026-06-08,Arindam Sen
+RPT-062,C062,Surveillance Report — Operation Silver 62,Surveillance Report C062.txt,Surveillance,2026-07-09,Priyanka Roy
+RPT-063,C063,Financial Report — Operation Riverside 63,Financial Report C063.txt,Financial,2026-08-10,Karan Das
+RPT-064,C064,Intelligence Report — Operation Northstar 64,Intelligence Report C064.txt,Intelligence,2026-01-11,Moumita Mehta
+RPT-065,C065,FIR Report — Operation Crescent 65,FIR Report C065.txt,FIR,2026-02-12,Abhishek Sharma
+RPT-066,C066,Surveillance Report — Operation Summit 66,Surveillance Report C066.txt,Surveillance,2026-03-13,Tania Ghosh
+RPT-067,C067,Financial Report — Operation Bluebird 67,Financial Report C067.txt,Financial,2026-04-14,Subhajit Dutta
+RPT-068,C068,Intelligence Report — Operation Lakeside 68,Intelligence Report C068.txt,Intelligence,2026-05-15,Rakesh Bose
+RPT-069,C069,FIR Report — Operation Frontier 69,FIR Report C069.txt,FIR,2026-06-16,Sohini Nandi
+RPT-070,C070,Surveillance Report — Operation Meridian 70,Surveillance Report C070.txt,Surveillance,2026-07-17,Ayan Sarkar
+RPT-071,C071,Financial Report — Operation Harbor 71,Financial Report C071.txt,Financial,2026-08-18,Rajesh Sen
+RPT-072,C072,Intelligence Report — Operation Silver 72,Intelligence Report C072.txt,Intelligence,2026-01-19,Trisha Roy
+RPT-073,C073,FIR Report — Operation Riverside 73,FIR Report C073.txt,FIR,2026-02-20,Indranil Das
+RPT-074,C074,Surveillance Report — Operation Northstar 74,Surveillance Report C074.txt,Surveillance,2026-03-21,Pallavi Mehta
+RPT-075,C075,Financial Report — Operation Crescent 75,Financial Report C075.txt,Financial,2026-04-22,Suman Sharma
+RPT-076,C076,Intelligence Report — Operation Summit 76,Intelligence Report C076.txt,Intelligence,2026-05-23,Ananya Sen
+RPT-077,C077,FIR Report — Operation Bluebird 77,FIR Report C077.txt,FIR,2026-06-24,Vikram Roy
+RPT-078,C078,Surveillance Report — Operation Lakeside 78,Surveillance Report C078.txt,Surveillance,2026-07-25,Sourav Das
+RPT-079,C079,Financial Report — Operation Frontier 79,Financial Report C079.txt,Financial,2026-08-26,Ishita Mehta
+RPT-080,C080,Intelligence Report — Operation Meridian 80,Intelligence Report C080.txt,Intelligence,2026-01-27,Amit Sharma
+RPT-081,C081,FIR Report — Operation Harbor 81,FIR Report C081.txt,FIR,2026-02-01,Madhurima Ghosh
+RPT-082,C082,Surveillance Report — Operation Silver 82,Surveillance Report C082.txt,Surveillance,2026-03-02,Debashis Dutta
+RPT-083,C083,Financial Report — Operation Riverside 83,Financial Report C083.txt,Financial,2026-04-03,Ritu Bose
+RPT-084,C084,Intelligence Report — Operation Northstar 84,Intelligence Report C084.txt,Intelligence,2026-05-04,Sanjay Nandi
+RPT-085,C085,FIR Report — Operation Crescent 85,FIR Report C085.txt,FIR,2026-06-05,Nandini Sarkar
+RPT-086,C086,Surveillance Report — Operation Summit 86,Surveillance Report C086.txt,Surveillance,2026-07-06,Arindam Sen
+RPT-087,C087,Financial Report — Operation Bluebird 87,Financial Report C087.txt,Financial,2026-08-07,Priyanka Roy
+RPT-088,C088,Intelligence Report — Operation Lakeside 88,Intelligence Report C088.txt,Intelligence,2026-01-08,Karan Das
+RPT-089,C089,FIR Report — Operation Frontier 89,FIR Report C089.txt,FIR,2026-02-09,Moumita Mehta
+RPT-090,C090,Surveillance Report — Operation Meridian 90,Surveillance Report C090.txt,Surveillance,2026-03-10,Abhishek Sharma
+RPT-091,C091,Financial Report — Operation Harbor 91,Financial Report C091.txt,Financial,2026-04-11,Tania Ghosh
+RPT-092,C092,Intelligence Report — Operation Silver 92,Intelligence Report C092.txt,Intelligence,2026-05-12,Subhajit Dutta
+RPT-093,C093,FIR Report — Operation Riverside 93,FIR Report C093.txt,FIR,2026-06-13,Rakesh Bose
+RPT-094,C094,Surveillance Report — Operation Northstar 94,Surveillance Report C094.txt,Surveillance,2026-07-14,Sohini Nandi
+RPT-095,C095,Financial Report — Operation Crescent 95,Financial Report C095.txt,Financial,2026-08-15,Ayan Sarkar
+RPT-096,C096,Intelligence Report — Operation Summit 96,Intelligence Report C096.txt,Intelligence,2026-01-16,Rajesh Sen
+RPT-097,C097,FIR Report — Operation Bluebird 97,FIR Report C097.txt,FIR,2026-02-17,Trisha Roy
+RPT-098,C098,Surveillance Report — Operation Lakeside 98,Surveillance Report C098.txt,Surveillance,2026-03-18,Indranil Das
+RPT-099,C099,Financial Report — Operation Frontier 99,Financial Report C099.txt,Financial,2026-04-19,Pallavi Mehta
+RPT-100,C100,Intelligence Report — Operation Meridian 100,Intelligence Report C100.txt,Intelligence,2026-05-20,Suman Sharma

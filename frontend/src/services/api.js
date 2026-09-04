@@ -84,7 +84,7 @@ export const getDocuments = (caseId = null) => {
 };
 export const getDocumentDetails = (id) => api.get(`/documents/${id}`);
 export const uploadDocument = (formData) => api.post('/documents/upload', formData, {
-  headers: { 'Content-Type': 'multipart/form-data' }
+  headers: { 'Content-Type': undefined }
 });
 export const analyzeDocument = (id) => api.post(`/documents/${id}/analyze`);
 
