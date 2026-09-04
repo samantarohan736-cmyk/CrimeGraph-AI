@@ -1,7 +1,0 @@
-FIR Report for Case 51
-
-Case ID: C051
-Source Type: FIR
-Officer: Officer 07
-Entities referenced: No direct person reference.
-This is synthetic demonstration intelligence. It is not real police, CDR, banking, or intelligence data.
