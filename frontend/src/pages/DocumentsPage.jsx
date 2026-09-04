@@ -42,7 +42,6 @@ export default function DocumentsPage() {
   const [uploadCaseId, setUploadCaseId] = useState(''); // Optional!
 =======
   const [uploadCaseId, setUploadCaseId] = useState('');
->>>>>>> origin/Anirudha
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
