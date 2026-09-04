@@ -9,11 +9,26 @@
     <!-- Google Fonts Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-Dovmm7Q5.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CSh11MdO.css">
+    <!-- Anti-flash inline theme loader -->
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('crimegraph_theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (stored === 'dark' || (!stored && prefersDark)) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-C6qlJlP_.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CZeJR7b9.css">
   </head>
-  <body class="bg-[#FDFBF7] text-black font-sans antialiased overflow-x-hidden selection:bg-[#FFE600] selection:text-black">
-    <div id="root"></div>
+  <body class="bg-[#FDFBF7] dark:bg-[#0A0E17] text-black dark:text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-[#FFE600] selection:text-black">
+    <div id="root"></div>
   </body>
 </html>

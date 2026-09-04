@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import DisclaimerBanner from './components/layout/DisclaimerBanner';
@@ -16,32 +17,34 @@ import InvestigationAssistantPage from './pages/InvestigationAssistantPage';
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-[#FDFBF7] text-black flex flex-col selection:bg-brutal-yellow selection:text-black">
-        {/* Always-visible Responsible AI Disclaimer Banner */}
-        <DisclaimerBanner />
+    <ThemeProvider>
+      <BrowserRouter>
+        <div className="min-h-screen bg-[#FDFBF7] dark:bg-[#0A0E17] text-black dark:text-slate-100 flex flex-col selection:bg-brutal-yellow selection:text-black transition-colors duration-150">
+          {/* Always-visible Responsible AI Disclaimer Banner */}
+          <DisclaimerBanner />
 
-        {/* Top Navbar with Global Search */}
-        <Navbar />
+          {/* Top Navbar with Global Search */}
+          <Navbar />
 
-        {/* Main Body with Sidebar + Routed Content */}
-        <div className="flex-1 flex overflow-hidden bg-[#FDFBF7]">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto bg-[#FDFBF7]">
-            <Routes>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/network" element={<NetworkAnalysisPage />} />
-              <Route path="/cases" element={<CasesPage />} />
-              <Route path="/cases/:caseId" element={<CaseDetailsPage />} />
-              <Route path="/persons" element={<PersonsPage />} />
-              <Route path="/persons/:personId" element={<PersonProfilePage />} />
-              <Route path="/alerts" element={<AlertsPage />} />
-              <Route path="/documents" element={<DocumentsPage />} />
-              <Route path="/assistant" element={<InvestigationAssistantPage />} />
-            </Routes>
-          </main>
+          {/* Main Body with Sidebar + Routed Content */}
+          <div className="flex-1 flex overflow-hidden bg-[#FDFBF7] dark:bg-[#0A0E17]">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto bg-[#FDFBF7] dark:bg-[#0A0E17]">
+              <Routes>
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/network" element={<NetworkAnalysisPage />} />
+                <Route path="/cases" element={<CasesPage />} />
+                <Route path="/cases/:caseId" element={<CaseDetailsPage />} />
+                <Route path="/persons" element={<PersonsPage />} />
+                <Route path="/persons/:personId" element={<PersonProfilePage />} />
+                <Route path="/alerts" element={<AlertsPage />} />
+                <Route path="/documents" element={<DocumentsPage />} />
+                <Route path="/assistant" element={<InvestigationAssistantPage />} />
+              </Routes>
+            </main>
+          </div>
         </div>
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

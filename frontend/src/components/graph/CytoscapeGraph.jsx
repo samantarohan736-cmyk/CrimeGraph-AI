@@ -3,6 +3,7 @@ import cytoscape from 'cytoscape';
 import coseBilkent from 'cytoscape-cose-bilkent';
 import { Maximize2, Minimize2, ZoomIn, ZoomOut, Crosshair } from 'lucide-react';
 import { ENTITY_COLORS, COMMUNITY_COLORS } from '../../utils/colors';
+import { useTheme } from '../../context/ThemeContext';
 
 // Register cose-bilkent layout extension if available
 try {
@@ -77,6 +78,7 @@ export default function CytoscapeGraph({
   const containerRef = useRef(null);
   const cyRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { isDark } = useTheme();
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -145,14 +147,14 @@ export default function CytoscapeGraph({
             'font-family': 'JetBrains Mono, monospace',
             'font-size': '10px',
             'font-weight': 'bold',
-            'color': '#000000',
+            'color': isDark ? '#F8FAFC' : '#000000',
             'text-valign': 'bottom',
             'text-margin-y': 6,
             'text-background-opacity': 0.95,
-            'text-background-color': '#FFFFFF',
+            'text-background-color': isDark ? '#151D2A' : '#FFFFFF',
             'text-background-padding': '3px',
             'text-background-shape': 'roundrectangle',
-            'text-border-color': '#000000',
+            'text-border-color': isDark ? '#38BDF8' : '#000000',
             'text-border-width': 1.5,
             'text-border-opacity': 1,
             'width': ele => {
@@ -253,13 +255,17 @@ export default function CytoscapeGraph({
             },
             'line-color': ele => {
               if (suspiciousMode) {
-                return ele.data('is_suspicious') ? '#FF2A6D' : '#94A3B8';
+                return ele.data('is_suspicious') ? '#FF2A6D' : (isDark ? '#475569' : '#94A3B8');
               }
-              if (ele.data('count') > 1) return '#000000';
-              return '#475569';
+              if (ele.data('count') > 1) return isDark ? '#38BDF8' : '#000000';
+              return isDark ? '#64748B' : '#475569';
             },
             'line-style': ele => (suspiciousMode && ele.data('is_suspicious') ? 'dashed' : 'solid'),
-            'target-arrow-color': ele => (suspiciousMode && ele.data('is_suspicious') ? '#FF2A6D' : '#000000'),
+            'target-arrow-color': ele => {
+              if (suspiciousMode && ele.data('is_suspicious')) return '#FF2A6D';
+              if (ele.data('count') > 1) return isDark ? '#38BDF8' : '#000000';
+              return isDark ? '#64748B' : '#000000';
+            },
             'target-arrow-shape': 'triangle',
             'arrow-scale': 1.0,
             'curve-style': 'bezier',
@@ -267,16 +273,16 @@ export default function CytoscapeGraph({
             'font-family': 'JetBrains Mono, monospace',
             'font-size': '8.5px',
             'font-weight': 'bold',
-            'color': '#000000',
+            'color': isDark ? '#F8FAFC' : '#000000',
             'text-background-opacity': 0.95,
             'text-background-color': ele => {
               if (ele.data('is_suspicious') && suspiciousMode) return '#FFB8D2';
               if (ele.data('count') > 1) return '#FFE600';
-              return '#F1F5F9';
+              return isDark ? '#1E293B' : '#F1F5F9';
             },
             'text-background-padding': '2.5px',
             'text-background-shape': 'roundrectangle',
-            'text-border-color': '#000000',
+            'text-border-color': isDark ? '#334155' : '#000000',
             'text-border-width': 1,
             'text-rotation': 'autorotate',
             'text-margin-y': -8
@@ -352,7 +358,7 @@ export default function CytoscapeGraph({
       } catch (e) {}
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodes, edges, colorMode, suspiciousMode]);
+  }, [nodes, edges, colorMode, suspiciousMode, isDark]);
 
   // Layout Hot-Swap without full remount
   useEffect(() => {
@@ -418,34 +424,34 @@ export default function CytoscapeGraph({
     <div
       className={
         isFullscreen
-          ? 'fixed inset-0 z-50 bg-cream-100 p-6 flex flex-col'
-          : 'relative w-full h-full min-h-[550px] overflow-hidden rounded-xl bg-cream-100'
+          ? 'fixed inset-0 z-50 bg-cream-100 dark:bg-[#0A0E17] p-6 flex flex-col'
+          : 'relative w-full h-full min-h-[550px] overflow-hidden rounded-xl bg-cream-100 dark:bg-[#0A0E17]'
       }
     >
       {/* Floating Canvas Quick Actions (Positioned cleanly at top-left) */}
       <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 pointer-events-auto">
         <button
           onClick={handleZoomIn}
-          className="neo-btn p-1.5 bg-white text-black text-xs shadow-brutal-sm"
+          className="neo-btn p-1.5 bg-white dark:bg-[#151D2A] text-black dark:text-white text-xs shadow-brutal-sm"
           title="Zoom In"
         >
-          <ZoomIn className="w-3.5 h-3.5 text-black" />
+          <ZoomIn className="w-3.5 h-3.5" />
         </button>
 
         <button
           onClick={handleZoomOut}
-          className="neo-btn p-1.5 bg-white text-black text-xs shadow-brutal-sm"
+          className="neo-btn p-1.5 bg-white dark:bg-[#151D2A] text-black dark:text-white text-xs shadow-brutal-sm"
           title="Zoom Out"
         >
-          <ZoomOut className="w-3.5 h-3.5 text-black" />
+          <ZoomOut className="w-3.5 h-3.5" />
         </button>
 
         <button
           onClick={handleFit}
-          className="neo-btn p-1.5 bg-white text-black text-xs shadow-brutal-sm"
+          className="neo-btn p-1.5 bg-white dark:bg-[#151D2A] text-black dark:text-white text-xs shadow-brutal-sm"
           title="Fit Graph to Viewport"
         >
-          <Crosshair className="w-3.5 h-3.5 text-black" />
+          <Crosshair className="w-3.5 h-3.5" />
         </button>
 
         <button

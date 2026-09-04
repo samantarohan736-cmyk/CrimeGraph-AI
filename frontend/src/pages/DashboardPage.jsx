@@ -136,7 +136,7 @@ export default function DashboardPage() {
               <span className="w-2.5 h-2.5 rounded-full bg-brutal-pink border border-black"></span>
               SYNDICATE CRIME CATEGORIZATION
             </span>
-            <PieChart className="w-4 h-4 text-black" />
+            <PieChart className="w-4 h-4 text-black dark:text-white" />
           </div>
           <CrimeDistributionChart data={data.crime_distribution} />
         </div>
@@ -148,7 +148,7 @@ export default function DashboardPage() {
               <span className="w-2.5 h-2.5 rounded-full bg-brutal-cyan border border-black"></span>
               MONTHLY OPERATIONAL ACTIVITY (CDR VS FINANCIAL FLOWS)
             </span>
-            <TrendingUp className="w-4 h-4 text-black" />
+            <TrendingUp className="w-4 h-4 text-black dark:text-white" />
           </div>
           <ActivityTimelineChart data={data.activity_timeline} />
         </div>

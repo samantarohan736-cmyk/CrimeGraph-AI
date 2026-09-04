@@ -9,6 +9,11 @@
     color: #000000;
   }
   
+  .dark body {
+    background-color: #0A0E17;
+    color: #F8FAFC;
+  }
+  
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
@@ -26,6 +31,17 @@
 }
 
 ::-webkit-scrollbar-thumb {
+  background: #FFE600;
+  border: 2.5px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0B0F17;
+  border-left: 2.5px solid #1E293B;
+}
+
+.dark ::-webkit-scrollbar-thumb {
   background: #FFE600;
   border: 2.5px solid #000000;
   box-shadow: 2px 2px 0px #000000;
@@ -170,3 +186,160 @@
   background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
   background-size: 20px 20px;
 }
+
+/* ==========================================================
+   TACTICAL OPERATIONS DARK MODE PALETTE
+   ========================================================== */
+.dark .neo-cyber-bg {
+  background-color: #0A0E17;
+  background-image: 
+    radial-gradient(#1E293B 1.2px, transparent 1.2px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px, 24px 24px;
+}
+
+.dark #cy {
+  background-color: #0A0E17;
+  background-image: radial-gradient(#1E293B 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+.dark .neo-box,
+.dark .neo-box-solid,
+.dark .neo-box-tilt-l,
+.dark .neo-box-tilt-r {
+  background-color: #121824;
+  border-color: #222D3F;
+  color: #F8FAFC;
+  box-shadow: 6px 4px 0px 0px #000000;
+}
+
+.dark .neo-box.bg-white,
+.dark .neo-box-solid.bg-white,
+.dark .neo-box-tilt-l.bg-white,
+.dark .neo-box-tilt-r.bg-white {
+  background-color: #121824 !important;
+  border-color: #222D3F !important;
+  color: #F8FAFC !important;
+}
+
+/* Retain high-contrast black text on saturated brutal color cards */
+.dark .bg-brutal-yellow,
+.dark [class*="bg-brutal-yellow"] {
+  background-color: #FFE600 !important;
+  color: #000000 !important;
+}
+.dark .bg-brutal-cyan,
+.dark [class*="bg-brutal-cyan"] {
+  background-color: #00F0FF !important;
+  color: #000000 !important;
+}
+.dark .bg-brutal-lime,
+.dark [class*="bg-brutal-lime"] {
+  background-color: #4EEDA4 !important;
+  color: #000000 !important;
+}
+.dark .bg-brutal-pink,
+.dark [class*="bg-brutal-pink"] {
+  background-color: #FF6B8B !important;
+  color: #000000 !important;
+}
+.dark .bg-brutal-hotpink,
+.dark [class*="bg-brutal-hotpink"] {
+  background-color: #FF2A6D !important;
+  color: #000000 !important;
+}
+
+/* Dark mode typography inside neo containers */
+.dark .neo-box .text-slate-800,
+.dark .neo-box .text-slate-700,
+.dark .neo-box-solid .text-slate-800,
+.dark .neo-box-solid .text-slate-700,
+.dark .neo-box-tilt-l .text-slate-800,
+.dark .neo-box-tilt-l .text-slate-700,
+.dark .neo-box-tilt-r .text-slate-800,
+.dark .neo-box-tilt-r .text-slate-700 {
+  color: #CBD5E1;
+}
+
+.dark .neo-box .text-slate-600,
+.dark .neo-box-solid .text-slate-600,
+.dark .neo-box-tilt-l .text-slate-600,
+.dark .neo-box-tilt-r .text-slate-600 {
+  color: #94A3B8;
+}
+
+.dark .neo-box .text-black:not(.neo-badge):not(.neo-btn):not([class*="bg-brutal-"]):not(h1):not(h2):not(h3),
+.dark .neo-box-solid .text-black:not(.neo-badge):not(.neo-btn):not([class*="bg-brutal-"]):not(h1):not(h2):not(h3),
+.dark .neo-box-tilt-l .text-black:not(.neo-badge):not(.neo-btn):not([class*="bg-brutal-"]):not(h1):not(h2):not(h3),
+.dark .neo-box-tilt-r .text-black:not(.neo-badge):not(.neo-btn):not([class*="bg-brutal-"]):not(h1):not(h2):not(h3) {
+  color: #F8FAFC;
+}
+
+/* Dark mode badges & buttons */
+.dark .neo-badge.bg-white {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+  border-color: #38BDF8 !important;
+}
+
+.dark .neo-btn.bg-white {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+  border-color: #2E3A52 !important;
+}
+.dark .neo-btn.bg-white:hover {
+  background-color: #FFE600 !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+/* Dark mode tables & lists */
+.dark thead.bg-cream-100 {
+  background-color: #151D2A !important;
+  color: #F8FAFC !important;
+  border-color: #222D3F !important;
+}
+.dark thead th {
+  color: #F8FAFC !important;
+}
+
+.dark tbody.divide-cream-200,
+.dark div.divide-cream-200 {
+  border-color: #1E293B !important;
+}
+.dark tbody.divide-cream-200 > :not([hidden]) ~ :not([hidden]),
+.dark div.divide-cream-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1E293B !important;
+}
+
+.dark tr.hover\:bg-cream-50:hover,
+.dark div.hover\:bg-cream-50:hover {
+  background-color: #182232 !important;
+}
+
+/* Dark mode cream palette mapping */
+.dark .bg-cream-50 {
+  background-color: #0F1728 !important;
+}
+.dark .bg-cream-100 {
+  background-color: #151D2A !important;
+}
+.dark .bg-cream-200 {
+  background-color: #1E293B !important;
+}
+.dark .bg-brutal-white {
+  background-color: #121824 !important;
+}
+
+/* Dark mode inputs & dropdowns */
+.dark input {
+  color-scheme: dark;
+}
+
+/* Dark mode panel dividers & borders */
+.dark .divide-black > :not([hidden]) ~ :not([hidden]) {
+  border-color: #222D3F !important;
+}
+
