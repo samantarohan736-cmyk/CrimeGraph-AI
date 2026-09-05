@@ -1,0 +1,5 @@
+phone_id,phone_number,operator,is_burner,registered_owner_id
+PH-101,+919876543210,Airtel,false,P-101
+PH-102,+919988776655,Jio,false,P-102
+PH-103,+918888888888,Vodafone,true,P-103
+PH-104,+917777777777,Vodafone,true,P-104

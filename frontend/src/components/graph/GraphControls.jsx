@@ -76,21 +76,23 @@ export default function GraphControls({
   return (
     <div className="absolute top-16 left-4 z-20 flex flex-wrap items-center gap-2 p-2 rounded-xl bg-[var(--bg-secondary)] border-[2.5px] border-[var(--border-color)] shadow-[4px_4px_0_0_var(--shadow-color)] font-mono text-xs max-w-[calc(100%-20px)]">
       {/* ── 1. Compact Hop Selector [1-Hop] [2-Hop] [3-Hop] ── */}
-      <div className="flex items-center gap-1 px-1.5 py-1 bg-[var(--bg-tertiary)] border-2 border-[var(--border-color)] rounded-lg">
-        {[1, 2, 3].map((h) => (
-          <button
-            key={h}
-            onClick={() => setHops && setHops(h)}
-            className={`px-2 py-0.5 rounded font-black text-[11px] transition-all border-2 border-[var(--border-color)] ${
-              hops === h
-                ? 'bg-brutal-cyan text-black shadow-[1.5px_1.5px_0px_0_var(--shadow-color)]'
-                : 'bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            {h}-Hop
-          </button>
-        ))}
-      </div>
+      {setHops && (
+        <div className="flex items-center gap-1 px-1.5 py-1 bg-[var(--bg-tertiary)] border-2 border-[var(--border-color)] rounded-lg">
+          {[1, 2, 3].map((h) => (
+            <button
+              key={h}
+              onClick={() => setHops(h)}
+              className={`px-2 py-0.5 rounded font-black text-[11px] transition-all border-2 border-[var(--border-color)] ${
+                hops === h
+                  ? 'bg-brutal-cyan text-black shadow-[1.5px_1.5px_0px_0_var(--shadow-color)]'
+                  : 'bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              {h}-Hop
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* ── 2. Filters Dropdown Panel ── */}
       {setSelectedCategories && (

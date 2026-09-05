@@ -90,21 +90,28 @@ export default function CytoscapeGraph({
   colorMode = 'type', // 'type' | 'community' | 'centrality' | 'suspicious'
   layoutName = 'cose',
   highlightPathIds = null,
-  suspiciousMode = false
+  suspiciousMode = false,
+  isFullscreen = false,
+  onToggleFullscreen
 }) {
   const containerRef = useRef(null);
   const cyRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const { theme } = useTheme();
 
-  const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
-    setTimeout(() => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
       if (cyRef.current) {
         cyRef.current.resize();
         cyRef.current.fit(undefined, 40);
       }
     }, 150);
+    return () => clearTimeout(timer);
+  }, [isFullscreen]);
+
+  const toggleFullscreen = () => {
+    if (onToggleFullscreen) {
+      onToggleFullscreen();
+    }
   };
 
   const handleZoomIn = () => cyRef.current && cyRef.current.zoom(cyRef.current.zoom() * 1.3);
@@ -376,11 +383,14 @@ export default function CytoscapeGraph({
     return () => clearTimeout(timer);
   }, [layoutName]);
 
-  // Path Highlighting
+  // Path & Selection Highlighting
   useEffect(() => {
     if (!cyRef.current) return;
     const cy = cyRef.current;
     cy.elements().removeClass('highlighted-path dimmed');
+    
+    // Clear any manual opacity styles from hover
+    cy.elements().style({ 'opacity': '' });
 
     if (highlightPathIds && highlightPathIds.nodeIds && highlightPathIds.nodeIds.length > 0) {
       const { nodeIds, edgeIds } = highlightPathIds;
@@ -406,18 +416,26 @@ export default function CytoscapeGraph({
           ele.style({ 'opacity': 0.15 });
         }
       });
-    } else {
-      cy.elements().style({ 'opacity': '' });
+    } else if (selectedNode) {
+      // Dim non-neighbors when a node is selected
+      const target = cy.getElementById(selectedNode.id);
+      if (target.length > 0) {
+        const neighbors = target.neighborhood();
+        cy.elements().not(neighbors).not(target).style({ 'opacity': 0.15 });
+      }
+    } else if (selectedEdge) {
+      // Dim non-connected nodes when an edge is selected
+      const target = cy.getElementById(selectedEdge.id);
+      if (target.length > 0) {
+        const connectedNodes = target.connectedNodes();
+        cy.elements().not(connectedNodes).not(target).style({ 'opacity': 0.15 });
+      }
     }
-  }, [highlightPathIds]);
+  }, [highlightPathIds, selectedNode, selectedEdge]);
 
   return (
     <div
-      className={
-        isFullscreen
-          ? 'fixed inset-0 z-50 bg-[var(--bg-primary)] p-6 flex flex-col'
-          : 'relative w-full h-full min-h-[550px] overflow-hidden rounded-xl bg-[var(--bg-primary)]'
-      }
+      className="relative w-full h-full min-h-[550px] overflow-hidden bg-transparent"
     >
       {/* Floating Canvas Quick Actions (Positioned cleanly at top-left) */}
       <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 pointer-events-auto">

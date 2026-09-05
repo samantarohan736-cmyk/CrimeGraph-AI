@@ -34,10 +34,8 @@ export default function ShortestPathModal({ isOpen, onClose, nodes = [], onHighl
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl bg-[var(--bg-secondary)] border-[3px] border-[var(--border-color)] rounded-xl shadow-[8px_8px_0_0_var(--shadow-color)] overflow-hidden divide-y-2 divide-[var(--border-color)]">
-        {/* Header */}
-        <div className="p-5 flex items-center justify-between bg-brutal-yellow border-b-2 border-[var(--border-color)]">
+    <>
+      <div className="p-5 flex items-center justify-between bg-brutal-yellow border-b-2 border-[var(--border-color)]">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-lg bg-[var(--bg-primary)] text-[var(--text-primary)] border-2 border-[var(--border-color)]">
               <GitFork className="w-5 h-5" />
@@ -174,7 +172,6 @@ export default function ShortestPathModal({ isOpen, onClose, nodes = [], onHighl
             )}
           </div>
         )}
-      </div>
-    </div>
+      </>
   );
 }

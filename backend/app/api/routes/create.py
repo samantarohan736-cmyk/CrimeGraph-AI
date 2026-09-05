@@ -200,8 +200,9 @@ def create_cdr(req: CDRCreateRequest, db: Session = Depends(get_db)):
 
 @router.post("/cdrs/bulk")
 def create_cdrs_bulk(records: List[CDRCreateRequest], db: Session = Depends(get_db)):
-    """Bulk-create CDR records."""
+    """Bulk-create CDR records and run anomaly detection on the batch."""
     created, skipped, errors = 0, 0, []
+    cdr_dicts = []
     for req in records:
         try:
             cdr_id = req.cdr_id or _make_id("CDR", db.query(CDRRecord).count() + created)
@@ -220,11 +221,37 @@ def create_cdrs_bulk(records: List[CDRCreateRequest], db: Session = Depends(get_
                 cell_tower_location=req.cell_tower_location,
                 call_type=req.call_type, flagged_status=req.flagged_status
             ))
+            cdr_dicts.append({
+                "cdr_id": cdr_id, "caller_id": req.caller_id,
+                "timestamp": req.timestamp, "flagged_status": req.flagged_status,
+                "cell_tower_location": req.cell_tower_location,
+            })
             created += 1
         except Exception as e:
             errors.append(str(e))
     db.commit()
-    return {"created": created, "skipped": skipped, "errors": errors[:10]}
+
+    # Run CDR anomaly detection on the batch
+    alerts_created = 0
+    try:
+        from anomaly_detection.cdr_anomaly import cdr_anomaly_detector
+        anomalies = cdr_anomaly_detector.detect_anomalies(cdr_dicts)
+        for anom in anomalies:
+            if not db.query(Alert).filter(Alert.alert_id == anom["alert_id"]).first():
+                db.add(Alert(
+                    alert_id=anom["alert_id"], entity_id=anom["entity_id"],
+                    entity_type=anom["entity_type"], case_id=anom.get("case_id"),
+                    alert_type=anom["alert_type"], severity=anom["severity"],
+                    reason=anom["reason"], supporting_evidence_id=anom.get("supporting_evidence_id"),
+                    supporting_records=anom.get("supporting_records"),
+                    confidence=anom.get("confidence", 0.9), status="ACTIVE",
+                ))
+                alerts_created += 1
+        db.commit()
+    except Exception as e:
+        print(f"[Anomaly] CDR bulk anomaly detection error: {e}")
+
+    return {"created": created, "skipped": skipped, "alerts_generated": alerts_created, "errors": errors[:10]}
 
 
 # ---- Transaction Records ----
@@ -299,8 +326,9 @@ def create_transaction(req: TransactionCreateRequest, db: Session = Depends(get_
 
 @router.post("/transactions/bulk")
 def create_transactions_bulk(records: List[TransactionCreateRequest], db: Session = Depends(get_db)):
-    """Bulk-create transaction records."""
+    """Bulk-create transaction records and run anomaly detection on the batch."""
     created, skipped, errors = 0, 0, []
+    tx_dicts = []
     for req in records:
         try:
             tx_id = req.tx_id or _make_id("TX", db.query(TransactionRecord).count() + created)
@@ -319,11 +347,39 @@ def create_transactions_bulk(records: List[TransactionCreateRequest], db: Sessio
                 bank_reference=req.bank_reference, timestamp=ts,
                 category=req.category, flagged_status=req.flagged_status
             ))
+            tx_dicts.append({
+                "tx_id": tx_id, "sender_id": req.sender_id, "sender_name": req.sender_name,
+                "receiver_id": req.receiver_id, "receiver_name": req.receiver_name,
+                "amount": req.amount, "currency": req.currency or "INR",
+                "channel": req.channel, "timestamp": req.timestamp,
+                "flagged_status": req.flagged_status,
+            })
             created += 1
         except Exception as e:
             errors.append(str(e))
     db.commit()
-    return {"created": created, "skipped": skipped, "errors": errors[:10]}
+
+    # Run transaction anomaly detection on the full batch
+    alerts_created = 0
+    try:
+        from anomaly_detection.transaction_anomaly import tx_anomaly_detector
+        anomalies = tx_anomaly_detector.detect_anomalies(tx_dicts)
+        for anom in anomalies:
+            if not db.query(Alert).filter(Alert.alert_id == anom["alert_id"]).first():
+                db.add(Alert(
+                    alert_id=anom["alert_id"], entity_id=anom["entity_id"],
+                    entity_type=anom["entity_type"], case_id=anom.get("case_id"),
+                    alert_type=anom["alert_type"], severity=anom["severity"],
+                    reason=anom["reason"], supporting_evidence_id=anom.get("supporting_evidence_id"),
+                    supporting_records=anom.get("supporting_records"),
+                    confidence=anom.get("confidence", 0.9), status="ACTIVE",
+                ))
+                alerts_created += 1
+        db.commit()
+    except Exception as e:
+        print(f"[Anomaly] TX bulk anomaly detection error: {e}")
+
+    return {"created": created, "skipped": skipped, "alerts_generated": alerts_created, "errors": errors[:10]}
 
 
 # ---- Relationships ----

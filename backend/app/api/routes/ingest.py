@@ -103,18 +103,32 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
                         "primary_location": p.get("primary_location",""),
                         "risk_level": p.get("risk_level","Medium"), "nationality": p.get("nationality","")}
         )
+        # Link Person -> Location if primary_location is a node ID
+        if p.get("primary_location"):
+            graph_store.add_relationship_edge(
+                f"loc-{p['person_id']}", p["person_id"], p["primary_location"], "LOCATED_AT"
+            )
+        # Link Person -> Case from linked_cases column
+        linked = p.get("linked_cases", "")
+        if linked:
+            for case_id in [x.strip() for x in linked.split(",") if x.strip()]:
+                graph_store.add_relationship_edge(
+                    f"case-{p['person_id']}-{case_id}", p["person_id"], case_id, "SUSPECT_IN"
+                )
     db.commit()
 
     # ---- 3. Phones ----
     for ph in read_csv("phones.csv"):
         if not ph.get("phone_id") or not ph.get("phone_number"):
             continue
+        # Support both column name variants: 'registered_owner_id' and 'registered_owner'
+        owner_id = ph.get("registered_owner_id") or ph.get("registered_owner")
         if not db.query(Phone).filter(Phone.phone_id == ph["phone_id"]).first():
             try:
                 db.add(Phone(
                     phone_id=ph["phone_id"], phone_number=ph["phone_number"], imei=ph.get("imei"),
                     imsi=ph.get("imsi"), telecom_circle=ph.get("telecom_circle"), operator=ph.get("operator"),
-                    registered_owner=ph.get("registered_owner"),
+                    registered_owner=owner_id,
                     is_burner=(ph.get("is_burner","").strip().lower() in ("true","1","yes"))
                 ))
                 counts["phones"] += 1
@@ -123,19 +137,26 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
         graph_store.add_entity_node(
             node_id=ph["phone_id"], label=ph["phone_number"], node_type="Phone",
             properties={"operator": ph.get("operator",""), "is_burner": ph.get("is_burner",""),
-                        "registered_owner": ph.get("registered_owner","")}
+                        "registered_owner": owner_id or ""}
         )
+        # Link Phone -> Person in the graph
+        if owner_id:
+            graph_store.add_relationship_edge(
+                f"own-{ph['phone_id']}", owner_id, ph["phone_id"], "OWNS_PHONE"
+            )
     db.commit()
 
     # ---- 4. Vehicles ----
     for v in read_csv("vehicles.csv"):
         if not v.get("vehicle_id") or not v.get("plate_number"):
             continue
+        # Support both column name variants
+        owner_id = v.get("registered_owner_id") or v.get("registered_owner")
         if not db.query(Vehicle).filter(Vehicle.vehicle_id == v["vehicle_id"]).first():
             try:
                 db.add(Vehicle(
                     vehicle_id=v["vehicle_id"], plate_number=v["plate_number"], make=v.get("make"),
-                    model=v.get("model"), color=v.get("color"), registered_owner=v.get("registered_owner"),
+                    model=v.get("model"), color=v.get("color"), registered_owner=owner_id,
                     vehicle_type=v.get("vehicle_type")
                 ))
                 counts["vehicles"] += 1
@@ -144,8 +165,14 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
         graph_store.add_entity_node(
             node_id=v["vehicle_id"], label=v["plate_number"], node_type="Vehicle",
             properties={"make": v.get("make",""), "model": v.get("model",""),
-                        "color": v.get("color",""), "vehicle_type": v.get("vehicle_type","")}
+                        "color": v.get("color",""), "vehicle_type": v.get("vehicle_type",""),
+                        "registered_owner": owner_id or ""}
         )
+        # Link Vehicle -> Person in the graph
+        if owner_id:
+            graph_store.add_relationship_edge(
+                f"own-{v['vehicle_id']}", owner_id, v["vehicle_id"], "OWNS_VEHICLE"
+            )
     db.commit()
 
     # ---- 5. Locations ----
@@ -212,15 +239,27 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
             continue
         if not db.query(CDRRecord).filter(CDRRecord.cdr_id == c["cdr_id"]).first():
             try:
-                ts = datetime.strptime(c["timestamp"], "%Y-%m-%d %H:%M:%S") if c.get("timestamp") else None
+                # Parse ISO 8601 (e.g. 2026-09-01T10:00:00Z) or plain datetime
+                raw_ts = c.get("timestamp","")
+                ts = None
+                if raw_ts:
+                    for fmt in ("%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+                        try: ts = datetime.strptime(raw_ts, fmt); break
+                        except ValueError: pass
                 db.add(CDRRecord(
                     cdr_id=c["cdr_id"], caller_id=c.get("caller_id"), caller_phone=c.get("caller_phone",""),
                     receiver_id=c.get("receiver_id"), receiver_phone=c.get("receiver_phone",""),
                     timestamp=ts, duration_sec=int(c["duration_sec"]) if c.get("duration_sec") else None,
-                    cell_tower_location=c.get("cell_tower_location"), call_type=c.get("call_type"),
-                    flagged_status=c.get("flagged_status")
+                    cell_tower_location=c.get("cell_tower_start") or c.get("cell_tower_location"),
+                    call_type=c.get("call_type"), flagged_status=c.get("flagged_status")
                 ))
                 counts["cdrs"] += 1
+                # Add edge in graph: caller -> receiver
+                if c.get("caller_id") and c.get("receiver_id"):
+                    graph_store.add_relationship_edge(
+                        c["cdr_id"], c["caller_id"], c["receiver_id"], "CALL",
+                        date=raw_ts, notes=f"{c.get('duration_sec','?')}s {c.get('call_type','')}"
+                    )
             except Exception as e:
                 errors.append(f"cdr.csv [{c.get('cdr_id')}]: {e}")
     db.commit()
@@ -232,7 +271,12 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
             continue
         if not db.query(TransactionRecord).filter(TransactionRecord.tx_id == t["tx_id"]).first():
             try:
-                ts = datetime.strptime(t["timestamp"], "%Y-%m-%d %H:%M:%S") if t.get("timestamp") else None
+                raw_ts = t.get("timestamp","")
+                ts = None
+                if raw_ts:
+                    for fmt in ("%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+                        try: ts = datetime.strptime(raw_ts, fmt); break
+                        except ValueError: pass
                 db.add(TransactionRecord(
                     tx_id=t["tx_id"], sender_id=t.get("sender_id"), sender_name=t.get("sender_name"),
                     receiver_id=t.get("receiver_id"), receiver_name=t.get("receiver_name"),
@@ -242,6 +286,12 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
                     anomaly_multiplier=t.get("anomaly_multiplier")
                 ))
                 counts["transactions"] += 1
+                # Add edge in graph: sender -> receiver
+                if t.get("sender_id") and t.get("receiver_id"):
+                    graph_store.add_relationship_edge(
+                        t["tx_id"], t["sender_id"], t["receiver_id"], "TRANSFER",
+                        date=raw_ts, notes=f"{t.get('amount','?')} {t.get('currency','INR')}"
+                    )
             except Exception as e:
                 errors.append(f"transactions.csv [{t.get('tx_id')}]: {e}")
     db.commit()
@@ -295,23 +345,41 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
 
     # ---- 12. Anomaly detection → Alerts ----
     try:
+        import traceback as _tb
         from anomaly_detection.transaction_anomaly import tx_anomaly_detector
         from anomaly_detection.cdr_anomaly import cdr_anomaly_detector
-        anomalies = tx_anomaly_detector.detect_anomalies(tx_data) + cdr_anomaly_detector.detect_anomalies(cdr_data)
+
+        print(f"[Anomaly] Running detectors on {len(tx_data)} transactions, {len(cdr_data)} CDR records...")
+        anomalies = (
+            tx_anomaly_detector.detect_anomalies(tx_data)
+            + cdr_anomaly_detector.detect_anomalies(cdr_data)
+        )
+        print(f"[Anomaly] Detectors produced {len(anomalies)} raw anomaly signals.")
+
         for anom in anomalies:
+            # UUID-based IDs mean this check is a safety net only, not a blocker
             if not db.query(Alert).filter(Alert.alert_id == anom["alert_id"]).first():
                 db.add(Alert(
-                    alert_id=anom["alert_id"], entity_id=anom["entity_id"],
-                    entity_type=anom["entity_type"], case_id=anom.get("case_id"),
-                    alert_type=anom["alert_type"], severity=anom["severity"],
-                    reason=anom["reason"], supporting_evidence_id=anom.get("supporting_evidence_id"),
+                    alert_id=anom["alert_id"],
+                    entity_id=anom["entity_id"],
+                    entity_type=anom["entity_type"],
+                    case_id=anom.get("case_id"),
+                    alert_type=anom["alert_type"],
+                    severity=anom["severity"],
+                    reason=anom["reason"],
+                    supporting_evidence_id=anom.get("supporting_evidence_id"),
                     supporting_records=anom.get("supporting_records"),
-                    confidence=anom.get("confidence",0.9), status="ACTIVE"
+                    confidence=anom.get("confidence", 0.9),
+                    status="ACTIVE",
                 ))
                 counts["alerts"] += 1
         db.commit()
+        print(f"[Anomaly] {counts['alerts']} new alert(s) written to DB.")
     except Exception as e:
-        errors.append(f"Anomaly detection error: {e}")
+        tb = _tb.format_exc()
+        err_msg = f"Anomaly detection error: {e}"
+        print(f"[Anomaly][ERROR] {err_msg}\n{tb}")
+        errors.append(err_msg)
 
     # ---- 13. Priority scoring ----
     try:
@@ -446,5 +514,91 @@ def reset_all_data(db: Session = Depends(get_db), confirm: bool = False):
         neo4j_client.clear_all()
         graph_store.clear()
         return {"status": "success", "message": "All data cleared from Postgres and Neo4j."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/rebuild_graph")
+def rebuild_graph_from_postgres(db: Session = Depends(get_db)):
+    """
+    Clears Neo4j and rebuilds the knowledge graph from Postgres data.
+    Automatically infers relationships from CDR and Transaction records.
+    """
+    try:
+        from backend.app.core.neo4j_client import neo4j_client
+        neo4j_client.clear_all()
+        graph_store.clear()
+        
+        # 1. Recreate Nodes
+        for c in db.query(Case).all():
+            graph_store.add_entity_node(c.case_id, f"{c.case_id}: {c.title}", "Case", {"title": c.title, "case_type": c.case_type, "status": c.status, "priority": c.priority})
+            
+        for p in db.query(Person).all():
+            graph_store.add_entity_node(p.person_id, p.name, "Person", {"aliases": p.aliases, "role": p.role, "primary_location": p.primary_location, "risk_level": p.risk_level, "nationality": p.nationality})
+            
+        for ph in db.query(Phone).all():
+            graph_store.add_entity_node(ph.phone_id, ph.phone_number, "Phone", {"operator": ph.operator, "is_burner": ph.is_burner, "registered_owner": ph.registered_owner})
+            
+        for v in db.query(Vehicle).all():
+            graph_store.add_entity_node(v.vehicle_id, v.plate_number, "Vehicle", {"make": v.make, "model": v.model, "color": v.color, "vehicle_type": v.vehicle_type})
+            
+        for l in db.query(Location).all():
+            graph_store.add_entity_node(l.location_id, l.name, "Location", {"address": l.address, "location_type": l.location_type})
+            
+        for o in db.query(Organization).all():
+            graph_store.add_entity_node(o.org_id, o.name, "Organization", {"org_type": o.org_type, "flagged_status": o.flagged_status})
+        
+        for d in db.query(Document).all():
+            graph_store.add_entity_node(
+                d.document_id,
+                d.title,
+                "Document",
+                {"filename": d.filename, "file_type": d.file_type, "case_id": d.case_id}
+            )
+            # Link Document to its Case
+            if d.case_id:
+                graph_store.add_relationship_edge(
+                    f"doc-case-{d.document_id}", d.document_id, d.case_id, "BELONGS_TO_CASE"
+                )
+            
+        # 2. Recreate Ownership & Structural Relationships
+        # Person -> Location
+        for p in db.query(Person).all():
+            if p.primary_location:
+                # Often people use names or IDs. We link them directly via edge.
+                graph_store.add_relationship_edge(f"loc-{p.person_id}", p.person_id, p.primary_location, "LOCATED_AT")
+
+        # Phone -> Person (registered_owner stores the person_id)
+        for ph in db.query(Phone).all():
+            if ph.registered_owner:
+                graph_store.add_relationship_edge(
+                    f"own-{ph.phone_id}", ph.registered_owner, ph.phone_id, "OWNS_PHONE"
+                )
+
+        # Vehicle -> Person
+        for v in db.query(Vehicle).all():
+            if v.registered_owner:
+                graph_store.add_relationship_edge(
+                    f"own-{v.vehicle_id}", v.registered_owner, v.vehicle_id, "OWNS_VEHICLE"
+                )
+
+        # Person -> Case (from CDR and TX data, persons who called/sent money are suspects)
+        from sqlalchemy import distinct
+        for cdr in db.query(CDRRecord).all():
+            if cdr.caller_id and cdr.receiver_id:
+                graph_store.add_relationship_edge(
+                    cdr.cdr_id, cdr.caller_id, cdr.receiver_id, "CALL",
+                    date=cdr.timestamp.isoformat() if cdr.timestamp else "",
+                    notes=f"{cdr.duration_sec}s {cdr.call_type}"
+                )
+        for tx in db.query(TransactionRecord).all():
+            if tx.sender_id and tx.receiver_id:
+                graph_store.add_relationship_edge(
+                    tx.tx_id, tx.sender_id, tx.receiver_id, "TRANSFER",
+                    date=tx.timestamp.isoformat() if tx.timestamp else "",
+                    notes=f"{tx.amount} {tx.currency}"
+                )
+
+        return {"status": "success", "message": "Graph rebuilt successfully from Postgres database."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

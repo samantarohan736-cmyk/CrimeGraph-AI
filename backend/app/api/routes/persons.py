@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List, Dict, Any
+from sqlalchemy import or_
+from typing import List, Dict, Any, Optional
 from backend.app.core.database import get_db
 from backend.app.core.graph_store import graph_store
 from backend.app.models.entities import Person, Alert, Phone, Vehicle, Location, Organization, CDRRecord, TransactionRecord
@@ -9,9 +10,23 @@ from scoring.priority_scorer import priority_scorer
 
 router = APIRouter(prefix="/persons", tags=["Persons"])
 
+
 @router.get("", response_model=List[PersonOut])
-def list_persons(db: Session = Depends(get_db)):
-    persons = db.query(Person).order_by(Person.priority_score.desc()).all()
+def list_persons(
+    skip: int = Query(0, ge=0, description="Pagination offset"),
+    limit: int = Query(200, ge=1, le=1000, description="Max results"),
+    risk_level: Optional[str] = Query(None, description="Filter by risk level: High, Medium, Low"),
+    search: Optional[str] = Query(None, description="Search by name or aliases"),
+    db: Session = Depends(get_db),
+):
+    query = db.query(Person)
+    if risk_level:
+        query = query.filter(Person.risk_level.ilike(risk_level))
+    if search:
+        query = query.filter(
+            or_(Person.name.ilike(f"%{search}%"), Person.aliases.ilike(f"%{search}%"))
+        )
+    persons = query.order_by(Person.priority_score.desc()).offset(skip).limit(limit).all()
     return persons
 
 @router.get("/{person_id}", response_model=PersonDetailOut)

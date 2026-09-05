@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, extract
 from typing import Dict, Any, List
+from datetime import datetime, timezone
+from collections import defaultdict
 from backend.app.core.database import get_db
 from backend.app.core.graph_store import graph_store
 from backend.app.models.entities import Case, Person, Alert, Document, Evidence, TransactionRecord, CDRRecord
@@ -22,7 +24,9 @@ def get_dashboard_summary(db: Session = Depends(get_db)) -> Dict[str, Any]:
     """
     total_cases = db.query(Case).count()
     total_persons = db.query(Person).count()
-    total_alerts = db.query(Alert).count()
+    # FIX: count only ACTIVE alerts for the KPI — resolved/dismissed are not actionable
+    total_alerts = db.query(Alert).filter(Alert.status == "ACTIVE").count()
+    total_alerts_all = db.query(Alert).count()
     total_docs = db.query(Document).count()
     total_evidence = db.query(Evidence).count()
     total_tx = db.query(TransactionRecord).count()
@@ -65,14 +69,49 @@ def get_dashboard_summary(db: Session = Depends(get_db)) -> Dict[str, Any]:
             "avatar_url": p.avatar_url
         })
 
-    # Activity over time (Monthly volume of transactions, calls, and filings)
+    # Activity over time — real DB queries grouped by year-month
+    # We look at the last 6 months of transaction and CDR activity.
+    tx_by_month: Dict[str, int] = defaultdict(int)
+    cdr_by_month: Dict[str, int] = defaultdict(int)
+    doc_by_month: Dict[str, int] = defaultdict(int)
+
+    for tx in db.query(TransactionRecord).filter(TransactionRecord.timestamp.isnot(None)).all():
+        key = tx.timestamp.strftime("%b %Y")
+        tx_by_month[key] += 1
+
+    for cdr in db.query(CDRRecord).filter(CDRRecord.timestamp.isnot(None)).all():
+        key = cdr.timestamp.strftime("%b %Y")
+        cdr_by_month[key] += 1
+
+    for doc in db.query(Document).filter(Document.created_at.isnot(None)).all():
+        key = doc.created_at.strftime("%b %Y")
+        doc_by_month[key] += 1
+
+    # Merge all months and sort chronologically
+    all_months = sorted(
+        set(tx_by_month) | set(cdr_by_month) | set(doc_by_month),
+        key=lambda m: datetime.strptime(m, "%b %Y")
+    )
+
+    # If no real data yet, return a meaningful placeholder
+    if not all_months:
+        now = datetime.now(timezone.utc)
+        all_months = [
+            datetime(now.year, max(1, now.month - i), 1).strftime("%b %Y")
+            for i in range(5, -1, -1)
+        ]
+
+    # Trim to most recent 12 months
+    all_months = all_months[-12:]
+
     activity_timeline = [
-        {"month": "Aug 2025", "transactions": 14, "calls": 28, "intel_reports": 1},
-        {"month": "Sep 2025", "transactions": 22, "calls": 45, "intel_reports": 2},
-        {"month": "Oct 2025", "transactions": 68, "calls": 112, "intel_reports": 4},
-        {"month": "Nov 2025", "transactions": 35, "calls": 58, "intel_reports": 2},
-        {"month": "Dec 2025", "transactions": 29, "calls": 41, "intel_reports": 1},
-        {"month": "Jan 2026", "transactions": 48, "calls": 62, "intel_reports": 3}
+        {
+            "month": m,
+            "transactions": tx_by_month.get(m, 0),
+            "calls": cdr_by_month.get(m, 0),
+            "intel_reports": doc_by_month.get(m, 0),
+        }
+        for m in all_months
     ]
 
     # Recent Alerts List
@@ -100,7 +139,8 @@ def get_dashboard_summary(db: Session = Depends(get_db)) -> Dict[str, Any]:
             "total_persons": total_persons,
             "total_nodes": total_nodes,
             "total_relationships": total_edges,
-            "total_alerts": total_alerts,
+            "total_alerts": total_alerts,          # Active only
+            "total_alerts_all": total_alerts_all,  # All statuses
             "total_documents": total_docs,
             "total_evidence": total_evidence,
             "total_transactions": total_tx,

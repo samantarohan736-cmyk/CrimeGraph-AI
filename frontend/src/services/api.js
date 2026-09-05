@@ -2,9 +2,12 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: '/api',
-  timeout: 30000, // increased for bulk ingest
+  timeout: 300000, // 5 minutes (heavy ingest with NLP/Graph takes time)
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
   }
 });
 
@@ -31,6 +34,7 @@ export const ingestCSV = (formData) => api.post('/ingest/csv', formData, {
 export const triggerIngest = () => api.post('/ingest/trigger');
 export const getIngestStatus = () => api.get('/ingest/status');
 export const resetData = () => api.delete('/ingest/reset?confirm=true');
+export const rebuildGraph = () => api.post('/ingest/rebuild_graph');
 
 // --- Creation ---
 export const createCase = (data) => api.post('/create/case', data);
@@ -99,6 +103,7 @@ export const getNetworkMetrics = () => api.get('/analytics/metrics');
 
 // --- Alerts ---
 export const getAlerts = (params = {}) => api.get('/alerts', { params });
+export const getAlertCounts = () => api.get('/alerts/counts');
 export const getAlertDetails = (id) => api.get(`/alerts/${id}`);
 export const resolveAlert = (id, action = 'REVIEWED') => api.post(`/alerts/${id}/resolve?action=${action}`);
 
