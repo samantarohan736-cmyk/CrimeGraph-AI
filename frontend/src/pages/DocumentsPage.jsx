@@ -139,8 +139,8 @@ export default function DocumentsPage() {
       {/* Main 2-Column Split: Document List vs Document Viewer & NLP Spans */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-hidden">
         {/* Left: Document List */}
-        <div className="neo-box overflow-y-auto divide-y-2 divide-cream-200 p-3 space-y-1 bg-white">
-          <span className="px-3 py-2 text-xs font-black uppercase tracking-wider text-black block">
+        <div className="neo-box overflow-y-auto divide-y-2 divide-cream-200 dark:divide-slate-800 p-3 space-y-1 bg-white dark:bg-[#111827]">
+          <span className="px-3 py-2 text-xs font-black uppercase tracking-wider text-black dark:text-slate-100 block">
             INTELLIGENCE REPOSITORY ({docs.length})
           </span>
           {docs.map((d) => {
@@ -149,22 +149,22 @@ export default function DocumentsPage() {
               <div
                 key={d.document_id}
                 onClick={() => handleSelectDoc(d.document_id)}
-                className={`p-3.5 rounded-lg cursor-pointer transition-all space-y-2 border-2 border-black ${
+                className={`p-3.5 rounded-lg cursor-pointer transition-all space-y-2 border-2 border-black dark:border-slate-700 ${
                   isSelected
                     ? 'bg-brutal-yellow text-black shadow-brutal-sm'
-                    : 'bg-cream-100 hover:bg-cream-200'
+                    : 'bg-cream-100 dark:bg-[#1F2937] hover:bg-cream-200 dark:hover:bg-[#374151]'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="neo-badge bg-white text-black text-[10px]">
                     {d.document_id}
                   </span>
-                  <span className="text-[10px] text-slate-700 font-bold">{d.file_type}</span>
+                  <span className="text-[10px] text-slate-700 dark:text-slate-300 font-bold">{d.file_type}</span>
                 </div>
-                <h4 className="text-xs font-black text-black line-clamp-2 uppercase">
+                <h4 className="text-xs font-black text-black dark:text-slate-100 line-clamp-2 uppercase">
                   {d.title}
                 </h4>
-                <div className="flex items-center justify-between text-[11px] text-slate-700">
+                <div className="flex items-center justify-between text-[11px] text-slate-700 dark:text-slate-300">
                   <span>{d.case_id || 'Syndicate Intel'}</span>
                   <span className="text-black font-black bg-white px-1.5 py-0.5 rounded border border-black">{d.entities_count} Entities</span>
                 </div>
@@ -175,14 +175,14 @@ export default function DocumentsPage() {
 
         {/* Right: Document Viewer & Extracted Entity Spans */}
         {selectedDoc ? (
-          <div className="lg:col-span-2 neo-box flex flex-col overflow-hidden bg-white">
+          <div className="lg:col-span-2 neo-box flex flex-col overflow-hidden bg-white dark:bg-[#111827]">
             {/* Doc Header */}
-            <div className="p-4 bg-cream-100 border-b-2 border-black flex items-center justify-between shrink-0">
+            <div className="p-4 bg-cream-100 dark:bg-[#1F2937] border-b-2 border-black dark:border-slate-700 flex items-center justify-between shrink-0">
               <div>
                 <span className="neo-badge bg-brutal-pink text-black text-[10px]">
                   {selectedDoc.classification} | {selectedDoc.source_agency}
                 </span>
-                <h3 className="text-sm font-black text-black mt-1 uppercase font-mono">
+                <h3 className="text-sm font-black text-black dark:text-slate-100 mt-1 uppercase font-mono">
                   {selectedDoc.title}
                 </h3>
               </div>
@@ -198,13 +198,13 @@ export default function DocumentsPage() {
             </div>
 
             {/* Content & Entities Split View */}
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 overflow-y-auto bg-white">
+            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 overflow-y-auto bg-white dark:bg-[#111827]">
               {/* Document Text Box */}
-              <div className="p-4 rounded-lg bg-cream-50 border-2 border-black space-y-2 overflow-y-auto max-h-[500px] shadow-brutal-sm">
-                <span className="text-[11px] font-black uppercase tracking-wider text-black block">
+              <div className="p-4 rounded-lg bg-cream-50 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 space-y-2 overflow-y-auto max-h-[500px] shadow-brutal-sm">
+                <span className="text-[11px] font-black uppercase tracking-wider text-black dark:text-slate-100 block">
                   RAW DOCUMENT TEXT
                 </span>
-                <pre className="text-xs text-slate-900 font-mono whitespace-pre-wrap leading-relaxed font-medium">
+                <pre className="text-xs text-slate-900 dark:text-slate-200 font-mono whitespace-pre-wrap leading-relaxed font-medium">
                   {selectedDoc.content}
                 </pre>
               </div>
@@ -212,20 +212,20 @@ export default function DocumentsPage() {
               {/* Extracted Entities List */}
               <div className="space-y-4 overflow-y-auto max-h-[500px]">
                 <div className="space-y-2">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-black block">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-black dark:text-slate-100 block">
                     EXTRACTED NAMED ENTITIES ({selectedDoc.extracted_entities?.length || 0})
                   </span>
                   <div className="space-y-1.5">
                     {selectedDoc.extracted_entities?.map((ent, i) => (
-                      <div key={i} className="p-2.5 rounded-lg bg-cream-100 border-2 border-black text-xs flex items-center justify-between shadow-brutal-sm">
+                      <div key={i} className="p-2.5 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 text-xs flex items-center justify-between shadow-brutal-sm">
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="neo-badge bg-brutal-cyan text-black text-[10px]">
                               {ent.entity_type}
                             </span>
-                            <span className="font-black text-black">{ent.extracted_text}</span>
+                            <span className="font-black text-black dark:text-slate-100">{ent.extracted_text}</span>
                           </div>
-                          <span className="text-[10px] text-slate-700 font-bold">NORM: {ent.normalized_value}</span>
+                          <span className="text-[10px] text-slate-700 dark:text-slate-400 font-bold">NORM: {ent.normalized_value}</span>
                         </div>
                         <span className="neo-badge bg-brutal-lime text-black text-[10px]">
                           {Math.round(ent.confidence * 100)}%
@@ -237,18 +237,18 @@ export default function DocumentsPage() {
 
                 {/* Extracted Relationships */}
                 {selectedDoc.extracted_relationships?.length > 0 && (
-                  <div className="space-y-2 pt-2 border-t-2 border-black">
-                    <span className="text-[11px] font-black uppercase tracking-wider text-black block">
+                  <div className="space-y-2 pt-2 border-t-2 border-black dark:border-slate-700">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-black dark:text-slate-100 block">
                       DISCOVERED RELATIONSHIPS ({selectedDoc.extracted_relationships.length})
                     </span>
                     <div className="space-y-1.5">
                       {selectedDoc.extracted_relationships.map((rel, i) => (
-                        <div key={i} className="p-2.5 rounded-lg bg-cream-100 border-2 border-black text-xs space-y-1 shadow-brutal-sm">
+                        <div key={i} className="p-2.5 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 text-xs space-y-1 shadow-brutal-sm">
                           <div className="flex items-center justify-between font-bold">
-                            <span className="text-black font-black">{rel.source_text} ➔ {rel.target_text}</span>
+                            <span className="text-black dark:text-slate-100 font-black">{rel.source_text} ➔ {rel.target_text}</span>
                             <span className="neo-badge bg-brutal-yellow text-black text-[10px]">{rel.relationship_type}</span>
                           </div>
-                          <p className="text-[10px] text-slate-700 italic leading-tight">"{rel.evidence_span}"</p>
+                          <p className="text-[10px] text-slate-700 dark:text-slate-300 italic leading-tight">"{rel.evidence_span}"</p>
                         </div>
                       ))}
                     </div>
@@ -258,7 +258,7 @@ export default function DocumentsPage() {
             </div>
           </div>
         ) : (
-          <div className="lg:col-span-2 neo-box flex items-center justify-center p-8 text-slate-700 font-black text-xs bg-white">
+          <div className="lg:col-span-2 neo-box flex items-center justify-center p-8 text-slate-700 dark:text-slate-300 font-black text-xs bg-white dark:bg-[#111827]">
             SELECT AN INTELLIGENCE MEMO TO VIEW EXTRACTED SPANS & EVIDENCE.
           </div>
         )}
@@ -267,27 +267,27 @@ export default function DocumentsPage() {
       {/* Upload Modal */}
       {uploadOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-white border-[3px] border-black rounded-xl p-6 space-y-4 shadow-[8px_8px_0_0_#000000]">
-            <h3 className="text-base font-black text-black uppercase">UPLOAD INTELLIGENCE MEMO</h3>
+          <div className="w-full max-w-md bg-white dark:bg-[#111827] border-[3px] border-black dark:border-slate-700 rounded-xl p-6 space-y-4 shadow-[8px_8px_0_0_#000000]">
+            <h3 className="text-base font-black text-black dark:text-slate-100 uppercase">UPLOAD INTELLIGENCE MEMO</h3>
             <form onSubmit={handleUploadSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="text-slate-900 block mb-1 font-black">DOCUMENT TITLE</label>
+                <label className="text-slate-900 dark:text-slate-200 block mb-1 font-black">DOCUMENT TITLE</label>
                 <input
                   type="text"
                   required
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
                   placeholder="e.g. Surveillance Intercept - Safehouse"
-                  className="w-full px-3 py-2 bg-cream-100 border-2 border-black rounded-lg text-black font-bold focus:outline-none focus:bg-white shadow-brutal-sm"
+                  className="w-full px-3 py-2 bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 rounded-lg text-black dark:text-slate-100 font-bold focus:outline-none focus:bg-white dark:focus:bg-[#111827] shadow-brutal-sm"
                 />
               </div>
 
               <div>
-                <label className="text-slate-900 block mb-1 font-black">CASE ASSOCIATION</label>
+                <label className="text-slate-900 dark:text-slate-200 block mb-1 font-black">CASE ASSOCIATION</label>
                 <select
                   value={uploadCaseId}
                   onChange={(e) => setUploadCaseId(e.target.value)}
-                  className="w-full px-3 py-2 bg-cream-100 border-2 border-black rounded-lg text-black font-bold focus:outline-none shadow-brutal-sm"
+                  className="w-full px-3 py-2 bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 rounded-lg text-black dark:text-slate-100 font-bold focus:outline-none shadow-brutal-sm"
                 >
                   <option value="">-- No case association --</option>
                   {cases.map((c) => (
@@ -297,13 +297,13 @@ export default function DocumentsPage() {
               </div>
 
               <div>
-                <label className="text-slate-900 block mb-1 font-black">FILE (TXT OR PDF)</label>
+                <label className="text-slate-900 dark:text-slate-200 block mb-1 font-black">FILE (TXT OR PDF)</label>
                 <input
                   type="file"
                   required
                   accept=".txt,.pdf"
                   onChange={(e) => setUploadFile(e.target.files[0])}
-                  className="w-full text-black file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-2 file:border-black file:text-xs file:font-black file:bg-brutal-yellow file:text-black hover:file:bg-brutal-cyan cursor-pointer"
+                  className="w-full text-black dark:text-slate-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-2 file:border-black file:text-xs file:font-black file:bg-brutal-yellow file:text-black hover:file:bg-brutal-cyan cursor-pointer"
                 />
               </div>
 
@@ -311,7 +311,7 @@ export default function DocumentsPage() {
                 <button
                   type="button"
                   onClick={() => setUploadOpen(false)}
-                  className="neo-btn px-4 py-2 bg-cream-200 text-black hover:bg-cream-300"
+                  className="neo-btn px-4 py-2 bg-cream-200 dark:bg-[#1F2937] text-black dark:text-slate-200 hover:bg-cream-300"
                 >
                   CANCEL
                 </button>

@@ -22,9 +22,9 @@ export default function EdgeDetailsPanel({ edge, onClose }) {
   const suspicionReasons = edge.suspicion_reasons || [];
 
   return (
-    <div className="absolute top-4 right-4 bottom-4 w-[420px] z-30 flex flex-col bg-white border-[3px] border-black rounded-xl shadow-brutal overflow-hidden divide-y-2 divide-black pointer-events-auto font-mono">
+    <div className="absolute top-4 right-4 bottom-4 w-[420px] z-30 flex flex-col bg-white dark:bg-[#111827] border-[3px] border-black dark:border-slate-700 rounded-xl shadow-brutal overflow-hidden divide-y-2 divide-black dark:divide-slate-700 pointer-events-auto font-mono">
       {/* Header */}
-      <div className="p-4 flex items-start justify-between bg-cream-100">
+      <div className="p-4 flex items-start justify-between bg-cream-100 dark:bg-[#1F2937]">
         <div>
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="neo-badge bg-brutal-lime text-black text-[10px]">
@@ -42,34 +42,34 @@ export default function EdgeDetailsPanel({ edge, onClose }) {
             )}
           </div>
 
-          <h3 className="text-base font-black text-black mt-1.5 uppercase">
+          <h3 className="text-base font-black text-black dark:text-slate-100 mt-1.5 uppercase">
             {edge.relationship || 'CONNECTED_TO'}
           </h3>
-          <span className="text-xs text-slate-700 font-bold">EDGE ID: {edge.id}</span>
+          <span className="text-xs text-slate-700 dark:text-slate-400 font-bold">EDGE ID: {edge.id}</span>
         </div>
 
         <button
           onClick={onClose}
-          className="neo-btn p-1 bg-cream-200 text-black hover:bg-brutal-pink shrink-0"
+          className="neo-btn p-1 bg-cream-200 dark:bg-[#111827] text-black dark:text-slate-200 hover:bg-brutal-pink shrink-0"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* Main Content Area */}
-      <div className="p-4 space-y-4 flex-1 overflow-y-auto bg-white text-xs">
+      <div className="p-4 space-y-4 flex-1 overflow-y-auto bg-white dark:bg-[#111827] text-xs">
         {/* Traversal Flow */}
-        <div className="p-3 rounded-lg bg-cream-100 border-2 border-black space-y-2">
+        <div className="p-3 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 space-y-2">
           <div className="flex items-center justify-between font-black text-[11px]">
-            <span className="text-slate-700">SOURCE ENTITY</span>
-            <span className="text-slate-700">TARGET ENTITY</span>
+            <span className="text-slate-700 dark:text-slate-300">SOURCE ENTITY</span>
+            <span className="text-slate-700 dark:text-slate-300">TARGET ENTITY</span>
           </div>
           <div className="flex items-center justify-between gap-2">
-            <div className="px-2.5 py-1 rounded bg-white border-2 border-black font-black text-black truncate max-w-[130px]" title={edge.source}>
+            <div className="px-2.5 py-1 rounded bg-white dark:bg-[#111827] border-2 border-black dark:border-slate-700 font-black text-black dark:text-slate-100 truncate max-w-[130px]" title={edge.source}>
               {edge.source}
             </div>
-            <ArrowRight className="w-4 h-4 text-black shrink-0" />
-            <div className="px-2.5 py-1 rounded bg-white border-2 border-black font-black text-black truncate max-w-[130px]" title={edge.target}>
+            <ArrowRight className="w-4 h-4 text-black dark:text-slate-300 shrink-0" />
+            <div className="px-2.5 py-1 rounded bg-white dark:bg-[#111827] border-2 border-black dark:border-slate-700 font-black text-black dark:text-slate-100 truncate max-w-[130px]" title={edge.target}>
               {edge.target}
             </div>
           </div>
@@ -77,17 +77,17 @@ export default function EdgeDetailsPanel({ edge, onClose }) {
 
         {/* Suspicious Reasons */}
         {isSuspicious && suspicionReasons.length > 0 && (
-          <div className="p-3 rounded-lg bg-brutal-pink/20 border-2 border-black space-y-1.5">
+          <div className="p-3 rounded-lg bg-brutal-pink/20 border-2 border-black dark:border-slate-700 space-y-1.5">
             <div className="flex items-center gap-1.5 font-black text-brutal-hotpink">
               <AlertTriangle className="w-4 h-4" />
               <span>SUSPICIOUS ACTIVITY INDICATORS</span>
             </div>
-            <ul className="list-disc list-inside space-y-1 text-slate-900 font-sans font-medium text-xs">
+            <ul className="list-disc list-inside space-y-1 text-slate-900 dark:text-slate-200 font-sans font-medium text-xs">
               {suspicionReasons.map((r, i) => (
                 <li key={i}>{r}</li>
               ))}
             </ul>
-            <p className="text-[10px] text-slate-700 italic pt-1 border-t border-slate-300">
+            <p className="text-[10px] text-slate-700 dark:text-slate-400 italic pt-1 border-t border-slate-300 dark:border-slate-700">
               *Analytical lead only. Requires manual verification.
             </p>
           </div>
@@ -95,34 +95,34 @@ export default function EdgeDetailsPanel({ edge, onClose }) {
 
         {/* Evidence Summary */}
         <div className="space-y-2">
-          <span className="text-[11px] font-black text-slate-800 uppercase tracking-wider block">
+          <span className="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider block">
             EVIDENCE VALIDATION
           </span>
           <div className="space-y-1.5">
-            <div className="p-2.5 rounded-lg bg-cream-100 border-2 border-black flex items-center justify-between">
-              <span className="text-slate-700 font-bold">AI CONFIDENCE:</span>
+            <div className="p-2.5 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 flex items-center justify-between">
+              <span className="text-slate-700 dark:text-slate-300 font-bold">AI CONFIDENCE:</span>
               <span className="neo-badge bg-brutal-lime text-black font-black">
                 {Math.round((edge.confidence || 1.0) * 100)}% VERIFIED
               </span>
             </div>
 
             {edge.evidence_id && (
-              <div className="p-2.5 rounded-lg bg-cream-100 border-2 border-black flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-slate-800 font-bold">
-                  <ShieldCheck className="w-4 h-4 text-black" />
+              <div className="p-2.5 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200 font-bold">
+                  <ShieldCheck className="w-4 h-4 text-black dark:text-slate-200" />
                   <span>PRIMARY EVIDENCE:</span>
                 </div>
-                <span className="font-black text-black">{edge.evidence_id}</span>
+                <span className="font-black text-black dark:text-slate-100">{edge.evidence_id}</span>
               </div>
             )}
 
             {edge.date && (
-              <div className="p-2.5 rounded-lg bg-cream-100 border-2 border-black flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-slate-800 font-bold">
-                  <Calendar className="w-4 h-4 text-black" />
+              <div className="p-2.5 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200 font-bold">
+                  <Calendar className="w-4 h-4 text-black dark:text-slate-200" />
                   <span>RECORD DATE:</span>
                 </div>
-                <span className="text-black font-bold">{formatDate(edge.date)}</span>
+                <span className="text-black dark:text-slate-100 font-bold">{formatDate(edge.date)}</span>
               </div>
             )}
           </div>
@@ -135,9 +135,9 @@ export default function EdgeDetailsPanel({ edge, onClose }) {
 
         {/* Primary Notes (if no multi-records) */}
         {records.length === 0 && edge.notes && (
-          <div className="p-3 rounded-lg bg-cream-100 border-2 border-black space-y-1">
-            <span className="text-[11px] font-black text-slate-800 block">INVESTIGATOR NOTES</span>
-            <p className="text-slate-800 italic font-sans font-medium">"{edge.notes}"</p>
+          <div className="p-3 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 space-y-1">
+            <span className="text-[11px] font-black text-slate-800 dark:text-slate-200 block">INVESTIGATOR NOTES</span>
+            <p className="text-slate-800 dark:text-slate-300 italic font-sans font-medium">"{edge.notes}"</p>
           </div>
         )}
       </div>
@@ -206,16 +206,16 @@ function RecordCard({ idx, rec, category, baseRelationship }) {
   const Icon = meta.icon;
 
   return (
-    <div className="p-2.5 rounded-lg bg-cream-50 border-2 border-black space-y-1.5 hover:bg-white transition-colors">
+    <div className="p-2.5 rounded-lg bg-cream-50 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 space-y-1.5 hover:bg-white dark:hover:bg-[#111827] transition-colors">
       <div className="flex items-center justify-between text-[11px] font-black">
         <div className="flex items-center gap-1.5">
           <span className={`neo-badge ${meta.color} text-black text-[9px] flex items-center gap-0.5`}>
             <Icon className="w-2.5 h-2.5 inline" />
             {meta.label}
           </span>
-          <span className="text-black">#{idx + 1} {rel}</span>
+          <span className="text-black dark:text-slate-100">#{idx + 1} {rel}</span>
         </div>
-        <span className="text-slate-500 text-[10px]">
+        <span className="text-slate-500 dark:text-slate-400 text-[10px]">
           {rec.date ? formatDate(rec.date) : 'No timestamp'}
         </span>
       </div>
@@ -224,16 +224,16 @@ function RecordCard({ idx, rec, category, baseRelationship }) {
       {category === 'CDR' && (durationMatch || towerMatch) && (
         <div className="grid grid-cols-2 gap-1 text-[10px]">
           {durationMatch && (
-            <div className="flex items-center gap-1 text-slate-700">
-              <Clock className="w-3 h-3 shrink-0 text-slate-500" />
+            <div className="flex items-center gap-1 text-slate-700 dark:text-slate-300">
+              <Clock className="w-3 h-3 shrink-0 text-slate-500 dark:text-slate-400" />
               <span className="font-bold">Duration:</span>
-              <span className="font-black text-black">{durationMatch[0]}</span>
+              <span className="font-black text-black dark:text-slate-100">{durationMatch[0]}</span>
             </div>
           )}
           {towerMatch && (
-            <div className="flex items-center gap-1 text-slate-700 col-span-2">
+            <div className="flex items-center gap-1 text-slate-700 dark:text-slate-300 col-span-2">
               <span className="font-bold">Cell Tower:</span>
-              <span className="font-black text-black font-mono">{towerMatch[1]}</span>
+              <span className="font-black text-black dark:text-slate-100 font-mono">{towerMatch[1]}</span>
             </div>
           )}
         </div>
@@ -243,10 +243,10 @@ function RecordCard({ idx, rec, category, baseRelationship }) {
       {category === 'FINANCIAL' && (amountMatch || currencyMatch) && (
         <div className="flex items-center gap-3 text-[10px]">
           {amountMatch && (
-            <div className="flex items-center gap-1 text-slate-700">
-              <DollarSign className="w-3 h-3 shrink-0 text-slate-500" />
+            <div className="flex items-center gap-1 text-slate-700 dark:text-slate-300">
+              <DollarSign className="w-3 h-3 shrink-0 text-slate-500 dark:text-slate-400" />
               <span className="font-bold">Amount:</span>
-              <span className="font-black text-green-800">
+              <span className="font-black text-green-800 dark:text-green-400">
                 {formatCurrency(
                   parseFloat(amountMatch[1].replace(/,/g, '')),
                   currencyMatch ? currencyMatch[1].toUpperCase() : 'INR'
@@ -255,7 +255,7 @@ function RecordCard({ idx, rec, category, baseRelationship }) {
             </div>
           )}
           {currencyMatch && (
-            <span className="neo-badge bg-cream-200 text-black text-[9px]">
+            <span className="neo-badge bg-cream-200 dark:bg-slate-800 text-black dark:text-slate-200 text-[9px]">
               {currencyMatch[1].toUpperCase()}
             </span>
           )}
@@ -265,25 +265,25 @@ function RecordCard({ idx, rec, category, baseRelationship }) {
       {/* Case: prominent evidence badge */}
       {category === 'CASE' && rec.evidence_id && (
         <div className="flex items-center gap-1.5 text-[10px]">
-          <ShieldCheck className="w-3 h-3 text-black" />
-          <span className="font-bold text-slate-700">Evidence:</span>
+          <ShieldCheck className="w-3 h-3 text-black dark:text-slate-200" />
+          <span className="font-bold text-slate-700 dark:text-slate-300">Evidence:</span>
           <span className="neo-badge bg-brutal-yellow text-black text-[9px] font-black">{rec.evidence_id}</span>
         </div>
       )}
 
       {/* Non-case evidence ID */}
       {category !== 'CASE' && rec.evidence_id && (
-        <div className="flex items-center gap-1 text-[10px] text-slate-700 font-bold">
-          <FileText className="w-3 h-3 text-slate-800" />
+        <div className="flex items-center gap-1 text-[10px] text-slate-700 dark:text-slate-300 font-bold">
+          <FileText className="w-3 h-3 text-slate-800 dark:text-slate-200" />
           <span>Evidence: {rec.evidence_id}</span>
-          <span className="ml-auto text-emerald-700">
+          <span className="ml-auto text-emerald-700 dark:text-emerald-400">
             {Math.round((rec.confidence || 1.0) * 100)}% conf
           </span>
         </div>
       )}
 
       {rec.notes && (
-        <p className="text-[10px] text-slate-700 italic font-sans bg-white p-1.5 rounded border border-slate-200 leading-relaxed">
+        <p className="text-[10px] text-slate-700 dark:text-slate-300 italic font-sans bg-white dark:bg-[#111827] p-1.5 rounded border border-slate-200 dark:border-slate-700 leading-relaxed">
           "{rec.notes}"
         </p>
       )}

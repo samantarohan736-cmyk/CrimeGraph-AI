@@ -130,25 +130,25 @@ export default function DashboardPage() {
       {/* Analytics Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Crime Types */}
-        <div className="p-5 neo-box bg-white space-y-4">
+        <div className="p-5 neo-box bg-white dark:bg-[#111827] space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase tracking-wider text-black font-black flex items-center gap-2">
+            <span className="text-xs font-mono uppercase tracking-wider text-black dark:text-slate-200 font-black flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-brutal-pink border border-black"></span>
               SYNDICATE CRIME CATEGORIZATION
             </span>
-            <PieChart className="w-4 h-4 text-black" />
+            <PieChart className="w-4 h-4 text-black dark:text-slate-200" />
           </div>
           <CrimeDistributionChart data={data.crime_distribution} />
         </div>
 
         {/* Temporal Activity Trends */}
-        <div className="lg:col-span-2 p-5 neo-box bg-white space-y-4">
+        <div className="lg:col-span-2 p-5 neo-box bg-white dark:bg-[#111827] space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase tracking-wider text-black font-black flex items-center gap-2">
+            <span className="text-xs font-mono uppercase tracking-wider text-black dark:text-slate-200 font-black flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-brutal-cyan border border-black"></span>
               MONTHLY OPERATIONAL ACTIVITY (CDR VS FINANCIAL FLOWS)
             </span>
-            <TrendingUp className="w-4 h-4 text-black" />
+            <TrendingUp className="w-4 h-4 text-black dark:text-slate-200" />
           </div>
           <ActivityTimelineChart data={data.activity_timeline} />
         </div>

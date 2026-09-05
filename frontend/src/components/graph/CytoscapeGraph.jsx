@@ -418,39 +418,39 @@ export default function CytoscapeGraph({
     <div
       className={
         isFullscreen
-          ? 'fixed inset-0 z-50 bg-cream-100 p-6 flex flex-col'
-          : 'relative w-full h-full min-h-[550px] overflow-hidden rounded-xl bg-cream-100'
+          ? 'fixed inset-0 z-50 bg-cream-100 dark:bg-[#0B0F19] p-6 flex flex-col'
+          : 'relative w-full h-full min-h-[550px] overflow-hidden rounded-xl bg-cream-100 dark:bg-[#0B0F19]'
       }
     >
-      {/* Floating Canvas Quick Actions (Positioned cleanly at top-left) */}
-      <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 pointer-events-auto">
+      {/* Floating Canvas Viewport Actions (Positioned cleanly at top-right to prevent overlap with GraphControls) */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 p-1 rounded-xl bg-white dark:bg-[#111827] border-2 border-black dark:border-slate-700 shadow-brutal-sm pointer-events-auto font-mono">
         <button
           onClick={handleZoomIn}
-          className="neo-btn p-1.5 bg-white text-black text-xs shadow-brutal-sm"
+          className="neo-btn p-1.5 bg-cream-100 dark:bg-[#1F2937] text-black dark:text-slate-200 text-xs shadow-none border"
           title="Zoom In"
         >
-          <ZoomIn className="w-3.5 h-3.5 text-black" />
+          <ZoomIn className="w-3.5 h-3.5" />
         </button>
 
         <button
           onClick={handleZoomOut}
-          className="neo-btn p-1.5 bg-white text-black text-xs shadow-brutal-sm"
+          className="neo-btn p-1.5 bg-cream-100 dark:bg-[#1F2937] text-black dark:text-slate-200 text-xs shadow-none border"
           title="Zoom Out"
         >
-          <ZoomOut className="w-3.5 h-3.5 text-black" />
+          <ZoomOut className="w-3.5 h-3.5" />
         </button>
 
         <button
           onClick={handleFit}
-          className="neo-btn p-1.5 bg-white text-black text-xs shadow-brutal-sm"
+          className="neo-btn p-1.5 bg-cream-100 dark:bg-[#1F2937] text-black dark:text-slate-200 text-xs shadow-none border"
           title="Fit Graph to Viewport"
         >
-          <Crosshair className="w-3.5 h-3.5 text-black" />
+          <Crosshair className="w-3.5 h-3.5" />
         </button>
 
         <button
           onClick={toggleFullscreen}
-          className="neo-btn px-2.5 py-1 bg-brutal-yellow text-black flex items-center gap-1 text-[11px] font-black font-mono shadow-brutal-sm"
+          className="neo-btn px-2.5 py-1 bg-brutal-yellow text-black flex items-center gap-1 text-[11px] font-black font-mono shadow-none border"
           title={isFullscreen ? 'Exit Full Window' : 'Full Window Analysis Mode'}
         >
           {isFullscreen ? (

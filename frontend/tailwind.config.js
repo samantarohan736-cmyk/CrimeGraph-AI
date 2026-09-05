@@ -34,9 +34,9 @@ export default {
         }
       },
       boxShadow: {
-        'brutal-sm': '3px 3px 0px 0px #000000',
-        'brutal': '5px 5px 0px 0px #000000',
-        'brutal-lg': '8px 8px 0px 0px #000000',
+        'brutal-sm': '2px 2px 0px 0px #000000, 0 2px 6px rgba(0, 0, 0, 0.04)',
+        'brutal': '3px 3px 0px 0px #000000, 0 6px 16px rgba(0, 0, 0, 0.06)',
+        'brutal-lg': '4px 4px 0px 0px #000000, 0 10px 24px rgba(0, 0, 0, 0.08)',
       }
     },
   },

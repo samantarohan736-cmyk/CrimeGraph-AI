@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { Maximize2, Minimize2, Activity } from 'lucide-react';
+import { useTheme } from '../../utils/ThemeContext';
 
 export default function ActivityTimelineChart({ data = [] }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { isDark } = useTheme();
 
   if (!data || data.length === 0) {
-    return <div className="p-6 text-center text-slate-500 text-xs font-mono">No temporal intelligence activity.</div>;
+    return <div className="p-6 text-center text-slate-500 dark:text-slate-400 text-xs font-mono">No temporal intelligence activity.</div>;
   }
+
+  const axisStroke = isDark ? '#94A3B8' : '#000000';
 
   const chartContent = (
     <ResponsiveContainer width="100%" height="100%">
@@ -24,24 +28,24 @@ export default function ActivityTimelineChart({ data = [] }) {
         </defs>
         <XAxis 
           dataKey="month" 
-          stroke="#000000" 
+          stroke={axisStroke} 
           fontSize={11}
           fontFamily="JetBrains Mono, monospace"
           tickLine={true}
         />
         <YAxis 
-          stroke="#000000" 
+          stroke={axisStroke} 
           fontSize={11}
           fontFamily="JetBrains Mono, monospace"
           tickLine={true}
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: '#FFFFFF',
-            borderColor: '#000000',
+            backgroundColor: isDark ? '#1F2937' : '#FFFFFF',
+            borderColor: isDark ? '#4B5563' : '#000000',
             borderWidth: '2.5px',
             borderRadius: '8px',
-            color: '#000000',
+            color: isDark ? '#F9FAFB' : '#000000',
             fontSize: '12px',
             fontFamily: 'JetBrains Mono, monospace',
             fontWeight: 'bold',
@@ -52,7 +56,7 @@ export default function ActivityTimelineChart({ data = [] }) {
           verticalAlign="top"
           height={32}
           formatter={(value) => (
-            <span className="text-xs font-mono font-black text-black uppercase">
+            <span className="text-xs font-mono font-black text-black dark:text-slate-200 uppercase">
               {value}
             </span>
           )}
@@ -84,10 +88,10 @@ export default function ActivityTimelineChart({ data = [] }) {
       <div className="flex justify-end mb-2">
         <button
           onClick={() => setIsFullscreen(!isFullscreen)}
-          className="neo-btn px-2.5 py-1 bg-cream-200 text-black flex items-center gap-1.5 text-[10px] font-mono font-bold"
+          className="neo-btn px-2.5 py-1 bg-cream-200 dark:bg-[#1F2937] text-black dark:text-slate-200 flex items-center gap-1.5 text-[10px] font-mono font-bold"
           title="Full Window View"
         >
-          {isFullscreen ? <Minimize2 className="w-3 h-3" /> : <Maximize2 className="w-3 h-3 text-black" />}
+          {isFullscreen ? <Minimize2 className="w-3 h-3" /> : <Maximize2 className="w-3 h-3 text-current" />}
           <span>{isFullscreen ? 'EXIT FULL WINDOW' : 'FULL WINDOW'}</span>
         </button>
       </div>
@@ -97,17 +101,17 @@ export default function ActivityTimelineChart({ data = [] }) {
       </div>
 
       {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-cream-100 p-8 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-4 border-b-2 border-black">
+        <div className="fixed inset-0 z-50 bg-cream-100 dark:bg-[#0B0F19] p-8 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-4 border-b-2 border-black dark:border-slate-700">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded bg-brutal-yellow text-black border-2 border-black shadow-brutal-sm">
                 <Activity className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-xl font-black font-mono text-black uppercase">
+                <h2 className="text-xl font-black font-mono text-black dark:text-white uppercase">
                   TEMPORAL ACTIVITY TIMELINE — FULL WINDOW ANALYSIS
                 </h2>
-                <p className="text-xs text-slate-700 font-mono font-medium">
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-mono font-medium">
                   Monthly aggregate volume of telecom CDR intercepts vs suspicious wire transactions
                 </p>
               </div>
@@ -122,7 +126,7 @@ export default function ActivityTimelineChart({ data = [] }) {
             </button>
           </div>
 
-          <div className="flex-1 w-full my-6 bg-white rounded-xl border-[3px] border-black p-6 shadow-brutal">
+          <div className="flex-1 w-full my-6 bg-white dark:bg-[#111827] rounded-xl border-2 border-black dark:border-slate-700 p-6 shadow-brutal">
             {chartContent}
           </div>
         </div>

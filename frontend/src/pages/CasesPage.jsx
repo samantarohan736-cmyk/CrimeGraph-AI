@@ -81,7 +81,7 @@ export default function CasesPage() {
           return (
             <div
               key={c.case_id}
-              className={`p-6 flex flex-col justify-between space-y-4 bg-white ${tiltClass}`}
+              className={`p-6 flex flex-col justify-between space-y-4 bg-white dark:bg-[#111827] ${tiltClass}`}
             >
               <div className="space-y-3 font-mono">
                 <div className="flex items-start justify-between">
@@ -93,32 +93,32 @@ export default function CasesPage() {
                   </span>
                 </div>
 
-                <h3 className="text-lg font-black text-black leading-tight uppercase">
+                <h3 className="text-lg font-black text-black dark:text-slate-100 leading-tight uppercase">
                   {c.title}
                 </h3>
 
-                <p className="text-xs text-slate-700 line-clamp-3 leading-relaxed font-sans font-medium">
+                <p className="text-xs text-slate-700 dark:text-slate-300 line-clamp-3 leading-relaxed font-sans font-medium">
                   {c.description}
                 </p>
 
-                <div className="p-3 rounded-lg bg-cream-100 border-2 border-black space-y-2 text-xs">
-                  <div className="flex items-center justify-between text-slate-700">
+                <div className="p-3 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 space-y-2 text-xs">
+                  <div className="flex items-center justify-between text-slate-700 dark:text-slate-300">
                     <span className="font-black">LEAD OFFICER:</span>
-                    <span className="text-black font-black">{c.lead_officer}</span>
+                    <span className="text-black dark:text-slate-100 font-black">{c.lead_officer}</span>
                   </div>
-                  <div className="flex items-center justify-between text-slate-700">
+                  <div className="flex items-center justify-between text-slate-700 dark:text-slate-300">
                     <span className="font-black">ESTIMATED VALUE:</span>
                     <span className="text-black font-black bg-brutal-yellow px-1.5 py-0.5 rounded border border-black">{formatCurrency(c.estimated_value)}</span>
                   </div>
-                  <div className="flex items-center justify-between text-slate-700">
+                  <div className="flex items-center justify-between text-slate-700 dark:text-slate-300">
                     <span className="font-black">INCIDENT DATE:</span>
-                    <span className="text-black font-bold">{formatDate(c.incident_date)}</span>
+                    <span className="text-black dark:text-slate-100 font-bold">{formatDate(c.incident_date)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-3 border-t-2 border-black flex items-center justify-between font-mono">
-                <div className="flex items-center gap-3 text-xs text-slate-700 font-bold">
+              <div className="pt-3 border-t-2 border-black dark:border-slate-700 flex items-center justify-between font-mono">
+                <div className="flex items-center gap-3 text-xs text-slate-700 dark:text-slate-300 font-bold">
                   <span><strong>{c.entity_count}</strong> entities</span>
                   <span><strong>{c.alert_count}</strong> alerts</span>
                 </div>

@@ -74,17 +74,17 @@ export default function GraphControls({
   }, []);
 
   return (
-    <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 p-2 rounded-xl bg-white border-[2.5px] border-black shadow-brutal font-mono text-xs max-w-[calc(100%-20px)]">
+    <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 p-2 rounded-xl bg-white dark:bg-[#111827] border-[2.5px] border-black dark:border-slate-700 shadow-brutal font-mono text-xs max-w-[calc(100%-20px)]">
       {/* ── 1. Compact Hop Selector [1-Hop] [2-Hop] [3-Hop] ── */}
-      <div className="flex items-center gap-1 px-1.5 py-1 bg-cream-100 border-2 border-black rounded-lg">
+      <div className="flex items-center gap-1 px-1.5 py-1 bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 rounded-lg">
         {[1, 2, 3].map((h) => (
           <button
             key={h}
             onClick={() => setHops && setHops(h)}
-            className={`px-2 py-0.5 rounded font-black text-[11px] transition-all border-2 border-black ${
+            className={`px-2 py-0.5 rounded font-black text-[11px] transition-all border-2 border-black dark:border-slate-700 ${
               hops === h
                 ? 'bg-brutal-cyan text-black shadow-[1.5px_1.5px_0px_#000]'
-                : 'bg-white text-slate-700 hover:text-black'
+                : 'bg-white dark:bg-[#111827] text-slate-700 dark:text-slate-200 hover:text-black dark:hover:text-white'
             }`}
           >
             {h}-Hop
@@ -98,7 +98,7 @@ export default function GraphControls({
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`neo-btn px-2.5 py-1.5 text-[11px] font-black flex items-center gap-1.5 transition-all ${
-              !allSelected ? 'bg-brutal-yellow text-black' : 'bg-cream-100 text-slate-800'
+              !allSelected ? 'bg-brutal-yellow text-black' : 'bg-cream-100 dark:bg-[#1F2937] text-slate-800 dark:text-slate-200'
             }`}
             title="Filter visible relationship types"
           >
@@ -108,12 +108,12 @@ export default function GraphControls({
           </button>
 
           {showFilters && (
-            <div className="absolute top-full left-0 mt-2 w-72 p-3 rounded-xl bg-white border-[2.5px] border-black shadow-[4px_4px_0_0_#000] z-50 space-y-2.5">
-              <div className="flex items-center justify-between pb-1.5 border-b-2 border-black">
-                <span className="text-[11px] font-black text-black uppercase">RELATIONSHIP FILTERS</span>
+            <div className="absolute top-full left-0 mt-2 w-72 p-3 rounded-xl bg-white dark:bg-[#111827] border-[2.5px] border-black dark:border-slate-700 shadow-[4px_4px_0_0_#000] z-50 space-y-2.5">
+              <div className="flex items-center justify-between pb-1.5 border-b-2 border-black dark:border-slate-700">
+                <span className="text-[11px] font-black text-black dark:text-slate-200 uppercase">RELATIONSHIP FILTERS</span>
                 <button
                   onClick={() => setSelectedCategories(RELATIONSHIP_CATEGORIES.map(c => c.id))}
-                  className="text-[10px] text-slate-700 underline font-black hover:text-black"
+                  className="text-[10px] text-slate-700 dark:text-slate-300 underline font-black hover:text-black dark:hover:text-white"
                 >
                   SELECT ALL
                 </button>
@@ -127,8 +127,8 @@ export default function GraphControls({
                     <button
                       key={cat.id}
                       onClick={() => toggleCategory(cat.id)}
-                      className={`w-full flex items-center justify-between p-1.5 rounded-lg border-2 border-black text-xs font-bold transition-colors ${
-                        isChecked ? 'bg-cream-100 text-black' : 'bg-slate-100 text-slate-400'
+                      className={`w-full flex items-center justify-between p-1.5 rounded-lg border-2 border-black dark:border-slate-700 text-xs font-bold transition-colors ${
+                        isChecked ? 'bg-cream-100 dark:bg-[#1F2937] text-black dark:text-slate-100' : 'bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-500'
                       }`}
                     >
                       <div className="flex items-center gap-2">
@@ -137,7 +137,7 @@ export default function GraphControls({
                         </span>
                         <span className="text-[11px] font-black">{cat.emoji} {cat.label}</span>
                       </div>
-                      {isChecked && <Check className="w-3.5 h-3.5 text-black stroke-[3]" />}
+                      {isChecked && <Check className="w-3.5 h-3.5 text-black dark:text-slate-100 stroke-[3]" />}
                     </button>
                   );
                 })}
@@ -197,16 +197,16 @@ export default function GraphControls({
       )}
 
       {/* ── 6. Layout Selector ── */}
-      <div className="flex items-center gap-1 bg-cream-100 border-2 border-black rounded-lg text-xs font-mono px-2 py-1">
+      <div className="flex items-center gap-1 bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 rounded-lg text-xs font-mono px-2 py-1">
         <select
           value={layout}
           onChange={(e) => setLayout && setLayout(e.target.value)}
-          className="bg-transparent text-slate-900 focus:outline-none cursor-pointer font-mono font-black text-[11px]"
+          className="bg-transparent text-slate-900 dark:text-slate-100 focus:outline-none cursor-pointer font-mono font-black text-[11px]"
         >
-          <option value="cose">Force-Directed</option>
-          <option value="concentric">Concentric Circles</option>
-          <option value="breadthfirst">Tree</option>
-          <option value="grid">Grid</option>
+          <option value="cose" className="dark:bg-[#1F2937]">Force-Directed</option>
+          <option value="concentric" className="dark:bg-[#1F2937]">Concentric Circles</option>
+          <option value="breadthfirst" className="dark:bg-[#1F2937]">Tree</option>
+          <option value="grid" className="dark:bg-[#1F2937]">Grid</option>
         </select>
       </div>
 
@@ -214,7 +214,7 @@ export default function GraphControls({
       {onOpenPathModal && (
         <button
           onClick={onOpenPathModal}
-          className="neo-btn flex items-center gap-1 px-2.5 py-1.5 bg-brutal-yellow text-black text-[11px] font-mono font-black"
+          className="neo-btn flex items-center gap-1 px-2.5 py-1.5 bg-brutal-yellow text-black text-[11px] font-mono font-black hover:bg-brutal-cyan transition-colors"
           title="Trace shortest investigative path between two entities"
         >
           <GitFork className="w-3.5 h-3.5" />
@@ -226,7 +226,7 @@ export default function GraphControls({
       {onResetAll && (
         <button
           onClick={onResetAll}
-          className="neo-btn px-2 py-1.5 bg-cream-200 text-slate-700 hover:bg-brutal-pink text-[11px] font-black flex items-center gap-1"
+          className="neo-btn px-2 py-1.5 bg-cream-200 dark:bg-[#1F2937] text-slate-700 dark:text-slate-200 hover:bg-brutal-pink hover:text-black text-[11px] font-black flex items-center gap-1"
           title="Reset graph controls and view"
         >
           <RotateCcw className="w-3.5 h-3.5" />

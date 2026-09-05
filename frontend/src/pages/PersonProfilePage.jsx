@@ -99,7 +99,7 @@ export default function PersonProfilePage() {
       {/* Grid: Priority Breakdown vs Topological Metrics */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Priority Score Meter & Factors */}
-        <div className="p-6 neo-box-tilt-l space-y-4 bg-white">
+        <div className="p-6 neo-box-tilt-l space-y-4 bg-white dark:bg-[#111827]">
           <PriorityScoreMeter
             score={person.priority_score}
             factors={person.priority_factors}
@@ -108,13 +108,13 @@ export default function PersonProfilePage() {
         </div>
 
         {/* Middle Column: Why This Entity is Prioritized (Explainability Dossier) */}
-        <div className="lg:col-span-2 p-6 neo-box-tilt-r space-y-5 bg-white">
+        <div className="lg:col-span-2 p-6 neo-box-tilt-r space-y-5 bg-white dark:bg-[#111827]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="p-1.5 rounded bg-brutal-yellow text-black border-2 border-black">
                 <Zap className="w-4 h-4" />
               </div>
-              <h3 className="text-sm font-black text-black uppercase tracking-wider">
+              <h3 className="text-sm font-black text-black dark:text-slate-100 uppercase tracking-wider">
                 WHY THIS ENTITY IS ANALYTICALLY PRIORITIZED
               </h3>
             </div>
@@ -123,26 +123,26 @@ export default function PersonProfilePage() {
             </span>
           </div>
 
-          <div className="p-4 rounded-lg bg-cream-100 border-2 border-black space-y-3">
-            <p className="text-xs text-slate-900 leading-relaxed font-sans font-medium">
+          <div className="p-4 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 space-y-3">
+            <p className="text-xs text-slate-900 dark:text-slate-200 leading-relaxed font-sans font-medium">
               {person.priority_explanation}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs font-mono">
-              <div className="p-3 rounded-lg bg-white border-2 border-black space-y-1 shadow-brutal-sm">
-                <span className="text-slate-700 block text-[10px] font-black">BETWEENNESS</span>
+              <div className="p-3 rounded-lg bg-white dark:bg-[#111827] border-2 border-black dark:border-slate-700 space-y-1 shadow-brutal-sm">
+                <span className="text-slate-700 dark:text-slate-300 block text-[10px] font-black">BETWEENNESS</span>
                 <span className="text-sm font-black text-brutal-cyan">{person.betweenness_centrality}</span>
-                <span className="text-[10px] text-slate-600 font-bold block">Bridge Gateway</span>
+                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold block">Bridge Gateway</span>
               </div>
-              <div className="p-3 rounded-lg bg-white border-2 border-black space-y-1 shadow-brutal-sm">
-                <span className="text-slate-700 block text-[10px] font-black">CASE OVERLAP</span>
+              <div className="p-3 rounded-lg bg-white dark:bg-[#111827] border-2 border-black dark:border-slate-700 space-y-1 shadow-brutal-sm">
+                <span className="text-slate-700 dark:text-slate-300 block text-[10px] font-black">CASE OVERLAP</span>
                 <span className="text-sm font-black text-brutal-pink">{person.associated_cases.length} Operations</span>
-                <span className="text-[10px] text-slate-600 font-bold block">Active Links</span>
+                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold block">Active Links</span>
               </div>
-              <div className="p-3 rounded-lg bg-white border-2 border-black space-y-1 shadow-brutal-sm">
-                <span className="text-slate-700 block text-[10px] font-black">PAGERANK</span>
+              <div className="p-3 rounded-lg bg-white dark:bg-[#111827] border-2 border-black dark:border-slate-700 space-y-1 shadow-brutal-sm">
+                <span className="text-slate-700 dark:text-slate-300 block text-[10px] font-black">PAGERANK</span>
                 <span className="text-sm font-black text-brutal-purple">{person.pagerank}</span>
-                <span className="text-[10px] text-slate-600 font-bold block">Influence Rank</span>
+                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold block">Influence Rank</span>
               </div>
             </div>
           </div>
@@ -150,18 +150,18 @@ export default function PersonProfilePage() {
           {/* Active Anomaly Alerts for this person */}
           {person.active_alerts && person.active_alerts.length > 0 && (
             <div className="space-y-2">
-              <span className="text-xs font-black text-black uppercase tracking-wider block">
+              <span className="text-xs font-black text-black dark:text-slate-100 uppercase tracking-wider block">
                 TRIGGERED STATISTICAL ANOMALY ALERTS ({person.active_alerts.length})
               </span>
               <div className="space-y-2">
                 {person.active_alerts.map((alt) => (
-                  <div key={alt.alert_id} className="p-3 rounded-lg bg-cream-100 border-2 border-black text-xs flex items-start justify-between gap-4 shadow-brutal-sm">
+                  <div key={alt.alert_id} className="p-3 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 text-xs flex items-start justify-between gap-4 shadow-brutal-sm">
                     <div className="space-y-1 font-mono">
                       <div className="flex items-center gap-2">
                         <AlertBadge severity={alt.severity} />
-                        <span className="font-black text-black">{alt.alert_type}</span>
+                        <span className="font-black text-black dark:text-slate-100">{alt.alert_type}</span>
                       </div>
-                      <p className="text-slate-800 font-sans font-medium">{alt.reason}</p>
+                      <p className="text-slate-800 dark:text-slate-300 font-sans font-medium">{alt.reason}</p>
                     </div>
                     {alt.supporting_evidence_id && (
                       <span className="neo-badge bg-brutal-cyan text-black text-[10px] shrink-0">
@@ -179,14 +179,14 @@ export default function PersonProfilePage() {
       {/* Multi-Modal Entity Connections Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Associated Cases */}
-        <div className="p-4 neo-box-tilt-l space-y-2 text-xs bg-white">
-          <div className="flex items-center gap-2 text-black font-black">
-            <Briefcase className="w-4 h-4 text-black" />
+        <div className="p-4 neo-box-tilt-l space-y-2 text-xs bg-white dark:bg-[#111827]">
+          <div className="flex items-center gap-2 text-black dark:text-slate-100 font-black">
+            <Briefcase className="w-4 h-4 text-current" />
             <span>Associated Cases ({person.associated_cases.length})</span>
           </div>
           <div className="space-y-1.5">
             {person.associated_cases.map(c => (
-              <div key={c.case_id} onClick={() => navigate(`/cases/${c.case_id}`)} className="p-2 rounded bg-cream-100 hover:bg-brutal-pink hover:text-black cursor-pointer transition-colors text-black border-2 border-black font-black">
+              <div key={c.case_id} onClick={() => navigate(`/cases/${c.case_id}`)} className="p-2 rounded bg-cream-100 dark:bg-[#1F2937] hover:bg-brutal-pink hover:text-black cursor-pointer transition-colors text-black dark:text-slate-100 border-2 border-black dark:border-slate-700 font-black">
                 {c.title}
               </div>
             ))}
@@ -194,14 +194,14 @@ export default function PersonProfilePage() {
         </div>
 
         {/* Registered Phones */}
-        <div className="p-4 neo-box-tilt-r space-y-2 text-xs bg-white">
-          <div className="flex items-center gap-2 text-black font-black">
-            <Phone className="w-4 h-4 text-black" />
+        <div className="p-4 neo-box-tilt-r space-y-2 text-xs bg-white dark:bg-[#111827]">
+          <div className="flex items-center gap-2 text-black dark:text-slate-100 font-black">
+            <Phone className="w-4 h-4 text-current" />
             <span>Phone Endpoints ({person.phones.length})</span>
           </div>
           <div className="space-y-1.5">
             {person.phones.map(ph => (
-              <div key={ph.phone_id} className="p-2 rounded bg-cream-100 flex items-center justify-between text-black border-2 border-black">
+              <div key={ph.phone_id} className="p-2 rounded bg-cream-100 dark:bg-[#1F2937] flex items-center justify-between text-black dark:text-slate-100 border-2 border-black dark:border-slate-700">
                 <span className="font-black">{ph.number}</span>
                 {ph.is_burner && <span className="neo-badge bg-brutal-pink text-black text-[9px]">BURNER</span>}
               </div>
@@ -210,32 +210,32 @@ export default function PersonProfilePage() {
         </div>
 
         {/* Vehicles */}
-        <div className="p-4 neo-box-tilt-l space-y-2 text-xs bg-white">
-          <div className="flex items-center gap-2 text-black font-black">
-            <Truck className="w-4 h-4 text-black" />
+        <div className="p-4 neo-box-tilt-l space-y-2 text-xs bg-white dark:bg-[#111827]">
+          <div className="flex items-center gap-2 text-black dark:text-slate-100 font-black">
+            <Truck className="w-4 h-4 text-current" />
             <span>Vehicles ({person.vehicles.length})</span>
           </div>
           <div className="space-y-1.5">
             {person.vehicles.map(v => (
-              <div key={v.vehicle_id} className="p-2 rounded bg-cream-100 text-black border-2 border-black">
-                <strong className="block text-black">{v.plate_number}</strong>
-                <span className="text-[11px] text-slate-700 font-bold">{v.make} {v.model}</span>
+              <div key={v.vehicle_id} className="p-2 rounded bg-cream-100 dark:bg-[#1F2937] text-black dark:text-slate-100 border-2 border-black dark:border-slate-700">
+                <strong className="block text-black dark:text-slate-100">{v.plate_number}</strong>
+                <span className="text-[11px] text-slate-700 dark:text-slate-300 font-bold">{v.make} {v.model}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Locations */}
-        <div className="p-4 neo-box-tilt-r space-y-2 text-xs bg-white">
-          <div className="flex items-center gap-2 text-black font-black">
-            <MapPin className="w-4 h-4 text-black" />
+        <div className="p-4 neo-box-tilt-r space-y-2 text-xs bg-white dark:bg-[#111827]">
+          <div className="flex items-center gap-2 text-black dark:text-slate-100 font-black">
+            <MapPin className="w-4 h-4 text-current" />
             <span>Key Locations ({person.locations.length})</span>
           </div>
           <div className="space-y-1.5">
             {person.locations.map(l => (
-              <div key={l.location_id} className="p-2 rounded bg-cream-100 text-black border-2 border-black">
-                <strong className="block text-black">{l.name}</strong>
-                <span className="text-[10px] text-slate-700 font-bold truncate block">{l.address}</span>
+              <div key={l.location_id} className="p-2 rounded bg-cream-100 dark:bg-[#1F2937] text-black dark:text-slate-100 border-2 border-black dark:border-slate-700">
+                <strong className="block text-black dark:text-slate-100">{l.name}</strong>
+                <span className="text-[10px] text-slate-700 dark:text-slate-300 font-bold truncate block">{l.address}</span>
               </div>
             ))}
           </div>
@@ -243,13 +243,13 @@ export default function PersonProfilePage() {
       </div>
 
       {/* Audited Evidence Chain */}
-      <div className="p-6 neo-box space-y-4 bg-white">
+      <div className="p-6 neo-box space-y-4 bg-white dark:bg-[#111827]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded bg-brutal-cyan text-black border-2 border-black">
               <FileText className="w-4 h-4" />
             </div>
-            <h3 className="text-sm font-black text-black uppercase tracking-wider">
+            <h3 className="text-sm font-black text-black dark:text-slate-100 uppercase tracking-wider">
               AUDITED EVIDENCE RECORDS LINKED TO {person.name}
             </h3>
           </div>
@@ -260,15 +260,15 @@ export default function PersonProfilePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {evidenceList.map((ev) => (
-            <div key={ev.evidence_id} className="p-4 rounded-lg bg-cream-100 border-2 border-black space-y-2 text-xs shadow-brutal-sm">
+            <div key={ev.evidence_id} className="p-4 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 space-y-2 text-xs shadow-brutal-sm">
               <div className="flex items-start justify-between">
                 <span className="neo-badge bg-brutal-cyan text-black text-[9px]">
                   {ev.evidence_id}
                 </span>
-                <span className="text-[10px] text-slate-700 font-black">{ev.evidence_type}</span>
+                <span className="text-[10px] text-slate-700 dark:text-slate-300 font-black">{ev.evidence_type}</span>
               </div>
-              <h4 className="font-black text-black uppercase">{ev.title}</h4>
-              <p className="text-slate-800 leading-relaxed text-[11px] font-sans font-medium">{ev.description}</p>
+              <h4 className="font-black text-black dark:text-slate-100 uppercase">{ev.title}</h4>
+              <p className="text-slate-800 dark:text-slate-300 leading-relaxed text-[11px] font-sans font-medium">{ev.description}</p>
             </div>
           ))}
         </div>

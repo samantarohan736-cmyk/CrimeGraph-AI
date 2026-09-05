@@ -92,15 +92,15 @@ export default function AlertsPage() {
           return (
             <div
               key={alt.alert_id}
-              className={`p-5 space-y-3 bg-white ${tiltClass}`}
+              className={`p-5 space-y-3 bg-white dark:bg-[#111827] ${tiltClass}`}
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
                   <AlertBadge severity={alt.severity} />
-                  <span className="text-xs text-black font-black">{alt.alert_type}</span>
-                  <span className="text-xs text-slate-600 font-bold">ID: {alt.alert_id}</span>
+                  <span className="text-xs text-black dark:text-slate-100 font-black">{alt.alert_type}</span>
+                  <span className="text-xs text-slate-600 dark:text-slate-400 font-bold">ID: {alt.alert_id}</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-slate-700 font-bold">
+                <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 font-bold">
                   <span>LOGGED: {formatDateTime(alt.timestamp)}</span>
                   <span className={`neo-badge ${alt.status === 'ACTIVE' ? 'bg-brutal-pink text-black' : 'bg-brutal-lime text-black'} text-[10px]`}>
                     {alt.status}
@@ -111,48 +111,48 @@ export default function AlertsPage() {
               {/* Reason & Entity Info */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <div className="text-sm font-black text-black flex items-center gap-2 font-sans">
+                  <div className="text-sm font-black text-black dark:text-slate-100 flex items-center gap-2 font-sans">
                     <span 
                       onClick={() => navigate(`/persons/${alt.entity_id}`)}
-                      className="hover:text-brutal-pink cursor-pointer text-black font-black underline decoration-2 decoration-brutal-cyan"
+                      className="hover:text-brutal-pink cursor-pointer text-black dark:text-slate-100 font-black underline decoration-2 decoration-brutal-cyan"
                     >
                       {alt.entity_name} ({alt.entity_id})
                     </span>
                     {alt.case_title && (
-                      <span className="text-xs text-slate-600 font-bold">
+                      <span className="text-xs text-slate-600 dark:text-slate-400 font-bold">
                         in {alt.case_title}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-800 max-w-3xl leading-relaxed font-sans font-medium">
+                  <p className="text-xs text-slate-800 dark:text-slate-300 max-w-3xl leading-relaxed font-sans font-medium">
                     {alt.reason}
                   </p>
                 </div>
 
                 {/* Supporting Evidence Tag */}
                 {alt.supporting_evidence_id && (
-                  <div className="p-2.5 rounded-lg bg-cream-100 border-2 border-black flex items-center gap-2 shrink-0 shadow-brutal-sm">
-                    <FileText className="w-4 h-4 text-black" />
+                  <div className="p-2.5 rounded-lg bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 flex items-center gap-2 shrink-0 shadow-brutal-sm">
+                    <FileText className="w-4 h-4 text-black dark:text-slate-200" />
                     <div className="text-left">
-                      <span className="text-[10px] text-slate-700 block font-black">EVIDENCE ID</span>
-                      <span className="text-xs font-black text-black">{alt.supporting_evidence_id}</span>
+                      <span className="text-[10px] text-slate-700 dark:text-slate-400 block font-black">EVIDENCE ID</span>
+                      <span className="text-xs font-black text-black dark:text-slate-100">{alt.supporting_evidence_id}</span>
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Actions Bar */}
-              <div className="pt-3 border-t-2 border-black flex items-center justify-between">
-                <div className="text-[11px] text-slate-700 font-bold">
+              <div className="pt-3 border-t-2 border-black dark:border-slate-700 flex items-center justify-between">
+                <div className="text-[11px] text-slate-700 dark:text-slate-300 font-bold">
                   CONFIDENCE: {Math.round((alt.confidence || 0.9) * 100)}% STATISTICAL DEVIATION
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => navigate(`/network?focus=${alt.entity_id}`)}
-                    className="neo-btn px-3 py-1.5 bg-cream-200 text-black text-xs flex items-center gap-1.5"
+                    className="neo-btn px-3 py-1.5 bg-cream-200 dark:bg-[#1F2937] text-black dark:text-slate-100 text-xs flex items-center gap-1.5"
                   >
-                    <Network className="w-3.5 h-3.5 text-black" />
+                    <Network className="w-3.5 h-3.5 text-current" />
                     <span>INSPECT GRAPH</span>
                   </button>
 
@@ -167,7 +167,7 @@ export default function AlertsPage() {
                       </button>
                       <button
                         onClick={() => handleResolve(alt.alert_id, 'DISMISSED')}
-                        className="neo-btn px-2.5 py-1.5 bg-cream-100 text-slate-700 hover:text-black text-xs"
+                        className="neo-btn px-2.5 py-1.5 bg-cream-100 dark:bg-[#1F2937] text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white text-xs"
                       >
                         DISMISS
                       </button>

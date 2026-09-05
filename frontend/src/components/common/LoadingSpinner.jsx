@@ -5,9 +5,9 @@ export default function LoadingSpinner({ message = "Loading intelligence records
   return (
     <div className="flex flex-col items-center justify-center p-12 space-y-4">
       <div className="relative">
-        <Loader2 className="w-10 h-10 text-black animate-spin" />
+        <Loader2 className="w-10 h-10 text-black dark:text-brutal-cyan animate-spin" />
       </div>
-      <p className="text-sm font-mono text-slate-700 tracking-wide font-bold">{message}</p>
+      <p className="text-sm font-mono text-slate-700 dark:text-slate-300 tracking-wide font-bold">{message}</p>
     </div>
   );
 }

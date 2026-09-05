@@ -11,10 +11,10 @@ import {
 import { queryAssistant } from '../services/api';
 
 const PRESET_QUERIES = [
-  "Who are the most connected entities?",
-  "Which person bridges two communities?",
-  "Show suspicious transaction activity",
-  "Which entity has the highest priority score, and why?"
+  // "Who are the most connected entities?",
+  // "Which person bridges two communities?",
+  // "Show suspicious transaction activity",
+  // "Which entity has the highest priority score, and why?"
 ];
 
 export default function InvestigationAssistantPage() {
@@ -97,21 +97,21 @@ export default function InvestigationAssistantPage() {
 
       {/* Preset Query Chips */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 shrink-0">
-        <span className="text-xs text-slate-800 font-black shrink-0 uppercase">QUICK QUERIES:</span>
+        <span className="text-xs text-slate-800 dark:text-slate-200 font-black shrink-0 uppercase">QUICK QUERIES:</span>
         {PRESET_QUERIES.map((pq, i) => (
           <button
             key={i}
             onClick={() => handleSend(pq)}
-            className="neo-btn px-3 py-1.5 bg-white hover:bg-brutal-yellow text-black text-xs shrink-0 flex items-center gap-1.5"
+            className="neo-btn px-3 py-1.5 bg-white dark:bg-[#111827] hover:bg-brutal-yellow dark:hover:bg-brutal-yellow text-black dark:text-slate-100 hover:text-black dark:hover:text-black text-xs shrink-0 flex items-center gap-1.5"
           >
-            <Sparkles className="w-3 h-3 text-black" />
+            <Sparkles className="w-3 h-3 text-black dark:text-slate-200" />
             <span>{pq}</span>
           </button>
         ))}
       </div>
 
       {/* Chat Messages Log */}
-      <div className="flex-1 overflow-y-auto p-4 rounded-xl bg-white border-[3px] border-black space-y-4 shadow-brutal">
+      <div className="flex-1 overflow-y-auto p-4 rounded-xl bg-white dark:bg-[#111827] border-[3px] border-black dark:border-slate-700 space-y-4 shadow-brutal">
         {messages.map((msg, idx) => {
           if (msg.role === 'user') {
             return (
@@ -125,22 +125,22 @@ export default function InvestigationAssistantPage() {
 
           return (
             <div key={idx} className="flex justify-start">
-              <div className="max-w-3xl p-5 rounded-xl bg-cream-50 border-2 border-black shadow-brutal space-y-4 text-xs">
+              <div className="max-w-3xl p-5 rounded-xl bg-cream-50 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 shadow-brutal space-y-4 text-xs">
                 {/* Main Response Text */}
-                <p className="text-black text-sm leading-relaxed font-sans font-medium">
+                <p className="text-black dark:text-slate-100 text-sm leading-relaxed font-sans font-medium">
                   {msg.answer}
                 </p>
 
                 {/* Structured Findings List */}
                 {msg.structured_findings && msg.structured_findings.length > 0 && (
-                  <div className="p-3.5 rounded-lg bg-white border-2 border-black space-y-1.5 shadow-brutal-sm">
-                    <span className="text-[11px] font-black uppercase tracking-wider text-black block">
+                  <div className="p-3.5 rounded-lg bg-white dark:bg-[#111827] border-2 border-black dark:border-slate-700 space-y-1.5 shadow-brutal-sm">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-black dark:text-slate-100 block">
                       STRUCTURED FINDINGS:
                     </span>
-                    <ul className="space-y-1 text-slate-800 font-sans">
+                    <ul className="space-y-1 text-slate-800 dark:text-slate-200 font-sans">
                       {msg.structured_findings.map((f, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-black font-black font-mono">›</span>
+                          <span className="text-black dark:text-slate-100 font-black font-mono">›</span>
                           <span className="font-medium">{f}</span>
                         </li>
                       ))}
@@ -151,7 +151,7 @@ export default function InvestigationAssistantPage() {
                 {/* Supporting Entity Nodes */}
                 {msg.supporting_entities && msg.supporting_entities.length > 0 && (
                   <div className="space-y-1.5">
-                    <span className="text-[11px] text-slate-700 block font-black">
+                    <span className="text-[11px] text-slate-700 dark:text-slate-300 block font-black">
                       RETRIEVED NETWORK ENTITIES:
                     </span>
                     <div className="flex items-center gap-2 flex-wrap">
@@ -159,11 +159,11 @@ export default function InvestigationAssistantPage() {
                         <span
                           key={node.id}
                           onClick={() => navigate(node.type === 'Person' ? `/persons/${node.id}` : `/network?focus=${node.id}`)}
-                          className="neo-btn px-2.5 py-1 bg-white hover:bg-brutal-cyan text-black cursor-pointer flex items-center gap-1.5"
+                          className="neo-btn px-2.5 py-1 bg-white dark:bg-[#111827] hover:bg-brutal-cyan text-black dark:text-slate-100 hover:text-black dark:hover:text-black cursor-pointer flex items-center gap-1.5"
                         >
-                          <Network className="w-3 h-3 text-black" />
+                          <Network className="w-3 h-3 text-current" />
                           <span>{node.label}</span>
-                          <span className="text-[10px] text-slate-600">({node.type})</span>
+                          <span className="text-[10px] text-slate-600 dark:text-slate-400">({node.type})</span>
                         </span>
                       ))}
                     </div>
@@ -172,9 +172,9 @@ export default function InvestigationAssistantPage() {
 
                 {/* Cited Evidence IDs */}
                 {msg.cited_evidence_ids && msg.cited_evidence_ids.length > 0 && (
-                  <div className="pt-2 border-t-2 border-black flex items-center justify-between gap-2 flex-wrap">
-                    <div className="flex items-center gap-1.5 text-[11px] text-slate-700 font-bold">
-                      <FileText className="w-3.5 h-3.5 text-black" />
+                  <div className="pt-2 border-t-2 border-black dark:border-slate-700 flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 text-[11px] text-slate-700 dark:text-slate-300 font-bold">
+                      <FileText className="w-3.5 h-3.5 text-black dark:text-slate-300" />
                       <span>CITED EVIDENCE:</span>
                       {msg.cited_evidence_ids.map((ev, i) => (
                         <span key={i} className="neo-badge bg-brutal-yellow text-black text-[10px]">
@@ -187,8 +187,8 @@ export default function InvestigationAssistantPage() {
 
                 {/* Mandatory Disclaimer */}
                 {msg.disclaimer && (
-                  <div className="p-2 rounded bg-white border border-slate-400 text-[10px] text-slate-700 flex items-start gap-1.5">
-                    <ShieldAlert className="w-3.5 h-3.5 text-black shrink-0 mt-0.5" />
+                  <div className="p-2 rounded bg-white dark:bg-[#111827] border border-slate-400 dark:border-slate-700 text-[10px] text-slate-700 dark:text-slate-300 flex items-start gap-1.5">
+                    <ShieldAlert className="w-3.5 h-3.5 text-black dark:text-slate-300 shrink-0 mt-0.5" />
                     <span>{msg.disclaimer}</span>
                   </div>
                 )}
@@ -199,8 +199,8 @@ export default function InvestigationAssistantPage() {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="p-4 rounded-xl bg-white border-2 border-black shadow-brutal-sm flex items-center gap-3 text-xs text-black font-bold">
-              <Sparkles className="w-4 h-4 animate-spin text-black" />
+            <div className="p-4 rounded-xl bg-white dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 shadow-brutal-sm flex items-center gap-3 text-xs text-black dark:text-slate-100 font-bold">
+              <Sparkles className="w-4 h-4 animate-spin text-black dark:text-brutal-cyan" />
               <span>TRAVERSING KNOWLEDGE GRAPH & VERIFYING EVIDENCE CITATIONS...</span>
             </div>
           </div>
@@ -214,7 +214,7 @@ export default function InvestigationAssistantPage() {
           value={queryInput}
           onChange={(e) => setQueryInput(e.target.value)}
           placeholder="ASK INVESTIGATIVE QUESTION (e.g. 'Who are the most connected entities?')..."
-          className="w-full pl-4 pr-28 py-3.5 bg-white border-[3px] border-black rounded-xl text-sm font-bold text-black placeholder-slate-500 focus:outline-none shadow-brutal"
+          className="w-full pl-4 pr-28 py-3.5 bg-white dark:bg-[#111827] border-[3px] border-black dark:border-slate-700 rounded-xl text-sm font-bold text-black dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none shadow-brutal"
         />
         <button
           type="submit"

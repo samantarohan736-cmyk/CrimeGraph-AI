@@ -114,19 +114,19 @@ export default function NetworkAnalysisPage() {
   return (
     <div className="p-6 h-[calc(100vh-4rem)] flex flex-col space-y-4 max-w-[1900px] mx-auto overflow-hidden neo-cyber-bg">
       {/* Top Controls Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-white border-[3px] border-black shadow-brutal shrink-0 font-mono">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-white dark:bg-[#111827] border-[3px] border-black dark:border-slate-700 shadow-brutal shrink-0 font-mono">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-brutal-cyan text-black border-2 border-black shadow-brutal-sm">
             <Network className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-base font-black text-black uppercase flex items-center gap-2">
+            <h1 className="text-base font-black text-black dark:text-white uppercase flex items-center gap-2">
               <span>INTERACTIVE KNOWLEDGE GRAPH</span>
               <span className="neo-badge bg-brutal-yellow text-black text-[11px]">
                 {filteredNodes.length} NODES / {filteredEdges.length} EDGES
               </span>
             </h1>
-            <p className="text-xs text-slate-700 font-sans font-medium">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-sans font-medium">
               Multi-modal criminal intelligence graph with k-hop traversal, centrality heatmaps, and evidence linking
             </p>
           </div>
@@ -135,30 +135,30 @@ export default function NetworkAnalysisPage() {
         {/* Search & Filter Bar */}
         <div className="flex items-center gap-3 flex-wrap font-mono">
           <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-black" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-black dark:text-slate-300" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="FILTER NODES..."
-              className="pl-8 pr-3 py-1.5 bg-cream-100 border-2 border-black rounded-lg text-xs font-bold text-black focus:outline-none focus:bg-white w-48 shadow-[2px_2px_0_0_#000]"
+              className="pl-8 pr-3 py-1.5 bg-cream-100 dark:bg-[#1F2937] border-2 border-black dark:border-slate-700 rounded-lg text-xs font-bold text-black dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-[#111827] w-48 shadow-[2px_2px_0_0_#000]"
             />
           </div>
 
-          <div className="flex items-center gap-1 bg-cream-100 rounded-lg px-2.5 py-1 text-xs border-2 border-black font-black shadow-[2px_2px_0_0_#000]">
-            <Filter className="w-3.5 h-3.5 text-black" />
+          <div className="flex items-center gap-1 bg-cream-100 dark:bg-[#1F2937] rounded-lg px-2.5 py-1 text-xs border-2 border-black dark:border-slate-700 font-black shadow-[2px_2px_0_0_#000]">
+            <Filter className="w-3.5 h-3.5 text-black dark:text-slate-300" />
             <select
               value={selectedTypeFilter}
               onChange={(e) => setSelectedTypeFilter(e.target.value)}
-              className="bg-transparent text-black focus:outline-none cursor-pointer text-xs font-mono font-bold"
+              className="bg-transparent text-black dark:text-slate-200 focus:outline-none cursor-pointer text-xs font-mono font-bold"
             >
-              <option value="ALL">ALL TYPES</option>
-              <option value="Person">PERSONS</option>
-              <option value="Case">CASES</option>
-              <option value="Phone">PHONES</option>
-              <option value="Vehicle">VEHICLES</option>
-              <option value="Location">LOCATIONS</option>
-              <option value="Organization">ORGANIZATIONS</option>
+              <option value="ALL" className="dark:bg-[#1F2937]">ALL TYPES</option>
+              <option value="Person" className="dark:bg-[#1F2937]">PERSONS</option>
+              <option value="Case" className="dark:bg-[#1F2937]">CASES</option>
+              <option value="Phone" className="dark:bg-[#1F2937]">PHONES</option>
+              <option value="Vehicle" className="dark:bg-[#1F2937]">VEHICLES</option>
+              <option value="Location" className="dark:bg-[#1F2937]">LOCATIONS</option>
+              <option value="Organization" className="dark:bg-[#1F2937]">ORGANIZATIONS</option>
             </select>
           </div>
 
@@ -170,7 +170,7 @@ export default function NetworkAnalysisPage() {
               setSearchQuery('');
               setSelectedTypeFilter('ALL');
             }}
-            className="neo-btn px-3 py-1.5 bg-cream-200 text-black hover:bg-brutal-pink text-xs flex items-center gap-1.5"
+            className="neo-btn px-3 py-1.5 bg-cream-200 dark:bg-[#1F2937] text-black dark:text-slate-200 hover:bg-brutal-pink dark:hover:bg-brutal-pink hover:text-black dark:hover:text-black text-xs flex items-center gap-1.5"
             title="Reset Filters"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -180,7 +180,7 @@ export default function NetworkAnalysisPage() {
       </div>
 
       {/* Main Canvas Area */}
-      <div className="relative flex-1 rounded-xl overflow-hidden border-[3px] border-black shadow-brutal">
+      <div className="relative flex-1 rounded-xl overflow-hidden border-[3px] border-black dark:border-slate-700 shadow-brutal">
         <CytoscapeGraph
           nodes={filteredNodes}
           edges={filteredEdges}

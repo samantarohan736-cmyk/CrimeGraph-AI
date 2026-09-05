@@ -7,6 +7,12 @@
     font-family: 'Inter', sans-serif;
     background-color: #FDFBF7;
     color: #000000;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .dark body {
+    background-color: #0B0F19;
+    color: #F8FAFC;
   }
   
   code, pre, .font-mono {
@@ -25,8 +31,19 @@
   border-left: 2.5px solid #000000;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #111827;
+  border-left: 2.5px solid #374151;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #FFE600;
+  border: 2.5px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #00F0FF;
   border: 2.5px solid #000000;
   box-shadow: 2px 2px 0px #000000;
 }
@@ -56,79 +73,124 @@
 .border-brutal-black { border-color: #000000 !important; }
 
 /* ==========================================================
-   NEO-BRUTALIST CARDS — STRAIGHT CARDS + OFFSET BLACK SHADOW
-   
-   Using box-shadow instead of ::after pseudo-elements.
-   Asymmetric offsets (e.g. 6px/4px vs 4px/6px) give the 
-   visual impression of a "rotated" shadow without stacking
-   context bugs.
+   NEO-BRUTALIST CARDS — SOFTENED SHADOWS & REFINED EDGES
    ========================================================== */
 
-/* Standard card — shadow goes bottom-right */
+/* Standard card — soft offset with ambient blur */
 .neo-box {
   position: relative;
   background-color: #FFFFFF;
-  border: 3px solid #000000;
-  border-radius: 12px;
-  box-shadow: 6px 4px 0px 0px #000000;
+  border: 2px solid #000000;
+  border-radius: 14px;
+  box-shadow: 3px 3px 0px 0px #000000, 0 6px 20px -2px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Solid banner card — shadow tilted opposite */
+.dark .neo-box {
+  background-color: #111827;
+  border: 1.5px solid rgba(75, 85, 99, 0.6);
+  box-shadow: 2px 2px 0px 0px #000000, 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+  color: #F8FAFC;
+}
+
+/* Solid banner card */
 .neo-box-solid {
   position: relative;
   background-color: #FFFFFF;
-  border: 3px solid #000000;
-  border-radius: 12px;
-  box-shadow: 4px 6px 0px 0px #000000;
+  border: 2px solid #000000;
+  border-radius: 14px;
+  box-shadow: 2.5px 3px 0px 0px #000000, 0 6px 20px -2px rgba(0, 0, 0, 0.06);
 }
 
-/* Left-tilt shadow: more horizontal offset, less vertical */
+.dark .neo-box-solid {
+  background-color: #111827;
+  border: 1.5px solid rgba(75, 85, 99, 0.6);
+  box-shadow: 2px 2px 0px 0px #000000, 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+  color: #F8FAFC;
+}
+
+/* Left-tilt shadow: subtle softened offset */
 .neo-box-tilt-l {
   position: relative;
   background-color: #FFFFFF;
-  border: 3px solid #000000;
-  border-radius: 12px;
-  box-shadow: 7px 3px 0px 0px #000000;
+  border: 2px solid #000000;
+  border-radius: 14px;
+  box-shadow: 3px 2px 0px 0px #000000, 0 6px 20px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Right-tilt shadow: less horizontal offset, more vertical */
+.dark .neo-box-tilt-l {
+  background-color: #111827;
+  border: 1.5px solid rgba(75, 85, 99, 0.6);
+  box-shadow: 2px 2px 0px 0px #000000, 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+  color: #F8FAFC;
+}
+
+/* Right-tilt shadow: subtle softened offset */
 .neo-box-tilt-r {
   position: relative;
   background-color: #FFFFFF;
-  border: 3px solid #000000;
-  border-radius: 12px;
-  box-shadow: 3px 7px 0px 0px #000000;
+  border: 2px solid #000000;
+  border-radius: 14px;
+  box-shadow: 2px 3px 0px 0px #000000, 0 6px 20px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Small shadow utility */
+.dark .neo-box-tilt-r {
+  background-color: #111827;
+  border: 1.5px solid rgba(75, 85, 99, 0.6);
+  box-shadow: 2px 2px 0px 0px #000000, 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+  color: #F8FAFC;
+}
+
+/* Small shadow utilities */
 .shadow-brutal {
-  box-shadow: 6px 4px 0px 0px #000000 !important;
+  box-shadow: 3px 3px 0px 0px #000000, 0 6px 16px rgba(0, 0, 0, 0.06) !important;
+}
+
+.dark .shadow-brutal {
+  box-shadow: 2px 2px 0px 0px #000000, 0 6px 20px rgba(0, 0, 0, 0.4) !important;
 }
 
 .shadow-brutal-sm {
-  box-shadow: 3px 3px 0px 0px #000000 !important;
+  box-shadow: 2px 2px 0px 0px #000000, 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .shadow-brutal-sm {
+  box-shadow: 1.5px 1.5px 0px 0px #000000, 0 2px 8px rgba(0, 0, 0, 0.35) !important;
 }
 
 /* ==========================================================
-   NEO-BRUTALIST BUTTONS — STRAIGHT + OFFSET BLACK SHADOW
+   NEO-BRUTALIST BUTTONS — REFINED OFFSET & SOFT AMBIENCE
    ========================================================== */
 .neo-btn {
   position: relative;
-  border: 2.5px solid #000000;
+  border: 2px solid #000000;
   font-weight: 800;
   letter-spacing: 0.025em;
-  border-radius: 8px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 4px 3px 0px 0px #000000;
-  transition: box-shadow 0.1s ease, transform 0.1s ease;
+  box-shadow: 2.5px 2.5px 0px 0px #000000, 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.dark .neo-btn {
+  box-shadow: 2px 2px 0px 0px #000000, 0 3px 10px rgba(0, 0, 0, 0.35);
+}
+
+.neo-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3.5px 3.5px 0px 0px #000000, 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dark .neo-btn:hover {
+  box-shadow: 3px 3px 0px 0px #000000, 0 4px 14px rgba(0, 0, 0, 0.45);
 }
 
 .neo-btn:active {
   box-shadow: 1px 1px 0px 0px #000000;
-  transform: translate(2px, 2px);
+  transform: translate(1.5px, 1.5px);
 }
 
 /* ==========================================================
@@ -148,7 +210,7 @@
 }
 
 /* ==========================================================
-   RETRO CREAM CYBER CANVAS BACKGROUND
+   RETRO CYBER CANVAS BACKGROUND
    ========================================================== */
 .neo-cyber-bg {
   background-color: #FDFBF7;
@@ -156,6 +218,15 @@
     radial-gradient(#CBD5E1 1.2px, transparent 1.2px),
     linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px, 24px 24px;
+}
+
+.dark .neo-cyber-bg {
+  background-color: #0B0F19;
+  background-image: 
+    radial-gradient(#1E293B 1.4px, transparent 1.4px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 24px 24px, 24px 24px, 24px 24px;
 }
 
@@ -168,5 +239,11 @@
   left: 0;
   background-color: #FDFBF7;
   background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+.dark #cy {
+  background-color: #0B0F19;
+  background-image: radial-gradient(#1E293B 1.5px, transparent 1.5px);
   background-size: 20px 20px;
 }
