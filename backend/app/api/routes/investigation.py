@@ -9,22 +9,28 @@ from backend.app.services.assistant_service import assistant_service
 
 router = APIRouter(prefix="/investigation", tags=["Investigation Assistant"])
 
+
 @router.post("/query", response_model=AssistantQueryResponse)
 def query_investigation_assistant(req: AssistantQueryRequest, db: Session = Depends(get_db)):
     """
-    Natural Language Investigation Assistant Query Engine.
-    Executes graph-grounded reasoning over cases, entities, anomalies, and evidence chains.
+    Natural Language Investigation Assistant.
+    Supports 15+ intent types: case lookup, person profile, CDR queries, transaction
+    analysis, alert review, bridge detection, centrality, path finding, network subgraphs,
+    priority scores, evidence catalog, and general status summaries.
+    Pass 'history' for multi-turn conversations.
     """
     return assistant_service.answer_query(
         db=db,
         query=req.query,
         case_id=req.case_id,
-        focused_entity_id=req.focused_entity_id
+        focused_entity_id=req.focused_entity_id,
+        history=req.history or []
     )
+
 
 @router.post("/path", response_model=ShortestPathResponse)
 def find_investigation_path(req: ShortestPathRequest):
-    """Calculates multi-hop path and returns formatted evidence trail."""
+    """Finds shortest investigative path between two entities with evidence trail."""
     return graph_store.find_shortest_path(
         source_id=req.source_id,
         target_id=req.target_id,

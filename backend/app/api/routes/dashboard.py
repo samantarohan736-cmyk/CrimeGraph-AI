@@ -61,7 +61,8 @@ def get_dashboard_summary(db: Session = Depends(get_db)) -> Dict[str, Any]:
             "priority_score": int(p.priority_score or 0),
             "priority_rating": "CRITICAL" if p.priority_score >= 80 else ("HIGH" if p.priority_score >= 60 else "MEDIUM"),
             "degree_links": deg,
-            "risk_level": p.risk_level or "Medium"
+            "risk_level": p.risk_level or "Medium",
+            "avatar_url": p.avatar_url
         })
 
     # Activity over time (Monthly volume of transactions, calls, and filings)

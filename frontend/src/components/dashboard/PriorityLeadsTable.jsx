@@ -7,8 +7,8 @@ export default function PriorityLeadsTable({ leads = [] }) {
   const navigate = useNavigate();
 
   return (
-    <div className="neo-box overflow-hidden bg-white">
-      <div className="p-4 bg-brutal-yellow border-b-[3px] border-black flex items-center justify-between">
+    <div className="neo-box overflow-hidden bg-[var(--bg-primary)] border-2 border-[var(--border-color)]">
+      <div className="p-4 bg-brutal-yellow border-b-[3px] border-[var(--border-color)] flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded bg-white text-black border-2 border-black">
             <Users className="w-4 h-4" />
@@ -23,8 +23,8 @@ export default function PriorityLeadsTable({ leads = [] }) {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs text-slate-800 font-mono">
-          <thead className="bg-cream-100 font-mono text-[11px] text-black uppercase tracking-wider border-b-2 border-black">
+        <table className="w-full text-left text-xs text-[var(--text-primary)] font-mono">
+          <thead className="bg-[var(--bg-tertiary)] font-mono text-[11px] text-[var(--text-secondary)] uppercase tracking-wider border-b-2 border-[var(--border-color)]">
             <tr>
               <th className="px-4 py-3 font-black">ENTITY OF INTEREST</th>
               <th className="px-4 py-3 font-black">SYNDICATE ROLE</th>
@@ -34,34 +34,40 @@ export default function PriorityLeadsTable({ leads = [] }) {
               <th className="px-4 py-3 text-right font-black">ACTIONS</th>
             </tr>
           </thead>
-          <tbody className="divide-y-2 divide-cream-200">
+          <tbody className="divide-y-2 divide-[var(--border-color)]">
             {leads.map((p) => (
-              <tr key={p.person_id} className="hover:bg-cream-50 transition-colors">
-                <td className="px-4 py-3 font-medium text-black flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-brutal-cyan text-black border-2 border-black flex items-center justify-center font-black text-xs shadow-brutal-sm">
-                    {p.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+              <tr key={p.person_id} className="hover:bg-[var(--bg-secondary)] transition-colors">
+                <td className="px-4 py-3 font-medium text-[var(--text-primary)] flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-brutal-cyan text-black border-2 border-[var(--border-color)] flex items-center justify-center font-black text-xs shadow-brutal-sm overflow-hidden">
+                    {(() => {
+                      const avatar = p.avatar_url || p.avatar || (p.properties && (p.properties.avatar_url || p.properties.avatar));
+                      if (avatar) {
+                        return <img src={avatar} alt={p.name} className="w-full h-full object-cover" />;
+                      }
+                      return p.name.split(' ').map(n => n[0]).join('').slice(0, 2);
+                    })()}
                   </div>
                   <div>
                     <span 
-                      className="block font-black text-black hover:text-brutal-cyan cursor-pointer" 
+                      className="block font-black text-[var(--text-primary)] hover:text-brutal-cyan cursor-pointer" 
                       onClick={() => navigate(`/persons/${p.person_id}`)}
                     >
                       {p.name}
                     </span>
-                    <span className="text-[10px] text-slate-600 font-bold">ID: {p.person_id}</span>
+                    <span className="text-[10px] text-[var(--text-secondary)] font-bold">ID: {p.person_id}</span>
                   </div>
                 </td>
 
-                <td className="px-4 py-3 text-black font-bold">
+                <td className="px-4 py-3 text-[var(--text-primary)] font-bold">
                   {p.role}
                 </td>
 
-                <td className="px-4 py-3 text-slate-700 font-medium">
+                <td className="px-4 py-3 text-[var(--text-secondary)] font-medium">
                   {p.primary_location}
                 </td>
 
-                <td className="px-4 py-3 font-mono text-black">
-                  <span className="neo-badge bg-cream-200 text-black text-[10px]">
+                <td className="px-4 py-3 font-mono text-[var(--text-primary)]">
+                  <span className="neo-badge bg-[var(--bg-secondary)] text-[var(--text-primary)] text-[10px] border-[var(--border-color)]">
                     {p.degree_links} links
                   </span>
                 </td>

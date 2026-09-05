@@ -3,10 +3,57 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --bg-primary: #FDFBF7;
+    --bg-secondary: #FFFFFF;
+    --bg-tertiary: #F5EFEB;
+    --text-primary: #000000;
+    --text-secondary: #334155;
+    --border-color: #000000;
+    
+    --brutal-yellow: #FFE600;
+    --brutal-cyan: #00F0FF;
+    --brutal-pink: #FF6B8B;
+    --brutal-hotpink: #FF2A6D;
+    --brutal-lime: #4EEDA4;
+    --brutal-purple: #D8B4FE;
+    --brutal-orange: #FF9E64;
+    --brutal-blue: #7DD3FC;
+    --brutal-white: #FFFFFF;
+    --brutal-cream: #F5EFEB;
+
+    --shadow-color: #000000;
+    --dot-pattern-color: #CBD5E1;
+  }
+
+  .dark {
+    --bg-primary: #0D1117;
+    --bg-secondary: #161B22;
+    --bg-tertiary: #21262D;
+    --text-primary: #E6EDF3;
+    --text-secondary: #8B949E;
+    --border-color: #30363D;
+    
+    --brutal-yellow: #D2A800;
+    --brutal-cyan: #00B3C7;
+    --brutal-pink: #D14D6B;
+    --brutal-hotpink: #D61C53;
+    --brutal-lime: #33B978;
+    --brutal-purple: #A77AD6;
+    --brutal-orange: #C97241;
+    --brutal-blue: #5BA3C7;
+    --brutal-white: #161B22;
+    --brutal-cream: #21262D;
+
+    --shadow-color: #000000;
+    --dot-pattern-color: #30363D;
+  }
+
   body {
     font-family: 'Inter', sans-serif;
-    background-color: #FDFBF7;
-    color: #000000;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
   
   code, pre, .font-mono {
@@ -21,92 +68,95 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #F5EFEB;
-  border-left: 2.5px solid #000000;
+  background: var(--bg-tertiary);
+  border-left: 2.5px solid var(--border-color);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FFE600;
-  border: 2.5px solid #000000;
-  box-shadow: 2px 2px 0px #000000;
+  background: var(--brutal-yellow);
+  border: 2.5px solid var(--border-color);
+  box-shadow: 2px 2px 0px var(--shadow-color);
 }
 
 /* ==========================================================
    AUTHENTIC COLORFUL NEO-BRUTALIST COLOR UTILITIES
    ========================================================== */
-.bg-brutal-yellow { background-color: #FFE600 !important; }
-.bg-brutal-cyan { background-color: #00F0FF !important; }
-.bg-brutal-pink { background-color: #FF6B8B !important; }
-.bg-brutal-hotpink { background-color: #FF2A6D !important; }
-.bg-brutal-lime { background-color: #4EEDA4 !important; }
-.bg-brutal-purple { background-color: #D8B4FE !important; }
-.bg-brutal-orange { background-color: #FF9E64 !important; }
-.bg-brutal-blue { background-color: #7DD3FC !important; }
-.bg-brutal-white { background-color: #FFFFFF !important; }
-.bg-brutal-cream { background-color: #F5EFEB !important; }
+.bg-brutal-yellow { background-color: var(--brutal-yellow) !important; color: #000 !important; }
+.bg-brutal-cyan { background-color: var(--brutal-cyan) !important; color: #000 !important; }
+.bg-brutal-pink { background-color: var(--brutal-pink) !important; color: #000 !important; }
+.bg-brutal-hotpink { background-color: var(--brutal-hotpink) !important; color: #fff !important; }
+.bg-brutal-lime { background-color: var(--brutal-lime) !important; color: #000 !important; }
+.bg-brutal-purple { background-color: var(--brutal-purple) !important; color: #000 !important; }
+.bg-brutal-orange { background-color: var(--brutal-orange) !important; color: #000 !important; }
+.bg-brutal-blue { background-color: var(--brutal-blue) !important; color: #000 !important; }
+.bg-brutal-white { background-color: var(--bg-secondary) !important; }
+.bg-brutal-cream { background-color: var(--bg-tertiary) !important; }
 
-.text-brutal-dark { color: #000000 !important; }
-.text-brutal-pink { color: #FF2A6D !important; }
-.text-brutal-cyan { color: #0284C7 !important; }
-.text-brutal-orange { color: #EA580C !important; }
-.text-brutal-lime { color: #059669 !important; }
-.text-brutal-purple { color: #7C3AED !important; }
-.text-brutal-hotpink { color: #FF2A6D !important; }
+.text-brutal-dark { color: var(--text-primary) !important; }
+.text-brutal-pink { color: var(--brutal-hotpink) !important; }
+.text-brutal-cyan { color: var(--brutal-cyan) !important; }
+.text-brutal-orange { color: var(--brutal-orange) !important; }
+.text-brutal-lime { color: var(--brutal-lime) !important; }
+.text-brutal-purple { color: var(--brutal-purple) !important; }
+.text-brutal-hotpink { color: var(--brutal-hotpink) !important; }
 
-.border-brutal-black { border-color: #000000 !important; }
+.border-brutal-black { border-color: var(--border-color) !important; }
 
 /* ==========================================================
    NEO-BRUTALIST CARDS — STRAIGHT CARDS + OFFSET BLACK SHADOW
-   
-   Using box-shadow instead of ::after pseudo-elements.
-   Asymmetric offsets (e.g. 6px/4px vs 4px/6px) give the 
-   visual impression of a "rotated" shadow without stacking
-   context bugs.
    ========================================================== */
 
 /* Standard card — shadow goes bottom-right */
 .neo-box {
   position: relative;
-  background-color: #FFFFFF;
-  border: 3px solid #000000;
+  background-color: var(--bg-secondary);
+  border: 3px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 6px 4px 0px 0px #000000;
+  box-shadow: 6px 4px 0px 0px var(--shadow-color);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* Solid banner card — shadow tilted opposite */
 .neo-box-solid {
   position: relative;
-  background-color: #FFFFFF;
-  border: 3px solid #000000;
+  background-color: var(--bg-secondary);
+  border: 3px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 4px 6px 0px 0px #000000;
+  box-shadow: 4px 6px 0px 0px var(--shadow-color);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* Left-tilt shadow: more horizontal offset, less vertical */
 .neo-box-tilt-l {
   position: relative;
-  background-color: #FFFFFF;
-  border: 3px solid #000000;
+  background-color: var(--bg-secondary);
+  border: 3px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 7px 3px 0px 0px #000000;
+  box-shadow: 7px 3px 0px 0px var(--shadow-color);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* Right-tilt shadow: less horizontal offset, more vertical */
 .neo-box-tilt-r {
   position: relative;
-  background-color: #FFFFFF;
-  border: 3px solid #000000;
+  background-color: var(--bg-secondary);
+  border: 3px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 3px 7px 0px 0px #000000;
+  box-shadow: 3px 7px 0px 0px var(--shadow-color);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 /* Small shadow utility */
 .shadow-brutal {
-  box-shadow: 6px 4px 0px 0px #000000 !important;
+  box-shadow: 6px 4px 0px 0px var(--shadow-color) !important;
 }
 
 .shadow-brutal-sm {
-  box-shadow: 3px 3px 0px 0px #000000 !important;
+  box-shadow: 3px 3px 0px 0px var(--shadow-color) !important;
 }
 
 /* ==========================================================
@@ -114,7 +164,7 @@
    ========================================================== */
 .neo-btn {
   position: relative;
-  border: 2.5px solid #000000;
+  border: 2.5px solid var(--border-color);
   font-weight: 800;
   letter-spacing: 0.025em;
   border-radius: 8px;
@@ -122,12 +172,20 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 4px 3px 0px 0px #000000;
-  transition: box-shadow 0.1s ease, transform 0.1s ease;
+  box-shadow: 4px 3px 0px 0px var(--shadow-color);
+  transition: box-shadow 0.1s ease, transform 0.1s ease, background-color 0.25s ease, border-color 0.25s ease;
+  color: var(--text-primary);
 }
 
 .neo-btn:active {
-  box-shadow: 1px 1px 0px 0px #000000;
+  box-shadow: 1px 1px 0px 0px var(--shadow-color);
+  transform: translate(2px, 2px);
+}
+
+.neo-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: 1px 1px 0px 0px var(--shadow-color);
   transform: translate(2px, 2px);
 }
 
@@ -136,7 +194,7 @@
    ========================================================== */
 .neo-badge {
   position: relative;
-  border: 2px solid #000000;
+  border: 2px solid var(--border-color);
   font-family: 'JetBrains Mono', monospace;
   font-weight: 800;
   padding: 2px 8px;
@@ -144,19 +202,27 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  box-shadow: 2px 2px 0px 0px #000000;
+  box-shadow: 2px 2px 0px 0px var(--shadow-color);
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
 
 /* ==========================================================
    RETRO CREAM CYBER CANVAS BACKGROUND
    ========================================================== */
 .neo-cyber-bg {
-  background-color: #FDFBF7;
+  background-color: var(--bg-primary);
   background-image: 
-    radial-gradient(#CBD5E1 1.2px, transparent 1.2px),
+    radial-gradient(var(--dot-pattern-color) 1.2px, transparent 1.2px),
     linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   background-size: 24px 24px, 24px 24px, 24px 24px;
+  transition: background-color 0.25s ease;
+}
+.dark .neo-cyber-bg {
+    background-image: 
+    radial-gradient(var(--dot-pattern-color) 1.2px, transparent 1.2px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
 }
 
 /* Cytoscape container styling */
@@ -166,7 +232,18 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #FDFBF7;
-  background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
+  background-color: var(--bg-primary);
+  background-image: radial-gradient(var(--dot-pattern-color) 1.5px, transparent 1.5px);
   background-size: 20px 20px;
+  transition: background-color 0.25s ease;
+}
+
+/* Input/Textarea general styling */
+input, textarea, select {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+input::placeholder, textarea::placeholder {
+  color: var(--text-secondary);
 }

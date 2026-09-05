@@ -1,8 +1,8 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict
 from typing import List, Dict, Any, Optional
 from datetime import datetime, date
 
-# ----------------- Entity Schemas -----------------
+# ----------------- Entity Output Schemas -----------------
 
 class PersonBase(BaseModel):
     person_id: str
@@ -70,12 +70,117 @@ class CaseDetailOut(CaseOut):
     evidence_items: List[Dict[str, Any]] = []
     alerts: List[Dict[str, Any]] = []
 
+# ----------------- Write / Create Request Schemas -----------------
+
+class CaseCreateRequest(BaseModel):
+    case_id: Optional[str] = None          # auto-generated if omitted
+    title: str
+    description: Optional[str] = None
+    case_type: Optional[str] = None
+    status: Optional[str] = "Active Investigation"
+    priority: Optional[str] = "Medium"
+    lead_officer: Optional[str] = None
+    date_registered: Optional[str] = None  # YYYY-MM-DD
+    incident_date: Optional[str] = None    # YYYY-MM-DD
+    estimated_value: Optional[float] = None
+
+class PersonCreateRequest(BaseModel):
+    person_id: Optional[str] = None        # auto-generated if omitted
+    name: str
+    aliases: Optional[str] = None
+    dob: Optional[str] = None              # YYYY-MM-DD
+    nationality: Optional[str] = None
+    role: Optional[str] = None
+    primary_location: Optional[str] = None
+    risk_level: Optional[str] = "Medium"
+    avatar_url: Optional[str] = None
+
+class PhoneCreateRequest(BaseModel):
+    phone_id: Optional[str] = None
+    phone_number: str
+    imei: Optional[str] = None
+    imsi: Optional[str] = None
+    telecom_circle: Optional[str] = None
+    operator: Optional[str] = None
+    registered_owner: Optional[str] = None
+    is_burner: Optional[bool] = False
+
+class VehicleCreateRequest(BaseModel):
+    vehicle_id: Optional[str] = None   # auto-generated if omitted
+    license_plate: str
+    make: Optional[str] = None         # e.g. Toyota
+    model: Optional[str] = None        # e.g. Fortuner
+    color: Optional[str] = None
+    year: Optional[int] = None
+    registered_owner: Optional[str] = None
+    notes: Optional[str] = None
+
+class LocationCreateRequest(BaseModel):
+    location_id: Optional[str] = None   # auto-generated if omitted
+    name: str                           # e.g. "Mumbai Warehouse"
+    address: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    location_type: Optional[str] = None  # e.g. Warehouse, Residence, Meeting Point
+
+class CDRCreateRequest(BaseModel):
+    cdr_id: Optional[str] = None
+    caller_id: Optional[str] = None
+    caller_phone: str
+    receiver_id: Optional[str] = None
+    receiver_phone: str
+    timestamp: Optional[str] = None        # YYYY-MM-DD HH:MM:SS
+    duration_sec: Optional[int] = None
+    cell_tower_location: Optional[str] = None
+    call_type: Optional[str] = None        # VOICE, SMS, DATA
+    flagged_status: Optional[str] = None
+
+class TransactionCreateRequest(BaseModel):
+    tx_id: Optional[str] = None
+    sender_id: Optional[str] = None
+    sender_name: Optional[str] = None
+    receiver_id: Optional[str] = None
+    receiver_name: Optional[str] = None
+    amount: float
+    currency: Optional[str] = "INR"
+    channel: Optional[str] = None
+    bank_reference: Optional[str] = None
+    timestamp: Optional[str] = None        # YYYY-MM-DD HH:MM:SS
+    category: Optional[str] = None
+    flagged_status: Optional[str] = None
+
+class RelationshipCreateRequest(BaseModel):
+    rel_id: Optional[str] = None
+    source_id: str
+    target_id: str
+    relationship_type: str
+    confidence: Optional[float] = 1.0
+    date: Optional[str] = None
+    evidence_id: Optional[str] = None
+    notes: Optional[str] = None
+
+class IngestStatusResponse(BaseModel):
+    status: str                            # "success" | "partial" | "error"
+    cases_loaded: int = 0
+    persons_loaded: int = 0
+    phones_loaded: int = 0
+    vehicles_loaded: int = 0
+    locations_loaded: int = 0
+    organizations_loaded: int = 0
+    relationships_loaded: int = 0
+    cdrs_loaded: int = 0
+    transactions_loaded: int = 0
+    documents_loaded: int = 0
+    alerts_generated: int = 0
+    errors: List[str] = []
+    message: str = ""
+
 # ----------------- Graph Schemas -----------------
 
 class GraphNode(BaseModel):
     id: str
     label: str
-    type: str # Person, Phone, Vehicle, Location, Organization, Case
+    type: str   # Person, Phone, Vehicle, Location, Organization, Case
     properties: Dict[str, Any] = {}
     degree: Optional[int] = 0
     betweenness: Optional[float] = 0.0
@@ -161,7 +266,7 @@ class AlertOut(BaseModel):
     case_id: Optional[str] = None
     case_title: Optional[str] = None
     alert_type: str
-    severity: str # HIGH, MEDIUM, LOW
+    severity: str   # HIGH, MEDIUM, LOW
     reason: str
     supporting_evidence_id: Optional[str] = None
     supporting_records: Optional[Dict[str, Any]] = None
@@ -188,7 +293,7 @@ class EvidenceOut(BaseModel):
 class TimelineEvent(BaseModel):
     event_id: str
     timestamp: str
-    event_type: str # CASE_INCIDENT, CALL, TRANSACTION, SURVEILLANCE_VISIT, DOCUMENT_FILED
+    event_type: str     # CASE_INCIDENT, CALL, TRANSACTION, SURVEILLANCE_VISIT, DOCUMENT_FILED
     title: str
     description: str
     entity_ids: List[str] = []
@@ -199,7 +304,7 @@ class TimelineEvent(BaseModel):
 # ----------------- Document & NLP Schemas -----------------
 
 class ExtractedEntity(BaseModel):
-    entity_type: str # PERSON, PHONE, VEHICLE, LOCATION, ORG, CASE, DATE, AMOUNT
+    entity_type: str    # PERSON, PHONE, VEHICLE, LOCATION, ORG, CASE, DATE, AMOUNT
     extracted_text: str
     normalized_value: str
     start_char: int
@@ -223,10 +328,15 @@ class DocumentAnalyzeResponse(BaseModel):
 
 # ----------------- Investigation Assistant Schemas -----------------
 
+class AssistantMessage(BaseModel):
+    role: str       # "user" | "assistant"
+    content: str
+
 class AssistantQueryRequest(BaseModel):
     query: str
     case_id: Optional[str] = None
     focused_entity_id: Optional[str] = None
+    history: Optional[List[AssistantMessage]] = []
 
 class AssistantQueryResponse(BaseModel):
     query: str
@@ -244,7 +354,7 @@ class SearchResultItem(BaseModel):
     id: str
     title: str
     subtitle: str
-    category: str # Person, Case, Phone, Vehicle, Location, Org, Evidence
+    category: str   # Person, Case, Phone, Vehicle, Location, Org, Evidence
     relevance_score: float
     match_field: str
 
@@ -252,4 +362,3 @@ class GlobalSearchResponse(BaseModel):
     query: str
     total_results: int
     results_by_category: Dict[str, List[SearchResultItem]]
-

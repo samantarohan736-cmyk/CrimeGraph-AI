@@ -12,18 +12,18 @@ export default function StatCard({ title, value, icon: Icon, color = "cyan", sub
   const tiltClass = tilt === "left" ? "neo-box-tilt-l" : "neo-box-tilt-r";
 
   return (
-    <div className={`p-5 space-y-3 font-mono bg-white ${tiltClass}`}>
+    <div className={`p-5 space-y-3 font-mono bg-[var(--bg-secondary)] ${tiltClass}`}>
       <div className="flex items-center justify-between">
-        <span className="text-xs uppercase tracking-wider text-slate-800 font-black">
+        <span className="text-xs uppercase tracking-wider text-[var(--text-secondary)] font-black">
           {title}
         </span>
-        <div className={`p-2.5 rounded-lg border-2 border-black shadow-brutal-sm ${badgeColorMap[color] || badgeColorMap.cyan}`}>
+        <div className={`p-2.5 rounded-lg border-2 border-[var(--border-color)] shadow-brutal-sm ${badgeColorMap[color] || badgeColorMap.cyan}`}>
           <Icon className="w-5 h-5 text-black" />
         </div>
       </div>
 
       <div className="flex items-baseline justify-between">
-        <div className="text-3xl font-black text-black tracking-tight">
+        <div className="text-3xl font-black text-[var(--text-primary)] tracking-tight">
           {value}
         </div>
         {trend && (
@@ -34,7 +34,7 @@ export default function StatCard({ title, value, icon: Icon, color = "cyan", sub
       </div>
 
       {subtitle && (
-        <p className="text-xs text-slate-600 font-bold truncate">
+        <p className="text-xs text-[var(--text-secondary)] font-bold truncate">
           {subtitle}
         </p>
       )}

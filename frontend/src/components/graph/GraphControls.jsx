@@ -74,17 +74,17 @@ export default function GraphControls({
   }, []);
 
   return (
-    <div className="absolute top-4 left-4 z-20 flex flex-wrap items-center gap-2 p-2 rounded-xl bg-white border-[2.5px] border-black shadow-brutal font-mono text-xs max-w-[calc(100%-20px)]">
+    <div className="absolute top-16 left-4 z-20 flex flex-wrap items-center gap-2 p-2 rounded-xl bg-[var(--bg-secondary)] border-[2.5px] border-[var(--border-color)] shadow-[4px_4px_0_0_var(--shadow-color)] font-mono text-xs max-w-[calc(100%-20px)]">
       {/* ── 1. Compact Hop Selector [1-Hop] [2-Hop] [3-Hop] ── */}
-      <div className="flex items-center gap-1 px-1.5 py-1 bg-cream-100 border-2 border-black rounded-lg">
+      <div className="flex items-center gap-1 px-1.5 py-1 bg-[var(--bg-tertiary)] border-2 border-[var(--border-color)] rounded-lg">
         {[1, 2, 3].map((h) => (
           <button
             key={h}
             onClick={() => setHops && setHops(h)}
-            className={`px-2 py-0.5 rounded font-black text-[11px] transition-all border-2 border-black ${
+            className={`px-2 py-0.5 rounded font-black text-[11px] transition-all border-2 border-[var(--border-color)] ${
               hops === h
-                ? 'bg-brutal-cyan text-black shadow-[1.5px_1.5px_0px_#000]'
-                : 'bg-white text-slate-700 hover:text-black'
+                ? 'bg-brutal-cyan text-black shadow-[1.5px_1.5px_0px_0_var(--shadow-color)]'
+                : 'bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
             }`}
           >
             {h}-Hop
@@ -98,7 +98,7 @@ export default function GraphControls({
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`neo-btn px-2.5 py-1.5 text-[11px] font-black flex items-center gap-1.5 transition-all ${
-              !allSelected ? 'bg-brutal-yellow text-black' : 'bg-cream-100 text-slate-800'
+              !allSelected ? 'bg-brutal-yellow text-black' : 'bg-[var(--bg-tertiary)] text-[var(--text-primary)]'
             }`}
             title="Filter visible relationship types"
           >
@@ -108,12 +108,12 @@ export default function GraphControls({
           </button>
 
           {showFilters && (
-            <div className="absolute top-full left-0 mt-2 w-72 p-3 rounded-xl bg-white border-[2.5px] border-black shadow-[4px_4px_0_0_#000] z-50 space-y-2.5">
-              <div className="flex items-center justify-between pb-1.5 border-b-2 border-black">
-                <span className="text-[11px] font-black text-black uppercase">RELATIONSHIP FILTERS</span>
+            <div className="absolute top-full left-0 mt-2 w-72 p-3 rounded-xl bg-[var(--bg-primary)] border-[2.5px] border-[var(--border-color)] shadow-[4px_4px_0_0_var(--shadow-color)] z-50 space-y-2.5">
+              <div className="flex items-center justify-between pb-1.5 border-b-2 border-[var(--border-color)]">
+                <span className="text-[11px] font-black text-[var(--text-primary)] uppercase">RELATIONSHIP FILTERS</span>
                 <button
                   onClick={() => setSelectedCategories(RELATIONSHIP_CATEGORIES.map(c => c.id))}
-                  className="text-[10px] text-slate-700 underline font-black hover:text-black"
+                  className="text-[10px] text-[var(--text-secondary)] underline font-black hover:text-[var(--text-primary)]"
                 >
                   SELECT ALL
                 </button>
@@ -127,17 +127,17 @@ export default function GraphControls({
                     <button
                       key={cat.id}
                       onClick={() => toggleCategory(cat.id)}
-                      className={`w-full flex items-center justify-between p-1.5 rounded-lg border-2 border-black text-xs font-bold transition-colors ${
-                        isChecked ? 'bg-cream-100 text-black' : 'bg-slate-100 text-slate-400'
+                      className={`w-full flex items-center justify-between p-1.5 rounded-lg border-2 border-[var(--border-color)] text-xs font-bold transition-colors ${
+                        isChecked ? 'bg-[var(--bg-tertiary)] text-[var(--text-primary)]' : 'bg-[var(--bg-primary)] text-[var(--text-secondary)] opacity-70'
                       }`}
                     >
                       <div className="flex items-center gap-2">
-                        <span className={`p-1 rounded ${cat.badgeColor} border border-black`}>
+                        <span className={`p-1 rounded ${cat.badgeColor} border border-[var(--border-color)]`}>
                           <Icon className="w-3 h-3 text-black" />
                         </span>
                         <span className="text-[11px] font-black">{cat.emoji} {cat.label}</span>
                       </div>
-                      {isChecked && <Check className="w-3.5 h-3.5 text-black stroke-[3]" />}
+                      {isChecked && <Check className="w-3.5 h-3.5 text-[var(--text-primary)] stroke-[3]" />}
                     </button>
                   );
                 })}
@@ -154,7 +154,7 @@ export default function GraphControls({
           className={`neo-btn px-2.5 py-1.5 text-[11px] font-black flex items-center gap-1.5 transition-all ${
             smartRanking
               ? 'bg-brutal-lime text-black'
-              : 'bg-cream-200 text-slate-600'
+              : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
           }`}
           title="Enable smart lead prioritization (prioritizes high centrality and risk leads)"
         >
@@ -172,10 +172,10 @@ export default function GraphControls({
             if (next && setColorMode) setColorMode('suspicious');
             else if (colorMode === 'suspicious' && setColorMode) setColorMode('type');
           }}
-          className={`neo-btn px-2.5 py-1.5 text-[11px] font-black flex items-center gap-1.5 transition-all ${
+            className={`neo-btn px-2.5 py-1.5 text-[11px] font-black flex items-center gap-1.5 transition-all ${
             suspiciousMode
-              ? 'bg-brutal-pink text-black animate-pulse shadow-[2px_2px_0px_#000]'
-              : 'bg-cream-200 text-slate-700 hover:bg-brutal-pink'
+              ? 'bg-brutal-pink text-black animate-pulse shadow-[2px_2px_0px_0_var(--shadow-color)]'
+              : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-brutal-pink hover:text-black'
           }`}
           title="Highlight anomalous activity, Hawala transfers, and CDR spikes"
         >
@@ -188,7 +188,7 @@ export default function GraphControls({
       {onExpandMoreNodes && (
         <button
           onClick={onExpandMoreNodes}
-          className="neo-btn px-2.5 py-1.5 bg-cream-100 hover:bg-brutal-lime text-black text-[11px] font-black flex items-center gap-1"
+          className="neo-btn px-2.5 py-1.5 bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-brutal-lime hover:text-black text-[11px] font-black flex items-center gap-1"
           title="Progressively reveal the next 10 highest-ranked connections"
         >
           <PlusCircle className="w-3.5 h-3.5" />
@@ -197,16 +197,16 @@ export default function GraphControls({
       )}
 
       {/* ── 6. Layout Selector ── */}
-      <div className="flex items-center gap-1 bg-cream-100 border-2 border-black rounded-lg text-xs font-mono px-2 py-1">
+      <div className="flex items-center gap-1 bg-[var(--bg-tertiary)] border-2 border-[var(--border-color)] rounded-lg text-xs font-mono px-2 py-1">
         <select
           value={layout}
           onChange={(e) => setLayout && setLayout(e.target.value)}
-          className="bg-transparent text-slate-900 focus:outline-none cursor-pointer font-mono font-black text-[11px]"
+          className="bg-transparent text-[var(--text-primary)] focus:outline-none cursor-pointer font-mono font-black text-[11px]"
         >
-          <option value="cose">Force-Directed</option>
-          <option value="concentric">Concentric Circles</option>
-          <option value="breadthfirst">Tree</option>
-          <option value="grid">Grid</option>
+          <option value="cose" className="bg-[var(--bg-primary)] text-[var(--text-primary)]">Force-Directed</option>
+          <option value="concentric" className="bg-[var(--bg-primary)] text-[var(--text-primary)]">Concentric Circles</option>
+          <option value="breadthfirst" className="bg-[var(--bg-primary)] text-[var(--text-primary)]">Tree</option>
+          <option value="grid" className="bg-[var(--bg-primary)] text-[var(--text-primary)]">Grid</option>
         </select>
       </div>
 
@@ -226,7 +226,7 @@ export default function GraphControls({
       {onResetAll && (
         <button
           onClick={onResetAll}
-          className="neo-btn px-2 py-1.5 bg-cream-200 text-slate-700 hover:bg-brutal-pink text-[11px] font-black flex items-center gap-1"
+          className="neo-btn px-2 py-1.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-brutal-pink hover:text-black text-[11px] font-black flex items-center gap-1"
           title="Reset graph controls and view"
         >
           <RotateCcw className="w-3.5 h-3.5" />

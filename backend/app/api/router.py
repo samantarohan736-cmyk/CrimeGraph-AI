@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from backend.app.api.routes import (
     dashboard, cases, persons, graph, analytics, alerts,
-    timeline, documents, evidence, investigation, search
+    timeline, documents, evidence, investigation, search,
+    ingest, create
 )
 
 api_router = APIRouter()
@@ -17,5 +18,8 @@ api_router.include_router(documents.router)
 api_router.include_router(evidence.router)
 api_router.include_router(investigation.router)
 api_router.include_router(search.router)
+api_router.include_router(ingest.router)
+api_router.include_router(create.router)
 
-
+from backend.app.api.routes import registry
+api_router.include_router(registry.router, prefix="/registry", tags=["Registry"])

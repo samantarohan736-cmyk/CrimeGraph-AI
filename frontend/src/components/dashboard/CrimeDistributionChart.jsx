@@ -8,7 +8,7 @@ export default function CrimeDistributionChart({ data = [] }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   if (!data || data.length === 0) {
-    return <div className="p-6 text-center text-slate-500 text-xs font-mono">No crime classification records.</div>;
+    return <div className="p-6 text-center text-[var(--text-secondary)] text-xs font-mono">No crime classification records.</div>;
   }
 
   const chartContent = (
@@ -22,7 +22,7 @@ export default function CrimeDistributionChart({ data = [] }) {
           outerRadius={isFullscreen ? 200 : 80}
           paddingAngle={6}
           dataKey="value"
-          stroke="#000000"
+          stroke="var(--border-color, #000000)"
           strokeWidth={3}
         >
           {data.map((entry, index) => (
@@ -31,22 +31,31 @@ export default function CrimeDistributionChart({ data = [] }) {
         </Pie>
         <Tooltip
           contentStyle={{
-            backgroundColor: '#FFFFFF',
-            borderColor: '#000000',
+            backgroundColor: 'var(--bg-primary)',
+            borderColor: 'var(--border-color)',
             borderWidth: '2.5px',
             borderRadius: '8px',
-            color: '#000000',
-            fontSize: '12px',
+            boxShadow: '4px 4px 0px var(--shadow-color)'
+          }}
+          itemStyle={{
+            color: 'var(--text-primary)',
             fontFamily: 'JetBrains Mono, monospace',
             fontWeight: 'bold',
-            boxShadow: '4px 4px 0px #000000'
+            fontSize: '12px'
+          }}
+          labelStyle={{
+            color: 'var(--text-secondary)',
+            fontFamily: 'JetBrains Mono, monospace',
+            fontWeight: 'black',
+            fontSize: '12px',
+            marginBottom: '4px'
           }}
         />
         <Legend
           verticalAlign="bottom"
           height={36}
           formatter={(value) => (
-            <span className="text-xs font-mono font-black text-black uppercase">
+            <span className="text-xs font-mono font-black text-[var(--text-primary)] uppercase">
               {value}
             </span>
           )}
@@ -60,10 +69,10 @@ export default function CrimeDistributionChart({ data = [] }) {
       <div className="flex justify-end mb-2">
         <button
           onClick={() => setIsFullscreen(!isFullscreen)}
-          className="neo-btn px-2.5 py-1 bg-cream-200 text-black flex items-center gap-1.5 text-[10px] font-mono font-bold"
+          className="neo-btn px-2.5 py-1 bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-primary)] flex items-center gap-1.5 text-[10px] font-mono font-bold"
           title="Full Window View"
         >
-          {isFullscreen ? <Minimize2 className="w-3 h-3" /> : <Maximize2 className="w-3 h-3 text-black" />}
+          {isFullscreen ? <Minimize2 className="w-3 h-3" /> : <Maximize2 className="w-3 h-3" />}
           <span>{isFullscreen ? 'EXIT FULL WINDOW' : 'FULL WINDOW'}</span>
         </button>
       </div>
@@ -73,17 +82,17 @@ export default function CrimeDistributionChart({ data = [] }) {
       </div>
 
       {isFullscreen && (
-        <div className="fixed inset-0 z-50 bg-cream-100 p-8 flex flex-col justify-between">
-          <div className="flex items-center justify-between pb-4 border-b-2 border-black">
+        <div className="fixed inset-0 z-50 bg-[var(--bg-primary)] p-8 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-4 border-b-2 border-[var(--border-color)]">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded bg-brutal-cyan text-black border-2 border-black shadow-brutal-sm">
+              <div className="p-2 rounded bg-brutal-cyan text-black border-2 border-[var(--border-color)] shadow-brutal-sm">
                 <PieIcon className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-xl font-black font-mono text-black uppercase">
+                <h2 className="text-xl font-black font-mono text-[var(--text-primary)] uppercase">
                   CRIME CATEGORY DISTRIBUTION — FULL WINDOW ANALYSIS
                 </h2>
-                <p className="text-xs text-slate-700 font-mono font-medium">
+                <p className="text-xs text-[var(--text-secondary)] font-mono font-medium">
                   Synthesized breakdown of active criminal operations by offence type
                 </p>
               </div>
@@ -98,7 +107,7 @@ export default function CrimeDistributionChart({ data = [] }) {
             </button>
           </div>
 
-          <div className="flex-1 w-full my-6 bg-white rounded-xl border-[3px] border-black p-6 shadow-brutal">
+          <div className="flex-1 w-full my-6 bg-[var(--bg-secondary)] rounded-xl border-[3px] border-[var(--border-color)] p-6 shadow-brutal transition-colors">
             {chartContent}
           </div>
         </div>

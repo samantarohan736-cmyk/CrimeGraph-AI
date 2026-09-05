@@ -3,6 +3,7 @@ import cytoscape from 'cytoscape';
 import coseBilkent from 'cytoscape-cose-bilkent';
 import { Maximize2, Minimize2, ZoomIn, ZoomOut, Crosshair } from 'lucide-react';
 import { ENTITY_COLORS, COMMUNITY_COLORS } from '../../utils/colors';
+import { useTheme } from '../../contexts/ThemeContext';
 
 // Register cose-bilkent layout extension if available
 try {
@@ -61,6 +62,23 @@ function getEdgeDisplayLabel(edge) {
   return `${icon} ${cleanType}${amtStr}`;
 }
 
+// High-Res SVG Icon Formatter for Cytoscape
+// Setting intrinsic width/height to 1024px prevents pixelation when zooming in Cytoscape
+const getSvgIcon = (type) => {
+  let svg = '';
+  const baseAttr = `xmlns="http://www.w3.org/2000/svg" width="1024px" height="1024px" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"`;
+  switch (type) {
+    case 'Person': svg = `<svg ${baseAttr}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`; break;
+    case 'Case': svg = `<svg ${baseAttr}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`; break;
+    case 'Phone': svg = `<svg ${baseAttr}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`; break;
+    case 'Vehicle': svg = `<svg ${baseAttr}><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`; break;
+    case 'Location': svg = `<svg ${baseAttr}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`; break;
+    case 'Organization': svg = `<svg ${baseAttr}><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22"/><line x1="15" y1="22" x2="15" y2="22"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/></svg>`; break;
+    default: svg = `<svg ${baseAttr}><circle cx="12" cy="12" r="10"/></svg>`;
+  }
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+};
+
 export default function CytoscapeGraph({
   nodes = [],
   edges = [],
@@ -77,6 +95,7 @@ export default function CytoscapeGraph({
   const containerRef = useRef(null);
   const cyRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { theme } = useTheme();
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -101,6 +120,7 @@ export default function CytoscapeGraph({
         data: {
           id: n.id,
           label: n.label || n.id,
+          raw_label: n.label || n.id,
           type: n.type || 'Entity',
           degree: n.degree || 0,
           betweenness: n.betweenness || 0,
@@ -137,6 +157,7 @@ export default function CytoscapeGraph({
     const cy = cytoscape({
       container: containerRef.current,
       elements: elements,
+      boxSelectionEnabled: false,
       style: [
         {
           selector: 'node',
@@ -145,16 +166,10 @@ export default function CytoscapeGraph({
             'font-family': 'JetBrains Mono, monospace',
             'font-size': '10px',
             'font-weight': 'bold',
-            'color': '#000000',
+            'color': theme === 'dark' ? '#FFFFFF' : '#000000',
             'text-valign': 'bottom',
             'text-margin-y': 6,
-            'text-background-opacity': 0.95,
-            'text-background-color': '#FFFFFF',
-            'text-background-padding': '3px',
-            'text-background-shape': 'roundrectangle',
-            'text-border-color': '#000000',
-            'text-border-width': 1.5,
-            'text-border-opacity': 1,
+            'text-background-opacity': 0,
             'width': ele => {
               if (ele.data('is_focus')) return 52;
               const deg = ele.data('degree') || 1;
@@ -192,16 +207,15 @@ export default function CytoscapeGraph({
             'border-opacity': 1,
             'overlay-opacity': 0,
             'transition-property': 'background-color, border-color, width, height, opacity',
-            'transition-duration': '0.2s'
+            'transition-duration': '0.2s',
+            'background-image': ele => getSvgIcon(ele.data('type')),
+            'background-fit': 'none',
+            'background-clip': 'node',
+            'background-width': '50%',
+            'background-height': '50%',
+            'shape': 'ellipse'
           }
         },
-        // Shapes by Type
-        { selector: 'node[type = "Person"]',       style: { 'shape': 'ellipse' } },
-        { selector: 'node[type = "Case"]',         style: { 'shape': 'hexagon' } },
-        { selector: 'node[type = "Organization"]', style: { 'shape': 'round-rectangle' } },
-        { selector: 'node[type = "Location"]',     style: { 'shape': 'tag' } },
-        { selector: 'node[type = "Phone"]',        style: { 'shape': 'diamond' } },
-        { selector: 'node[type = "Vehicle"]',      style: { 'shape': 'barrel' } },
 
         // Focus Entity Ring
         {
@@ -209,8 +223,6 @@ export default function CytoscapeGraph({
           style: {
             'border-color': '#000000',
             'border-width': 5,
-            'text-background-color': '#FFE600',
-            'text-border-width': 2,
             'ghost': 'yes',
             'ghost-offset-x': 0,
             'ghost-offset-y': 0,
@@ -223,10 +235,7 @@ export default function CytoscapeGraph({
           selector: 'node:selected',
           style: {
             'border-color': '#FF2A6D',
-            'border-width': 5,
-            'text-border-color': '#FF2A6D',
-            'text-border-width': 2,
-            'text-background-color': '#FFE600'
+            'border-width': 5
           }
         },
 
@@ -267,17 +276,8 @@ export default function CytoscapeGraph({
             'font-family': 'JetBrains Mono, monospace',
             'font-size': '8.5px',
             'font-weight': 'bold',
-            'color': '#000000',
-            'text-background-opacity': 0.95,
-            'text-background-color': ele => {
-              if (ele.data('is_suspicious') && suspiciousMode) return '#FFB8D2';
-              if (ele.data('count') > 1) return '#FFE600';
-              return '#F1F5F9';
-            },
-            'text-background-padding': '2.5px',
-            'text-background-shape': 'roundrectangle',
-            'text-border-color': '#000000',
-            'text-border-width': 1,
+            'color': theme === 'dark' ? '#FFFFFF' : '#000000',
+            'text-background-opacity': 0,
             'text-rotation': 'autorotate',
             'text-margin-y': -8
           }
@@ -289,10 +289,7 @@ export default function CytoscapeGraph({
           style: {
             'line-color': '#FF2A6D',
             'target-arrow-color': '#FF2A6D',
-            'width': 4.5,
-            'text-border-color': '#FF2A6D',
-            'text-border-width': 2,
-            'text-background-color': '#FFE600'
+            'width': 4.5
           }
         }
       ],
@@ -352,7 +349,7 @@ export default function CytoscapeGraph({
       } catch (e) {}
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodes, edges, colorMode, suspiciousMode]);
+  }, [nodes, edges, colorMode, suspiciousMode, theme]);
 
   // Layout Hot-Swap without full remount
   useEffect(() => {
@@ -418,34 +415,34 @@ export default function CytoscapeGraph({
     <div
       className={
         isFullscreen
-          ? 'fixed inset-0 z-50 bg-cream-100 p-6 flex flex-col'
-          : 'relative w-full h-full min-h-[550px] overflow-hidden rounded-xl bg-cream-100'
+          ? 'fixed inset-0 z-50 bg-[var(--bg-primary)] p-6 flex flex-col'
+          : 'relative w-full h-full min-h-[550px] overflow-hidden rounded-xl bg-[var(--bg-primary)]'
       }
     >
       {/* Floating Canvas Quick Actions (Positioned cleanly at top-left) */}
       <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 pointer-events-auto">
         <button
           onClick={handleZoomIn}
-          className="neo-btn p-1.5 bg-white text-black text-xs shadow-brutal-sm"
+          className="neo-btn p-1.5 bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] text-xs shadow-brutal-sm border border-[var(--border-color)]"
           title="Zoom In"
         >
-          <ZoomIn className="w-3.5 h-3.5 text-black" />
+          <ZoomIn className="w-3.5 h-3.5" />
         </button>
 
         <button
           onClick={handleZoomOut}
-          className="neo-btn p-1.5 bg-white text-black text-xs shadow-brutal-sm"
+          className="neo-btn p-1.5 bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] text-xs shadow-brutal-sm border border-[var(--border-color)]"
           title="Zoom Out"
         >
-          <ZoomOut className="w-3.5 h-3.5 text-black" />
+          <ZoomOut className="w-3.5 h-3.5" />
         </button>
 
         <button
           onClick={handleFit}
-          className="neo-btn p-1.5 bg-white text-black text-xs shadow-brutal-sm"
+          className="neo-btn p-1.5 bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] text-xs shadow-brutal-sm border border-[var(--border-color)]"
           title="Fit Graph to Viewport"
         >
-          <Crosshair className="w-3.5 h-3.5 text-black" />
+          <Crosshair className="w-3.5 h-3.5" />
         </button>
 
         <button
