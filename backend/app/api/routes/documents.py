@@ -126,11 +126,6 @@ def _auto_promote_sql_entities(db: Session, entities: List[Dict[str, Any]]):
                     db.add(Organization(org_id=oid, name=text))
                     added_in_session.add(dedup_key)
                     sql_created += 1
-            elif et == "CASE":
-                if not db.query(Case).filter(Case.case_id == text).first():
-                    db.add(Case(case_id=text, title=f"Auto-Promoted Case {text}", case_type="NLP Extracted", status="Active Investigation"))
-                    added_in_session.add(dedup_key)
-                    sql_created += 1
                     
     if sql_created > 0:
         db.commit()

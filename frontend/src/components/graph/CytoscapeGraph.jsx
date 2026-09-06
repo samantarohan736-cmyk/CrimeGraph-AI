@@ -57,9 +57,9 @@ function getEdgeDisplayLabel(edge) {
   }
 
   if (isMulti) {
-    return `${icon} ${cleanType} ×${count}${amtStr}`;
+    return `${cleanType} ×${count}${amtStr}`;
   }
-  return `${icon} ${cleanType}${amtStr}`;
+  return `${cleanType}${amtStr}`;
 }
 
 // High-Res SVG Icon Formatter for Cytoscape
@@ -74,6 +74,7 @@ const getSvgIcon = (type) => {
     case 'Vehicle': svg = `<svg ${baseAttr}><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`; break;
     case 'Location': svg = `<svg ${baseAttr}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`; break;
     case 'Organization': svg = `<svg ${baseAttr}><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22"/><line x1="15" y1="22" x2="15" y2="22"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/></svg>`; break;
+    case 'Document': svg = `<svg ${baseAttr}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>`; break;
     default: svg = `<svg ${baseAttr}><circle cx="12" cy="12" r="10"/></svg>`;
   }
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
@@ -121,7 +122,9 @@ export default function CytoscapeGraph({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Convert API nodes & edges to Cytoscape elements
+    const nodeIds = new Set(nodes.map(n => n.id));
+    const validEdges = edges.filter(e => nodeIds.has(e.source) && nodeIds.has(e.target));
+
     const elements = [
       ...nodes.map(n => ({
         data: {
@@ -140,7 +143,7 @@ export default function CytoscapeGraph({
           properties: n.properties || {}
         }
       })),
-      ...edges.map(e => ({
+      ...validEdges.map(e => ({
         data: {
           id: e.id,
           source: e.source,

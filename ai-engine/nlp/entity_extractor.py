@@ -270,6 +270,29 @@ class HybridEntityExtractor:
                         "confidence": 0.90, "source_doc": source_doc
                     })
 
+        # ---- 8. Fallback Regex — Aliases & Names ----
+        alias_patterns = [
+            r"(?:known\s+(?:only\s+)?as|named|alias(?:ed)?|called|moniker(?:ed)?)\s+[\"']?([A-Z][a-zA-Z0-9\s-]+)[\"']?",
+            r"boss\s+(?:named\s+)?[\"']?([A-Z][a-zA-Z0-9\s-]+)[\"']?",
+            r"suspect\s+(?:named\s+)?[\"']?([A-Z][a-zA-Z0-9\s-]+)[\"']?",
+            r"driver\s+(?:named\s+)?[\"']?([A-Z][a-zA-Z0-9\s-]+)[\"']?"
+        ]
+        for a_regex in alias_patterns:
+            for m in re.finditer(a_regex, text, re.IGNORECASE):
+                val = m.group(1).strip()
+                name_start = m.start(1)
+                name_end = m.end(1)
+                span = (name_start, name_end)
+                if not any(s[0] <= span[0] and s[1] >= span[1] for s in seen_spans):
+                    seen_spans.add(span)
+                    entities.append({
+                        "entity_type": "PERSON",
+                        "extracted_text": val,
+                        "normalized_value": val,
+                        "start_char": name_start, "end_char": name_end,
+                        "confidence": 0.88, "source_doc": source_doc
+                    })
+
         entities.sort(key=lambda x: x["start_char"])
         return entities
 

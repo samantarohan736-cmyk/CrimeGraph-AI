@@ -1,0 +1,3 @@
+vehicle_id,plate_number,make,model,color,vehicle_type,registered_owner_id
+V-101,MH01AB1234,Mahindra,Scorpio,White,SUV,P-104
+V-102,MH02CD5678,Mercedes,Benz S-Class,Black,SEDAN,P-101

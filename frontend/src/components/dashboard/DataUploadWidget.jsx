@@ -163,7 +163,7 @@ export default function DataUploadWidget({ onUploadSuccess }) {
 
   // ── Upload view ────────────────────────────────────────────────────────
   return (
-    <div className="neo-box p-5 bg-[var(--bg-secondary)] space-y-4">
+    <div className="neo-box p-5 bg-[var(--bg-secondary)] flex flex-col justify-between h-full space-y-4 transition-colors duration-200">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-black uppercase font-mono flex items-center gap-2">
           <Upload className="w-4 h-4" />
@@ -234,10 +234,7 @@ export default function DataUploadWidget({ onUploadSuccess }) {
           )}
         </button>
 
-        {/* Info note */}
-        <p className="text-[10px] text-[var(--text-secondary)] font-mono text-center leading-relaxed">
-          Pipeline runs: CSV parsing → Postgres → Neo4j graph → anomaly alerts → priority scoring
-        </p>
+
       </div>
     </div>
   );

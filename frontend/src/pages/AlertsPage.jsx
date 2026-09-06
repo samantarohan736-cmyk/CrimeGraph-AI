@@ -50,8 +50,15 @@ export default function AlertsPage() {
       if (severityFilter !== 'ALL') params.severity = severityFilter;
       if (statusFilter !== 'ALL') params.status = statusFilter;
 
+      const startTime = Date.now();
       const res = await getAlerts(params);
       const hasNextPage = res.length > PAGE_SIZE;
+      
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 600) {
+        await new Promise(resolve => setTimeout(resolve, 600 - elapsed));
+      }
+      
       setAlerts(hasNextPage ? res.slice(0, PAGE_SIZE) : res);
       setHasMore(hasNextPage);
       if (resetPage) setPage(0);

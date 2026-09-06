@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Network, Bell, Sparkles, Moon, Sun, Menu } from 'lucide-react';
 import GlobalSearchBar from '../search/GlobalSearchBar';
 import { useTheme } from '../../contexts/ThemeContext';
+import { getAlertCounts } from '../../services/api';
 
 export default function Navbar({ toggleSidebar }) {
   const { theme, toggleTheme } = useTheme();
+  const [activeAlertsCount, setActiveAlertsCount] = useState(0);
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        const counts = await getAlertCounts();
+        // counts.by_status.ACTIVE
+        setActiveAlertsCount(counts.by_status?.ACTIVE || 0);
+      } catch (err) {
+        console.error('Failed to fetch alert counts for navbar:', err);
+      }
+    };
+    fetchAlerts();
+    // Optional: could poll every 60s, but fetching on mount is fine for now
+    const interval = setInterval(fetchAlerts, 60000);
+    return () => clearInterval(interval);
+  }, []);
   
   return (
     <header className="h-16 border-b-[3px] border-[var(--border-color)] bg-[var(--bg-secondary)] px-4 md:px-6 flex items-center justify-between sticky top-0 z-40 shadow-[0_4px_0_0_var(--shadow-color)] transition-colors">
@@ -14,7 +32,7 @@ export default function Navbar({ toggleSidebar }) {
       <div className="flex items-center gap-3 md:gap-4">
         <button 
           onClick={toggleSidebar}
-          className="md:hidden p-2 rounded-lg bg-[var(--bg-tertiary)] border-2 border-[var(--border-color)] text-[var(--text-primary)] shadow-brutal-sm active:translate-y-[1px] active:shadow-none"
+          className="p-2 rounded-lg bg-[var(--bg-tertiary)] border-2 border-[var(--border-color)] text-[var(--text-primary)] shadow-brutal-sm active:translate-y-[1px] active:shadow-none transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -73,7 +91,9 @@ export default function Navbar({ toggleSidebar }) {
           title="Active Alerts"
         >
           <Bell className="w-4 h-4 text-black" />
-          <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-brutal-hotpink border-2 border-[var(--border-color)]"></span>
+          {activeAlertsCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-brutal-hotpink border-2 border-[var(--border-color)]"></span>
+          )}
         </Link>
       </div>
     </header>

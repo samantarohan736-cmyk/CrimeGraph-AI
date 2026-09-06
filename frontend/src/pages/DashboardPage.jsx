@@ -17,7 +17,6 @@ import ActivityTimelineChart from '../components/dashboard/ActivityTimelineChart
 import PriorityLeadsTable from '../components/dashboard/PriorityLeadsTable';
 import RecentAlertsList from '../components/dashboard/RecentAlertsList';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import DataUploadWidget from '../components/dashboard/DataUploadWidget';
 
 export default function DashboardPage() {
   const [data, setData] = useState(null);
@@ -95,16 +94,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* CSV Bulk Upload Widget */}
-      <DataUploadWidget onUploadSuccess={loadData} />
-
       {isDbEmpty ? (
         <div className="flex flex-col items-center justify-center p-12 neo-box bg-[var(--bg-secondary)] border-dashed text-center">
           <Database className="w-16 h-16 text-[var(--text-secondary)] mb-4 opacity-50" />
           <h2 className="text-xl font-black mb-2 text-[var(--text-primary)]">Database is Empty</h2>
           <p className="text-sm text-[var(--text-secondary)] font-mono max-w-md mb-6">
-            Upload CSV data using the widget above to initialize the knowledge graph.
+            Head to the Data Hub to upload intelligence and initialize the knowledge graph.
           </p>
+          <button onClick={() => navigate('/documents')} className="neo-btn px-6 py-2 bg-brutal-yellow text-black font-black uppercase">
+            Go to Data Hub
+          </button>
         </div>
       ) : (
         <>
@@ -148,20 +147,18 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* Analytics Charts Grid */}
+          {/* MAIN PRIORITY ROW: Top Leads Table, Active Alerts */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            {/* Crime Types */}
-            <div className="p-5 neo-box bg-[var(--bg-secondary)] space-y-4 xl:col-span-1">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono uppercase tracking-wider font-black flex items-center gap-2 text-[var(--text-primary)]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-brutal-pink border border-[var(--border-color)]"></span>
-                  SYNDICATE CRIME CATEGORIZATION
-                </span>
-                <PieChart className="w-4 h-4 text-[var(--text-secondary)]" />
-              </div>
-              <CrimeDistributionChart data={data.crime_distribution} />
+            <div className="xl:col-span-1 space-y-6 flex flex-col h-full">
+              <RecentAlertsList alerts={data.recent_alerts} />
             </div>
+            <div className="xl:col-span-2 flex flex-col h-full">
+              <PriorityLeadsTable leads={data.top_leads} />
+            </div>
+          </div>
 
+          {/* Analytics Charts Grid (Moved to bottom) */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {/* Temporal Activity Trends */}
             <div className="p-5 neo-box bg-[var(--bg-secondary)] space-y-4 xl:col-span-2">
               <div className="flex items-center justify-between">
@@ -173,18 +170,20 @@ export default function DashboardPage() {
               </div>
               <ActivityTimelineChart data={data.activity_timeline} />
             </div>
+            
+            {/* Crime Types */}
+            <div className="p-5 neo-box bg-[var(--bg-secondary)] space-y-4 xl:col-span-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono uppercase tracking-wider font-black flex items-center gap-2 text-[var(--text-primary)]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-brutal-pink border border-[var(--border-color)]"></span>
+                  SYNDICATE CRIME CATEGORIZATION
+                </span>
+                <PieChart className="w-4 h-4 text-[var(--text-secondary)]" />
+              </div>
+              <CrimeDistributionChart data={data.crime_distribution} />
+            </div>
           </div>
 
-          {/* Bottom Row: Top Leads Table, Active Alerts */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            <div className="xl:col-span-2">
-              <PriorityLeadsTable leads={data.top_leads} />
-            </div>
-            
-            <div className="xl:col-span-1 space-y-6">
-              <RecentAlertsList alerts={data.recent_alerts} />
-            </div>
-          </div>
         </>
       )}
     </div>

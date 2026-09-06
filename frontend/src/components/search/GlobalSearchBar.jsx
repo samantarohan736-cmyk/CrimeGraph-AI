@@ -77,7 +77,7 @@ export default function GlobalSearchBar() {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.trim() && setIsOpen(true)}
           placeholder="SEARCH MULTI-MODAL ENTITIES..."
-          className="w-full pl-9 pr-8 py-2 bg-cream-100 border-[2.5px] border-black rounded-lg text-xs font-black text-black placeholder-slate-500 focus:outline-none focus:bg-white shadow-[3px_3px_0_0_#000]"
+          className="w-full pl-10 pr-8 py-2 bg-cream-100 border-[2.5px] border-black rounded-full text-xs font-black text-black placeholder-slate-500 focus:outline-none focus:bg-white shadow-[3px_3px_0_0_#000]"
         />
         {query && (
           <button

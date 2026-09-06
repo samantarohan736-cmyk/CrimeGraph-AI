@@ -121,9 +121,8 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
     for ph in read_csv("phones.csv"):
         if not ph.get("phone_id") or not ph.get("phone_number"):
             continue
-        # Support both column name variants: 'registered_owner_id' and 'registered_owner'
         owner_id = ph.get("registered_owner_id") or ph.get("registered_owner")
-        if not db.query(Phone).filter(Phone.phone_id == ph["phone_id"]).first():
+        if not db.query(Phone).filter((Phone.phone_id == ph["phone_id"]) | (Phone.phone_number == ph["phone_number"])).first():
             try:
                 db.add(Phone(
                     phone_id=ph["phone_id"], phone_number=ph["phone_number"], imei=ph.get("imei"),
@@ -150,9 +149,8 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
     for v in read_csv("vehicles.csv"):
         if not v.get("vehicle_id") or not v.get("plate_number"):
             continue
-        # Support both column name variants
         owner_id = v.get("registered_owner_id") or v.get("registered_owner")
-        if not db.query(Vehicle).filter(Vehicle.vehicle_id == v["vehicle_id"]).first():
+        if not db.query(Vehicle).filter((Vehicle.vehicle_id == v["vehicle_id"]) | (Vehicle.plate_number == v["plate_number"])).first():
             try:
                 db.add(Vehicle(
                     vehicle_id=v["vehicle_id"], plate_number=v["plate_number"], make=v.get("make"),
@@ -321,7 +319,8 @@ def _run_pipeline_from_dir(import_dir: str, db: Session) -> IngestStatusResponse
                 ))
                 counts["documents"] += 1
                 # Sync extracted entities to graph
-                _sync_extracted_to_graph(extracted, doc_id=r["report_id"])
+                from backend.app.api.routes.documents import _sync_entities_to_graph
+                _sync_entities_to_graph(extracted, doc_id=r["report_id"], case_id=r.get("case_id"))
             except Exception as e:
                 errors.append(f"reports.csv [{r.get('report_id')}]: {e}")
     db.commit()
@@ -467,15 +466,16 @@ async def ingest_csv_files(
     and trigger the full ingestion pipeline: Postgres → Neo4j → anomaly detection → priority scoring.
     Files must match the schema documented in data/import/README.md.
     """
-    tmp_dir = tempfile.mkdtemp(prefix="crimegraph_ingest_")
+    import_dir = settings.IMPORT_DIR
+    os.makedirs(import_dir, exist_ok=True)
     try:
         for upload in files:
-            dest = os.path.join(tmp_dir, upload.filename)
+            dest = os.path.join(import_dir, upload.filename)
             with open(dest, "wb") as f:
                 shutil.copyfileobj(upload.file, f)
-        result = _run_pipeline_from_dir(tmp_dir, db)
-    finally:
-        shutil.rmtree(tmp_dir, ignore_errors=True)
+        result = _run_pipeline_from_dir(import_dir, db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     return result
 
 
@@ -561,6 +561,13 @@ def rebuild_graph_from_postgres(db: Session = Depends(get_db)):
                     f"doc-case-{d.document_id}", d.document_id, d.case_id, "BELONGS_TO_CASE"
                 )
             
+            # Restore NLP extracted entities and MENTIONS relationships to graph
+            if d.extracted_entities:
+                from backend.app.api.routes.documents import _sync_entities_to_graph
+                from nlp.entity_linker import entity_linker
+                _sync_entities_to_graph(d.extracted_entities, doc_id=d.document_id, case_id=d.case_id)
+                entity_linker.link_nlp_to_sql(db, d.extracted_entities, d.document_id)
+            
         # 2. Recreate Ownership & Structural Relationships
         # Person -> Location
         for p in db.query(Person).all():
@@ -598,6 +605,33 @@ def rebuild_graph_from_postgres(db: Session = Depends(get_db)):
                     date=tx.timestamp.isoformat() if tx.timestamp else "",
                     notes=f"{tx.amount} {tx.currency}"
                 )
+
+        # 3. Restore CSV-only relationships (since they aren't persisted in Postgres)
+        import_dir = settings.IMPORT_DIR
+        if os.path.isdir(import_dir):
+            import csv
+            rel_path = os.path.join(import_dir, "relationships.csv")
+            if os.path.exists(rel_path):
+                with open(rel_path, "r", encoding="utf-8") as f:
+                    for r in csv.DictReader(f):
+                        if r.get("source_id") and r.get("target_id"):
+                            graph_store.add_relationship_edge(
+                                edge_id=r.get("rel_id") or f"REL-{r['source_id']}-{r['target_id']}",
+                                source_id=r["source_id"], target_id=r["target_id"],
+                                relationship_type=r.get("relationship_type", "RELATED_TO"),
+                                confidence=float(r.get("confidence", 1.0)),
+                                date=r.get("date", ""), evidence_id=r.get("evidence_id", ""), notes=r.get("notes", "")
+                            )
+            per_path = os.path.join(import_dir, "persons.csv")
+            if os.path.exists(per_path):
+                with open(per_path, "r", encoding="utf-8") as f:
+                    for p in csv.DictReader(f):
+                        linked = p.get("linked_cases", "")
+                        if linked and p.get("person_id"):
+                            for case_id in [x.strip() for x in linked.split(",") if x.strip()]:
+                                graph_store.add_relationship_edge(
+                                    f"case-{p['person_id']}-{case_id}", p["person_id"], case_id, "SUSPECT_IN"
+                                )
 
         return {"status": "success", "message": "Graph rebuilt successfully from Postgres database."}
     except Exception as e:

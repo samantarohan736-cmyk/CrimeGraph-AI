@@ -14,7 +14,7 @@ import {
   X,
   Loader2
 } from 'lucide-react';
-import { getPersonDetails, getEntityEvidenceChain, createPhone, createVehicle } from '../services/api';
+import { getPersonDetails, getEntityEvidenceChain, createPhone, createVehicle, createCase, createLocation, createRelationship } from '../services/api';
 import PriorityScoreMeter from '../components/common/PriorityScoreMeter';
 import AlertBadge from '../components/alerts/AlertBadge';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -26,10 +26,16 @@ export default function PersonProfilePage() {
   const [loading, setLoading] = useState(true);
   const [addPhoneOpen, setAddPhoneOpen] = useState(false);
   const [addVehicleOpen, setAddVehicleOpen] = useState(false);
+  const [addCaseOpen, setAddCaseOpen] = useState(false);
+  const [addLocationOpen, setAddLocationOpen] = useState(false);
   const [phoneForm, setPhoneForm] = useState({ phone_number: '', operator: '', is_burner: 'false' });
   const [vehicleForm, setVehicleForm] = useState({ license_plate: '', make: '', model: '', color: '' });
+  const [caseForm, setCaseForm] = useState({ title: '', case_type: '' });
+  const [locationForm, setLocationForm] = useState({ name: '', address: '' });
   const [phoneLoading, setPhoneLoading] = useState(false);
   const [vehicleLoading, setVehicleLoading] = useState(false);
+  const [caseLoading, setCaseLoading] = useState(false);
+  const [locationLoading, setLocationLoading] = useState(false);
   const [inlineToast, setInlineToast] = useState(null);
   const navigate = useNavigate();
 
@@ -66,6 +72,40 @@ export default function PersonProfilePage() {
     } catch (err) {
       showInlineToast({ type: 'error', message: err.message || 'Failed to add vehicle.' });
     } finally { setVehicleLoading(false); }
+  };
+
+  const handleAddCase = async (e) => {
+    e.preventDefault();
+    if (!caseForm.title.trim()) return;
+    setCaseLoading(true);
+    try {
+      const res = await createCase(caseForm);
+      await createRelationship({ source_id: personId, target_id: res.case_id, relationship_type: 'ASSOCIATED_WITH' });
+      showInlineToast({ type: 'success', message: 'Case created and linked!' });
+      setCaseForm({ title: '', case_type: '' });
+      setAddCaseOpen(false);
+      const updated = await getPersonDetails(personId);
+      setPerson(updated);
+    } catch (err) {
+      showInlineToast({ type: 'error', message: err.message || 'Failed to add case.' });
+    } finally { setCaseLoading(false); }
+  };
+
+  const handleAddLocation = async (e) => {
+    e.preventDefault();
+    if (!locationForm.name.trim()) return;
+    setLocationLoading(true);
+    try {
+      const res = await createLocation(locationForm);
+      await createRelationship({ source_id: personId, target_id: res.location_id, relationship_type: 'FREQUENTS' });
+      showInlineToast({ type: 'success', message: 'Location created and linked!' });
+      setLocationForm({ name: '', address: '' });
+      setAddLocationOpen(false);
+      const updated = await getPersonDetails(personId);
+      setPerson(updated);
+    } catch (err) {
+      showInlineToast({ type: 'error', message: err.message || 'Failed to add location.' });
+    } finally { setLocationLoading(false); }
   };
 
   useEffect(() => {
@@ -231,9 +271,18 @@ export default function PersonProfilePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Associated Cases */}
         <div className="p-4 neo-box-tilt-l space-y-2 text-xs bg-[var(--bg-secondary)] border-2 border-[var(--border-color)]">
-          <div className="flex items-center gap-2 text-[var(--text-primary)] font-black">
-            <Briefcase className="w-4 h-4 text-[var(--text-primary)]" />
-            <span>Associated Cases ({person.associated_cases.length})</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-[var(--text-primary)] font-black">
+              <Briefcase className="w-4 h-4 text-[var(--text-primary)]" />
+              <span>Associated Cases ({person.associated_cases.length})</span>
+            </div>
+            <button
+              onClick={() => { setAddCaseOpen(v => !v); setAddLocationOpen(false); setAddPhoneOpen(false); setAddVehicleOpen(false); }}
+              className="neo-btn px-2 py-1 bg-brutal-purple text-black text-[10px] font-black flex items-center gap-1 hover:bg-brutal-lime transition-colors"
+            >
+              {addCaseOpen ? <X className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+              {addCaseOpen ? 'CANCEL' : 'ADD'}
+            </button>
           </div>
           <div className="space-y-1.5">
             {person.associated_cases.map(c => (
@@ -242,6 +291,30 @@ export default function PersonProfilePage() {
               </div>
             ))}
           </div>
+          {/* Inline Add Case Form */}
+          {addCaseOpen && (
+            <form onSubmit={handleAddCase} className="mt-3 space-y-2 p-3 rounded-lg bg-[var(--bg-primary)] border-2 border-brutal-purple">
+              <p className="text-[10px] font-black text-brutal-purple uppercase tracking-wider">New Case Link</p>
+              <input
+                placeholder="Case Title *"
+                value={caseForm.title}
+                onChange={e => setCaseForm(f => ({ ...f, title: e.target.value }))}
+                required
+                className="w-full px-2.5 py-1.5 text-xs font-mono bg-[var(--bg-secondary)] border-2 border-[var(--border-color)] text-[var(--text-primary)] rounded-md focus:outline-none focus:border-brutal-purple placeholder:text-[var(--text-secondary)]"
+              />
+              <input
+                placeholder="Case Type (e.g. Narcotics)"
+                value={caseForm.case_type}
+                onChange={e => setCaseForm(f => ({ ...f, case_type: e.target.value }))}
+                className="w-full px-2.5 py-1.5 text-xs font-mono bg-[var(--bg-secondary)] border-2 border-[var(--border-color)] text-[var(--text-primary)] rounded-md focus:outline-none focus:border-brutal-purple placeholder:text-[var(--text-secondary)]"
+              />
+              <button type="submit" disabled={caseLoading}
+                className="w-full neo-btn py-1.5 bg-brutal-purple text-black font-black text-[10px] flex items-center justify-center gap-1.5 hover:bg-brutal-lime transition-colors disabled:opacity-60">
+                {caseLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
+                {caseLoading ? 'ADDING...' : 'ADD CASE'}
+              </button>
+            </form>
+          )}
         </div>
 
         {/* Registered Phones */}
@@ -375,9 +448,18 @@ export default function PersonProfilePage() {
 
         {/* Locations */}
         <div className="p-4 neo-box-tilt-r space-y-2 text-xs bg-[var(--bg-secondary)] border-2 border-[var(--border-color)]">
-          <div className="flex items-center gap-2 text-[var(--text-primary)] font-black">
-            <MapPin className="w-4 h-4 text-[var(--text-primary)]" />
-            <span>Key Locations ({person.locations.length})</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-[var(--text-primary)] font-black">
+              <MapPin className="w-4 h-4 text-[var(--text-primary)]" />
+              <span>Key Locations ({person.locations.length})</span>
+            </div>
+            <button
+              onClick={() => { setAddLocationOpen(v => !v); setAddCaseOpen(false); setAddPhoneOpen(false); setAddVehicleOpen(false); }}
+              className="neo-btn px-2 py-1 bg-brutal-pink text-black text-[10px] font-black flex items-center gap-1 hover:bg-brutal-lime transition-colors"
+            >
+              {addLocationOpen ? <X className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+              {addLocationOpen ? 'CANCEL' : 'ADD'}
+            </button>
           </div>
           <div className="space-y-1.5">
             {person.locations.map(l => (
@@ -387,6 +469,30 @@ export default function PersonProfilePage() {
               </div>
             ))}
           </div>
+          {/* Inline Add Location Form */}
+          {addLocationOpen && (
+            <form onSubmit={handleAddLocation} className="mt-3 space-y-2 p-3 rounded-lg bg-[var(--bg-primary)] border-2 border-brutal-pink">
+              <p className="text-[10px] font-black text-brutal-pink uppercase tracking-wider">New Location Record</p>
+              <input
+                placeholder="Location Name *"
+                value={locationForm.name}
+                onChange={e => setLocationForm(f => ({ ...f, name: e.target.value }))}
+                required
+                className="w-full px-2.5 py-1.5 text-xs font-mono bg-[var(--bg-secondary)] border-2 border-[var(--border-color)] text-[var(--text-primary)] rounded-md focus:outline-none focus:border-brutal-pink placeholder:text-[var(--text-secondary)]"
+              />
+              <input
+                placeholder="Address"
+                value={locationForm.address}
+                onChange={e => setLocationForm(f => ({ ...f, address: e.target.value }))}
+                className="w-full px-2.5 py-1.5 text-xs font-mono bg-[var(--bg-secondary)] border-2 border-[var(--border-color)] text-[var(--text-primary)] rounded-md focus:outline-none focus:border-brutal-pink placeholder:text-[var(--text-secondary)]"
+              />
+              <button type="submit" disabled={locationLoading}
+                className="w-full neo-btn py-1.5 bg-brutal-pink text-black font-black text-[10px] flex items-center justify-center gap-1.5 hover:bg-brutal-lime transition-colors disabled:opacity-60">
+                {locationLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Plus className="w-3 h-3" />}
+                {locationLoading ? 'ADDING...' : 'ADD LOCATION'}
+              </button>
+            </form>
+          )}
         </div>
       </div>
 

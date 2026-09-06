@@ -1,0 +1,5 @@
+person_id,name,aliases,role,primary_location,risk_level,nationality,linked_cases
+P-101,Vikram Sharma,Vicky,KINGPIN,LOC-01,HIGH,Indian,CASE-001
+P-102,Rahul Patel,The Accountant,MONEY_LAUNDERER,LOC-02,MEDIUM,Indian,CASE-001
+P-103,Rajesh Kumar,Raju,STREET_BOSS,LOC-03,HIGH,Indian,CASE-001
+P-104,Amit Singh,Runner,MULE,LOC-04,LOW,Indian,CASE-001

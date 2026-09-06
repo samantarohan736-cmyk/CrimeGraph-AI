@@ -160,11 +160,13 @@ class InvestigationAssistantService:
             if self._llm_type == "gemini":
                 hist_parts = []
                 for msg in (history or [])[-6:]:  # last 3 turns
-                    hist_parts.append({"role": msg.role, "parts": [msg.content]})
-                hist_parts.append({"role": "user", "parts": [query]})
-                response = self._llm_client.generate_content(
-                    [{"role": "user", "parts": [system_prompt]}] + hist_parts
-                )
+                    role = "model" if msg.role == "assistant" else "user"
+                    hist_parts.append({"role": role, "parts": [msg.content]})
+                
+                final_prompt = f"{system_prompt}\n\nUSER QUERY:\n{query}"
+                hist_parts.append({"role": "user", "parts": [final_prompt]})
+                
+                response = self._llm_client.generate_content(hist_parts)
                 return response.text
             elif self._llm_type == "openai":
                 messages = [{"role": "system", "content": system_prompt}]

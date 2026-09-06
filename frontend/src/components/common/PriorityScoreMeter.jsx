@@ -57,14 +57,16 @@ export default function PriorityScoreMeter({ score = 0, factors = [], size = "md
           <span className="text-xs font-black text-[var(--text-primary)] uppercase">FACTOR WEIGHT BREAKDOWN:</span>
           <div className="space-y-1.5">
             {factors.map((f, idx) => (
-              <div key={idx} className="p-2 rounded bg-[var(--bg-secondary)] border-2 border-[var(--border-color)] flex items-center justify-between text-xs shadow-brutal-sm">
-                <span className="text-[var(--text-primary)] font-bold">{f.factor}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[var(--text-secondary)] font-bold">{f.raw_value}</span>
+              <div key={idx} className="p-2 rounded bg-[var(--bg-secondary)] border-2 border-[var(--border-color)] flex flex-col gap-1 text-xs shadow-brutal-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-[var(--text-primary)] font-bold uppercase">{f.factor_name || f.factor}</span>
                   <span className="neo-badge bg-brutal-cyan text-black text-[10px]">
-                    +{f.points} pts
+                    +{Math.round(f.contribution || f.points || 0)} pts
                   </span>
                 </div>
+                <span className="text-[var(--text-secondary)] font-medium text-[10px] italic">
+                  {f.description || f.raw_value}
+                </span>
               </div>
             ))}
           </div>

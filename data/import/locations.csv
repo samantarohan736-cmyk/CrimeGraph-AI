@@ -1,0 +1,5 @@
+location_id,name,address,location_type
+LOC-01,Sharma Villa,Bandra West Mumbai,RESIDENTIAL
+LOC-02,Patel Accounting,Nariman Point Mumbai,COMMERCIAL
+LOC-03,Global Freight Warehouse,Nhava Sheva Port,WAREHOUSE
+LOC-04,Amit Residence,Dharavi Mumbai,RESIDENTIAL

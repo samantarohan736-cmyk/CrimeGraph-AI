@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Network, Search, Filter, RefreshCw, DatabaseZap,
@@ -103,6 +103,36 @@ function CaseSelectorDropdown({ cases, selectedCase, onSelect }) {
 }
 
 export default function NetworkAnalysisPage() {
+  return (
+    <ErrorBoundary>
+      <NetworkAnalysisPageContent />
+    </ErrorBoundary>
+  );
+}
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8 text-red-500 font-mono bg-black h-full overflow-auto">
+          <h1 className="text-xl font-bold mb-4">Network Page Crashed</h1>
+          <pre className="text-xs bg-red-900/20 p-4 rounded">{this.state.error?.toString()}</pre>
+          <pre className="mt-4 text-[10px] text-gray-400">{this.state.error?.stack}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function NetworkAnalysisPageContent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const focusParam = searchParams.get('focus');
@@ -145,36 +175,44 @@ export default function NetworkAnalysisPage() {
   }, []);
 
   // Load graph when case or focusParam changes
-  useEffect(() => {
-    async function fetchGraph() {
-      try {
-        setLoading(true);
-        setSelectedNode(null);
-        setSelectedEdge(null);
-        setHighlightPath(null);
-        let res;
-        if (focusParam) {
-          res = await exploreNode(focusParam, hops);
-        } else if (selectedCase) {
-          res = await getCaseGraph(selectedCase.case_id, { hops: 2, maxNodes: 100 });
-        } else {
-          res = await getFullGraph();
-        }
-        setGraphData(res);
-        setFilteredNodes(res.nodes);
-        setFilteredEdges(res.edges);
-        if (focusParam) {
-          const matched = res.nodes.find(n => n.id === focusParam);
-          if (matched) setSelectedNode(matched);
-        }
-      } catch (err) {
-        console.error('Failed to load graph', err);
-      } finally {
-        setLoading(false);
+  const fetchGraph = useCallback(async () => {
+    try {
+      setLoading(true);
+      const startTime = Date.now();
+      setSelectedNode(null);
+      setSelectedEdge(null);
+      setHighlightPath(null);
+      let res;
+      if (focusParam) {
+        res = await exploreNode(focusParam, hops);
+      } else if (selectedCase) {
+        res = await getCaseGraph(selectedCase.case_id, { hops: 2, maxNodes: 100 });
+      } else {
+        res = await getFullGraph();
       }
+      setGraphData(res);
+      setFilteredNodes(res.nodes);
+      setFilteredEdges(res.edges);
+      if (focusParam) {
+        const matched = res.nodes.find(n => n.id === focusParam);
+        if (matched) setSelectedNode(matched);
+      }
+      
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 600) {
+        await new Promise(resolve => setTimeout(resolve, 600 - elapsed));
+      }
+    } catch (err) {
+      console.error('Failed to load graph', err);
+    } finally {
+      setLoading(false);
     }
+  }, [focusParam, hops, selectedCase]);
+
+  // Load graph when case or focusParam changes
+  useEffect(() => {
     fetchGraph();
-  }, [selectedCase, focusParam, hops]);
+  }, [fetchGraph]);
 
   // Load case details when case is selected
   useEffect(() => {
@@ -250,19 +288,24 @@ export default function NetworkAnalysisPage() {
   };
 
   return (
-    <div className="h-full flex flex-col font-mono overflow-hidden">
+    <div className="h-[calc(100vh-4rem)] flex flex-col font-mono overflow-hidden">
 
       {/* ── TOP BAR ── */}
-      <div className="shrink-0 flex flex-wrap items-center gap-3 px-4 py-3 bg-[var(--bg-secondary)] border-b-[3px] border-[var(--border-color)] shadow-[0_3px_0_0_var(--shadow-color)]">
+      <div className="shrink-0 flex flex-wrap items-center gap-3 px-4 py-3 bg-[var(--bg-primary)] border-b-2 border-[var(--border-color)]">
         {/* Brand */}
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-brutal-cyan border-2 border-[var(--border-color)] rounded-lg">
-            <Network className="w-4 h-4 text-black" />
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-brutal-cyan border-2 border-[var(--border-color)] rounded-lg">
+              <Network className="w-4 h-4 text-black" />
+            </div>
+            <div>
+              <div className="text-sm font-black uppercase text-[var(--text-primary)]">Network Intelligence</div>
+              <div className="text-[10px] text-[var(--text-secondary)] font-bold">{filteredNodes.length} nodes · {filteredEdges.length} edges</div>
+            </div>
           </div>
-          <div>
-            <div className="text-sm font-black uppercase text-[var(--text-primary)]">Network Intelligence</div>
-            <div className="text-[10px] text-[var(--text-secondary)] font-bold">{filteredNodes.length} nodes · {filteredEdges.length} edges</div>
-          </div>
+          <button onClick={fetchGraph} disabled={loading} className="neo-btn p-1 bg-black text-white hover:bg-brutal-cyan hover:text-black border-2 border-transparent hover:border-black transition-colors disabled:opacity-50 ml-1">
+            <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
+          </button>
         </div>
 
         <div className="w-px h-8 bg-[var(--border-color)] hidden sm:block" />
@@ -310,7 +353,7 @@ export default function NetworkAnalysisPage() {
             onClick={() => { setHighlightPath(null); setSelectedNode(null); setSelectedEdge(null); setSearchQuery(''); setSelectedTypeFilter('ALL'); }}
             className="neo-btn px-2.5 py-1.5 bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-brutal-pink hover:text-black text-xs flex items-center gap-1.5"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">RESET</span>
           </button>
 
@@ -373,8 +416,8 @@ export default function NetworkAnalysisPage() {
                   {/* Alerts for this case */}
                   {caseAlerts.length > 0 && (
                     <div className="p-3">
-                      <div className="text-[10px] font-black text-brutal-pink uppercase mb-2 flex items-center gap-1.5">
-                        <ShieldAlert className="w-3 h-3" />
+                      <div className="text-sm font-black text-brutal-pink uppercase mb-2 flex items-center gap-1.5">
+                        <ShieldAlert className="w-4 h-4" />
                         ACTIVE ALERTS ({caseAlerts.length})
                       </div>
                       <div className="space-y-1.5">

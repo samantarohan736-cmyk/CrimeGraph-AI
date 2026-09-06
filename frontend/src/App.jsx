@@ -13,10 +13,9 @@ import PersonProfilePage from './pages/PersonProfilePage';
 import AlertsPage from './pages/AlertsPage';
 import DocumentsPage from './pages/DocumentsPage';
 import InvestigationAssistantPage from './pages/InvestigationAssistantPage';
-import DataEntryPage from './pages/DataEntryPage';
 
 export default function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
 
   return (
     <ThemeProvider>
@@ -40,7 +39,6 @@ export default function App() {
                 <Route path="/alerts" element={<AlertsPage />} />
                 <Route path="/documents" element={<DocumentsPage />} />
                 <Route path="/assistant" element={<InvestigationAssistantPage />} />
-                <Route path="/data-entry" element={<DataEntryPage />} />
               </Routes>
             </main>
           </div>

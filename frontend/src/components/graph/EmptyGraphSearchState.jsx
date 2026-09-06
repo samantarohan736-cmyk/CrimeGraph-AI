@@ -63,7 +63,7 @@ export default function EmptyGraphSearchState({ onSelectEntity, entities = [] })
               }}
               onFocus={() => setIsOpen(true)}
               placeholder="Search person, case, phone, or vehicle ID..."
-              className="w-full pl-10 pr-4 py-3 bg-cream-100 border-[2.5px] border-black rounded-xl text-xs font-black text-black placeholder:text-slate-500 focus:outline-none focus:bg-white shadow-[3px_3px_0px_#000]"
+              className="w-full pl-10 pr-4 py-3 bg-cream-100 border-[2.5px] border-black rounded-full text-xs font-black text-black placeholder:text-slate-500 focus:outline-none focus:bg-white shadow-[3px_3px_0px_#000]"
               autoFocus
             />
           </div>
