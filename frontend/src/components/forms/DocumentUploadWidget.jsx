@@ -55,7 +55,7 @@ export default function DocumentUploadWidget({ onToast, onUploadSuccess }) {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-black uppercase font-mono flex items-center gap-2 text-[var(--text-primary)]">
             <FileText className="w-4 h-4" />
-            Unstructured Intel
+            Unstructured Data Insertion
           </h3>
           <span className="text-[10px] text-[var(--text-secondary)] font-mono font-bold">NLP Extraction</span>
         </div>

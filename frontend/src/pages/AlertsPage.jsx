@@ -150,7 +150,7 @@ export default function AlertsPage() {
         <button
           onClick={() => fetchAlerts(true)}
           disabled={loading}
-          className="neo-btn px-3 py-2 bg-black text-white text-xs font-black flex items-center gap-2 shrink-0"
+          className="neo-btn px-3 py-2 bg-[var(--bg-primary)] text-[var(--text-primary)] border-2 border-[var(--border-color)] hover:bg-brutal-cyan hover:text-black text-xs font-black flex items-center gap-2 shrink-0"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           REFRESH

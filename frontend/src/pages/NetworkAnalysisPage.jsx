@@ -303,7 +303,7 @@ function NetworkAnalysisPageContent() {
               <div className="text-[10px] text-[var(--text-secondary)] font-bold">{filteredNodes.length} nodes · {filteredEdges.length} edges</div>
             </div>
           </div>
-          <button onClick={fetchGraph} disabled={loading} className="neo-btn p-1 bg-black text-white hover:bg-brutal-cyan hover:text-black border-2 border-transparent hover:border-black transition-colors disabled:opacity-50 ml-1">
+          <button onClick={fetchGraph} disabled={loading} className="neo-btn p-1 bg-[var(--bg-primary)] text-[var(--text-primary)] hover:bg-brutal-cyan hover:text-black border-2 border-[var(--border-color)] transition-colors disabled:opacity-50 ml-1">
             <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>

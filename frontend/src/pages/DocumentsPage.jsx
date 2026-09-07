@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  FileText, Upload, RefreshCw, ChevronDown, ChevronUp, UserPlus, Database, Network
+  FileText, Upload, RefreshCw, ChevronDown, ChevronUp, Database, Network
 } from 'lucide-react';
 import { getDocuments, getDocumentDetails, analyzeDocument } from '../services/api';
 
 import DataUploadWidget from '../components/dashboard/DataUploadWidget';
 import DocumentUploadWidget from '../components/forms/DocumentUploadWidget';
 import StandaloneRegistries from '../components/forms/StandaloneRegistries';
-import CreatePersonModal from '../components/persons/CreatePersonModal';
 import Toast from '../components/common/Toast';
 
 export default function DocumentsPage() {
@@ -19,7 +18,6 @@ export default function DocumentsPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [toast, setToast] = useState(null);
 
-  const [isPersonModalOpen, setIsPersonModalOpen] = useState(false);
   const [showRegistries, setShowRegistries] = useState(false);
 
   const fetchDocs = async () => {
@@ -86,14 +84,6 @@ export default function DocumentsPage() {
   return (
     <div className="p-4 md:p-6 h-[calc(100vh-4rem)] flex flex-col space-y-6 max-w-[1800px] mx-auto overflow-y-auto neo-cyber-bg font-mono transition-colors duration-250 pb-20">
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
-      
-      {isPersonModalOpen && (
-        <CreatePersonModal
-          isOpen={isPersonModalOpen}
-          onClose={() => setIsPersonModalOpen(false)}
-          onToast={showToast}
-        />
-      )}
 
       {/* HEADER */}
       <div className="flex flex-wrap items-center justify-between gap-4 shrink-0">
@@ -102,13 +92,13 @@ export default function DocumentsPage() {
             Data & Intelligence Hub
           </h1>
           <p className="text-xs font-bold text-[var(--text-secondary)] mt-1">
-            Centralized Command for Ingestion, NLP Extraction, and Graph Profiling.
+            Centralized Command for Ingestion and NLP Extraction.
           </p>
         </div>
       </div>
 
-      {/* TOP INGESTION DECK (3 Columns) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 shrink-0">
+      {/* TOP INGESTION DECK (2 Columns) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 shrink-0">
         {/* Bulk Data */}
         <div className="flex flex-col h-full">
           <DataUploadWidget onUploadSuccess={() => { showToast({ type: 'success', message: 'Bulk data ingested! Graph updated.'}); fetchDocs(); }} />
@@ -119,29 +109,7 @@ export default function DocumentsPage() {
           <DocumentUploadWidget onToast={showToast} onUploadSuccess={fetchDocs} />
         </div>
 
-        {/* Manual Profiling Card */}
-        <div className="neo-box p-5 bg-[var(--bg-secondary)] flex flex-col justify-between h-full transition-colors duration-200">
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-black uppercase font-mono flex items-center gap-2 text-[var(--text-primary)]">
-                <Network className="w-4 h-4" />
-                Graph Profiling
-              </h3>
-              <span className="text-[10px] text-[var(--text-secondary)] font-mono font-bold">Manual Entity Creation</span>
-            </div>
-            <p className="text-xs text-[var(--text-primary)] font-medium leading-relaxed mb-4">
-              Manually profile high-value targets, organizations, or syndicates. Use this tool to build comprehensive network nodes and associate them with existing cases.
-            </p>
-          </div>
-          <button 
-            onClick={() => setIsPersonModalOpen(true)}
-            className="w-full neo-btn py-2.5 bg-brutal-cyan text-black font-black flex items-center justify-center gap-2 text-xs border-[3px] border-black shadow-[4px_4px_0_0_#000] hover:bg-brutal-lime transition-colors mt-auto"
-          >
-            <UserPlus className="w-4 h-4" />
-            <span>CREATE PROFILE (PERSON)</span>
-          </button>
         </div>
-      </div>
 
       <hr className="border-t-[3px] border-black my-2" />
 
@@ -153,7 +121,7 @@ export default function DocumentsPage() {
             <span className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">
               INTELLIGENCE REPOSITORY ({docs.length})
             </span>
-            <button onClick={fetchDocs} disabled={loading} className="neo-btn p-1 bg-black text-white hover:bg-brutal-cyan hover:text-black border-2 border-transparent hover:border-black transition-colors disabled:opacity-50">
+            <button onClick={fetchDocs} disabled={loading} className="neo-btn p-1 bg-[var(--bg-primary)] text-[var(--text-primary)] hover:bg-brutal-cyan hover:text-black border-2 border-[var(--border-color)] transition-colors disabled:opacity-50">
               <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
             </button>
           </div>
@@ -209,7 +177,7 @@ export default function DocumentsPage() {
               <button
                 onClick={handleReanalyze}
                 disabled={analyzing}
-                className="neo-btn px-4 py-2 bg-black text-white hover:bg-brutal-cyan hover:text-black hover:border-black border-2 border-transparent text-xs font-black flex items-center gap-2 disabled:opacity-50 transition-colors"
+                className="neo-btn px-4 py-2 bg-[var(--bg-primary)] text-[var(--text-primary)] hover:bg-brutal-cyan hover:text-black border-2 border-[var(--border-color)] text-xs font-black flex items-center gap-2 disabled:opacity-50 transition-colors"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${analyzing ? 'animate-spin' : ''}`} />
                 <span className="hidden sm:inline">{analyzing ? 'EXTRACTING...' : 'RE-RUN NLP'}</span>

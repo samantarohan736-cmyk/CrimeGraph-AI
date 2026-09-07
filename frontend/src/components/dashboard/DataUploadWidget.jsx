@@ -167,7 +167,7 @@ export default function DataUploadWidget({ onUploadSuccess }) {
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-black uppercase font-mono flex items-center gap-2">
           <Upload className="w-4 h-4" />
-          Data Ingestion Pipeline
+          Structured Data Insertion
         </h3>
         <span className="text-[10px] text-[var(--text-secondary)] font-mono">CSV → Graph + Anomaly Detection</span>
       </div>
