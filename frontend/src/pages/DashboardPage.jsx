@@ -61,12 +61,6 @@ export default function DashboardPage() {
       <div className="p-5 md:p-6 neo-box bg-[var(--bg-secondary)] border-b-4 border-[var(--border-color)] flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 transition-colors">
         <div className="space-y-2 z-10 font-mono text-[var(--text-primary)] w-full xl:w-auto">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="neo-badge bg-[var(--bg-primary)] text-[var(--text-primary)] border-2 border-[var(--border-color)] text-[10px] md:text-[11px] font-black">
-              TACTICAL INTEL OVERVIEW
-            </span>
-            <span className="neo-badge bg-brutal-pink text-black text-[9px] md:text-[10px] uppercase border-2 border-[var(--border-color)]">
-              LIVE SYNCED GRAPH
-            </span>
           </div>
           <h1 className="text-xl md:text-2xl font-black tracking-tight uppercase">
             Criminal Network Intelligence & Analytical Priority Dashboard

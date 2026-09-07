@@ -64,7 +64,7 @@ export default function DocumentUploadWidget({ onToast, onUploadSuccess }) {
           <div>
             <label className="text-[var(--text-secondary)] block mb-1 font-black uppercase text-[10px]">DOCUMENT TITLE *</label>
             <input type="text" required value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)}
-              placeholder="e.g. Surveillance Intercept - Safehouse"
+              placeholder="e.g. Report-1"
               className="w-full px-4 py-2 bg-[var(--bg-tertiary)] border-2 border-[var(--border-color)] rounded-xl text-[var(--text-primary)] font-bold focus:outline-none focus:bg-[var(--bg-primary)] focus:border-brutal-cyan transition-colors"
             />
           </div>
@@ -73,7 +73,7 @@ export default function DocumentUploadWidget({ onToast, onUploadSuccess }) {
             <select value={uploadCaseId} onChange={(e) => setUploadCaseId(e.target.value)}
               className="w-full px-4 py-2 bg-[var(--bg-tertiary)] border-2 border-[var(--border-color)] rounded-xl text-[var(--text-primary)] font-bold focus:outline-none focus:bg-[var(--bg-primary)] focus:border-brutal-cyan transition-colors cursor-pointer appearance-none"
             >
-              <option value="">-- No case association --</option>
+              <option value=""> No case association </option>
               {cases.map((c) => (
                 <option key={c.case_id} value={c.case_id}>{c.case_id}: {c.title}</option>
               ))}

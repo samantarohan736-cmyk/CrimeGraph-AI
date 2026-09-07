@@ -78,14 +78,6 @@ export default function Navbar({ toggleSidebar }) {
         </button>
 
         <Link
-          to="/assistant"
-          className="neo-btn flex items-center gap-2 px-3 py-1.5 md:px-3.5 md:py-1.5 bg-brutal-lime text-xs font-black"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">AI ASSISTANT</span>
-        </Link>
-
-        <Link
           to="/alerts"
           className="neo-btn relative p-2 bg-brutal-yellow"
           title="Active Alerts"

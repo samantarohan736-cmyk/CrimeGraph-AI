@@ -56,7 +56,6 @@ export default function Sidebar({ isOpen, closeSidebar }) {
       `}>
         <div className="space-y-2">
           <div className="px-2 py-2 text-[11px] font-black font-mono uppercase tracking-widest text-[var(--text-primary)] flex items-center justify-between">
-            <span className={isOpen ? 'block' : 'md:hidden'}>OPERATIONAL MODULES</span>
             <button className="md:hidden" onClick={closeSidebar}>
               <X className="w-4 h-4" />
             </button>
