@@ -12,7 +12,8 @@ class Settings(BaseSettings):
     
     # Environment & Paths
     BASE_DIR: str = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    DATA_DIR: str = os.path.join(os.path.dirname(BASE_DIR), "data")
+    # Use system temp dir for data storage to avoid polluting the project directory
+    DATA_DIR: str = os.path.join(os.environ.get("TEMP", "/tmp"), "crimegraph_data")
     # Staging folder for manual bulk CSV imports (see data/import/README.md).
     # Not auto-loaded on startup - run ai-engine/ingestion/master_pipeline.py to ingest it.
     IMPORT_DIR: str = os.path.join(DATA_DIR, "import")

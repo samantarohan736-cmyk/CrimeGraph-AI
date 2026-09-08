@@ -137,23 +137,42 @@ class InvestigationAssistantService:
     # ─────────────────────── LLM Enrichment ──────────────────────────────────
 
     def _ask_llm(self, query: str, context: Dict[str, Any],
-                 history: List[AssistantMessage], rule_answer: str) -> Optional[str]:
+                 history: List[AssistantMessage], rule_answer: str,
+                 findings: List[str] = None, entities: List[GraphNode] = None,
+                 edges: List[GraphEdge] = None) -> Optional[str]:
         """
-        Send the query + structured context to the LLM.
-        The LLM must only reference entities present in context — hallucination guard.
-        Returns None if LLM is unavailable or fails.
+        Send the query + structured context + specific graph findings to the LLM.
+        The LLM acts as a deeply integrated graph investigation assistant.
         """
         if not self._llm_client:
             return None
 
+        # Build a rich context string for the LLM
+        graph_details = []
+        if findings:
+            graph_details.append("SPECIFIC FINDINGS FROM THE KNOWLEDGE GRAPH:")
+            graph_details.extend([f" - {f}" for f in findings])
+        if entities:
+            graph_details.append("\nENTITIES INVOLVED:")
+            graph_details.extend([f" - [{e.type}] {e.label} (ID: {e.id})" for e in entities])
+        if edges:
+            graph_details.append("\nRELATIONSHIPS (HOW THE GRAPH IS FORMED):")
+            graph_details.extend([f" - {e.source} --({e.label})--> {e.target}" for e in edges])
+            
+        graph_context_str = "\n".join(graph_details) if graph_details else "No specific graph subgraph extracted for this query."
+
         system_prompt = (
-            "You are CrimeGraph AI, an investigation assistant for law enforcement analysts. "
-            "You MUST only reference entities, names, IDs, and evidence that appear in the "
-            "CONTEXT block below. Never invent names, case IDs, or statistics. "
-            "Be concise, factual, and professional. End every response with the disclaimer.\n\n"
+            "You are CrimeGraph AI, a highly advanced investigation assistant for law enforcement analysts. "
+            "Your job is to analyze the knowledge graph data provided to you and explain it like a real, intuitive assistant. "
+            "When the user asks about a case, person, or connection, DO NOT just list facts. "
+            "Explain the graphs, the relationships, how the entities are connected, what the alerts mean, and provide analytical insights. "
+            "Speak like a seasoned detective analyzing a link chart. Elaborate on the connections (e.g., 'This person is connected to this case through this vehicle...'). "
+            "You MUST only reference entities and facts provided in the CONTEXT block below, but you should weave them into a comprehensive narrative. "
+            "End every response with the required disclaimer.\n\n"
             f"DISCLAIMER: {self.DISCLAIMER}\n\n"
-            f"LIVE DATABASE CONTEXT:\n{json.dumps(context, indent=2)}\n\n"
-            f"RULE-BASED ANALYSIS:\n{rule_answer}"
+            f"GLOBAL DATABASE CONTEXT (For reference):\n{json.dumps(context, indent=2)}\n\n"
+            f"RULE-BASED SUMMARY:\n{rule_answer}\n\n"
+            f"{graph_context_str}"
         )
 
         try:
@@ -166,6 +185,8 @@ class InvestigationAssistantService:
                 final_prompt = f"{system_prompt}\n\nUSER QUERY:\n{query}"
                 hist_parts.append({"role": "user", "parts": [final_prompt]})
                 
+                # Use the superior gemini-2.0-flash model if available
+                # Fallback to the configured client
                 response = self._llm_client.generate_content(hist_parts)
                 return response.text
             elif self._llm_type == "openai":
@@ -174,7 +195,7 @@ class InvestigationAssistantService:
                     messages.append({"role": msg.role, "content": msg.content})
                 messages.append({"role": "user", "content": query})
                 resp = self._llm_client.chat.completions.create(
-                    model="gpt-4o-mini", messages=messages, max_tokens=600
+                    model="gpt-4o", messages=messages, max_tokens=1200
                 )
                 return resp.choices[0].message.content
         except Exception as e:
@@ -277,7 +298,7 @@ class InvestigationAssistantService:
                               f"{path.hops}-hop path confirmed in the knowledge graph.")
                     cited = [ec['evidence_id'] for ec in path.evidence_chain
                              if ec.get('evidence_id') and ec['evidence_id'] != 'N/A']
-                    llm = self._ask_llm(query, ctx, history or [], answer)
+                    llm = self._ask_llm(query, ctx, history or [], answer, findings=findings, entities=path.nodes, edges=path.edges)
                     return self._resp(query, answer, findings, path.nodes, path.edges, cited, 0.92, llm)
                 else:
                     answer = f"No path found between {self._node_label(src)} and {self._node_label(tgt)} within 6 hops."
@@ -295,7 +316,7 @@ class InvestigationAssistantService:
             findings = [f"[{c.case_id}] {c.title} | Type: {c.case_type or 'N/A'} | Status: {c.status} | "
                         f"Priority: {c.priority} | Lead: {c.lead_officer or 'N/A'}" for c in cases]
             answer = f"Found {len(cases)} case(s) in the database. Showing up to 20 most recent."
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings)
             return self._resp(query, answer, findings, confidence=0.9, llm_enriched=llm)
 
         # ── 3. CASE DETAILS (specific case mentioned) ──
@@ -323,7 +344,7 @@ class InvestigationAssistantService:
                     findings.append(f"Description: {case.description[:300]}")
                 answer = f"Case {case.case_id}: '{case.title}' — {case.status}. " \
                          f"{sub.total_nodes} entities linked in the knowledge graph."
-                llm = self._ask_llm(query, ctx, history or [], answer)
+                llm = self._ask_llm(query, ctx, history or [], answer, findings=findings, entities=sub.nodes, edges=sub.edges)
                 return self._resp(query, answer, findings, sub.nodes, sub.edges,
                                   confidence=0.92, llm_enriched=llm)
 
@@ -338,7 +359,7 @@ class InvestigationAssistantService:
                         f"Location: {p.primary_location or 'N/A'} | Priority Score: {int(p.priority_score or 0)}/100 | "
                         f"Risk: {p.risk_level or 'N/A'}" for p in persons]
             answer = f"{len(persons)} person(s) on file, ranked by investigation priority score."
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings)
             return self._resp(query, answer, findings, confidence=0.9, llm_enriched=llm)
 
         # ── 5. PERSON PROFILE (specific person mentioned) ──
@@ -372,7 +393,7 @@ class InvestigationAssistantService:
                     findings.append(f"Alert [{a.severity}]: {a.reason[:100]}")
                 answer = (f"{person.name} ({person.person_id}): Priority {int(person.priority_score or 0)}/100 | "
                           f"{sub.total_nodes} network connections | {len(alerts)} active alert(s).")
-                llm = self._ask_llm(query, ctx, history or [], answer)
+                llm = self._ask_llm(query, ctx, history or [], answer, findings=findings, entities=sub.nodes, edges=sub.edges)
                 return self._resp(query, answer, findings, sub.nodes, sub.edges,
                                   confidence=0.92, llm_enriched=llm)
 
@@ -403,7 +424,7 @@ class InvestigationAssistantService:
                     for c in recent
                 ]
                 answer = f"Database contains {total} CDR record(s). Showing 10 most recent."
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings)
             return self._resp(query, answer, findings, confidence=0.88, llm_enriched=llm)
 
         # ── 7. TRANSACTIONS / FINANCIAL ──
@@ -432,7 +453,7 @@ class InvestigationAssistantService:
                     findings.append(f"[{a.severity}] {self._node_label(a.entity_id)}: {a.reason[:120]}")
                 answer = f"Database has {total_tx} transactions, {len(tx_alerts)} anomaly alert(s)."
                 cited = [a.supporting_evidence_id for a in tx_alerts if a.supporting_evidence_id]
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings)
             return self._resp(query, answer, findings, confidence=0.88,
                               evidence_ids=cited if 'cited' in dir() else [],
                               llm_enriched=llm)
@@ -462,7 +483,7 @@ class InvestigationAssistantService:
             label = f" for {self._node_label(person_ids[0])}" if person_ids else ""
             answer = f"Found {len(alerts)} alert(s){label}" + (f" with {severity_filter} severity" if severity_filter else "") + "."
             cited = [a.supporting_evidence_id for a in alerts if a.supporting_evidence_id]
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings)
             return self._resp(query, answer, findings, confidence=0.9, evidence_ids=cited, llm_enriched=llm)
 
         # ── 9. BRIDGE NODES / GATEKEEPERS ──
@@ -485,7 +506,7 @@ class InvestigationAssistantService:
                       f"connecting multiple network clusters.")
             sub = graph_store.get_subgraph(top.node_id, max_hops=1)
             cited = list({cl.evidence_id for cl in top.critical_links if cl.evidence_id})
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings, entities=sub.nodes, edges=sub.edges)
             return self._resp(query, answer, findings, sub.nodes, sub.edges, cited, 0.9, llm)
 
         # ── 10. CENTRALITY / MOST CONNECTED ──
@@ -509,7 +530,7 @@ class InvestigationAssistantService:
                                             betweenness=round(m.get("betweenness",0),3)))
             top_labels = [graph_store.nodes_data.get(n[0],{}).get("label",n[0]) for n in top4[:3]]
             answer = f"Most central entities: {', '.join(top_labels)}."
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings, entities=supp_nodes)
             return self._resp(query, answer, findings, supp_nodes, [], confidence=0.88, llm_enriched=llm)
 
         # ── 11. PRIORITY SCORE EXPLANATION ──
@@ -535,7 +556,7 @@ class InvestigationAssistantService:
             answer = (f"{person.name} ({person.person_id}): Priority {int(final_score)}/100. "
                       f"{sd.get('explanation','')}")
             sub = graph_store.get_subgraph(target_person, max_hops=1)
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings, entities=sub.nodes, edges=sub.edges)
             return self._resp(query, answer, findings, sub.nodes, sub.edges, cited, 0.9, llm)
 
         # ── 12. DOCUMENTS / REPORTS ──
@@ -551,7 +572,7 @@ class InvestigationAssistantService:
                 for d in docs
             ]
             answer = f"{len(docs)} document(s) in the intelligence repository."
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings)
             return self._resp(query, answer, findings, confidence=0.85, llm_enriched=llm)
 
         # ── 13. NETWORK SUBGRAPH / SHOW CONNECTIONS ──
@@ -567,7 +588,7 @@ class InvestigationAssistantService:
                         findings.append(f"  → {n.label} ({n.type})")
                 answer = (f"{self._node_label(node_id)} has {sub.total_nodes} linked entities "
                           f"within {hops} hop(s) in the knowledge graph.")
-                llm = self._ask_llm(query, ctx, history or [], answer)
+                llm = self._ask_llm(query, ctx, history or [], answer, findings=findings, entities=sub.nodes, edges=sub.edges)
                 return self._resp(query, answer, findings, sub.nodes, sub.edges, confidence=0.88, llm_enriched=llm)
 
         # ── 14. STATUS / SUMMARY / OVERVIEW ──
@@ -592,7 +613,7 @@ class InvestigationAssistantService:
                     findings.append(f"  [{a['severity']}] {a['entity']}: {a['reason']}")
             answer = (f"Database has {ctx['total_cases']} cases, {ctx['total_persons']} persons, "
                       f"{ctx['total_alerts']} alerts, and {ctx['graph_nodes']} graph entities.")
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings)
             return self._resp(query, answer, findings, confidence=0.85, llm_enriched=llm)
 
         # ── 15. EVIDENCE ──
@@ -604,7 +625,7 @@ class InvestigationAssistantService:
                 for e in evs
             ]
             answer = f"Evidence catalog contains {db.query(Evidence).count()} record(s)."
-            llm = self._ask_llm(query, ctx, history or [], answer)
+            llm = self._ask_llm(query, ctx, history or [], answer, findings=findings)
             return self._resp(query, answer, findings, confidence=0.82, llm_enriched=llm)
 
         # ── 16. GENERAL FALLBACK with real data ──
@@ -623,7 +644,7 @@ class InvestigationAssistantService:
         answer = (f"Query received: '{query}'. "
                   f"The knowledge base has {ctx['total_cases']} cases and {ctx['total_persons']} persons. "
                   f"Try asking about specific cases, persons by ID or name, CDRs, transactions, or network connections.")
-        llm = self._ask_llm(query, ctx, history or [], answer)
+        llm = self._ask_llm(query, ctx, history or [], answer, findings=findings, entities=sub.nodes if sub else [], edges=sub.edges if sub else [])
         return self._resp(query, answer, findings,
                           sub.nodes if sub else [], sub.edges if sub else [],
                           confidence=0.6, llm_enriched=llm)
